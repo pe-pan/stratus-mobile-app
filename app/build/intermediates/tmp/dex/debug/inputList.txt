@@ -1,9 +1,0 @@
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\classes\debug
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-a36535cefa3357b104e22ed495c99afbfe822aaf.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\json-smart-1.1.1-8c90cef028964b3a946a9196c60e07669252e8fc.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\json-path-0.8.1-692e9b1f00f02dd753c084984ba24624bb29574e.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-750537c9ffb4c7cb3a83599ecd60b39c0a41eb91.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\commons-lang-2.6-73318a8a5ec5855be6c9cc91e6f9db9bd1c2aa09.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\classes-382dd9e764e63e602cf5b7e45b4ba72c11188586.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\classes-73afac8e7831f6ae97b12496a748206095cbce72.jar
-C:\Users\panuska\AndroidStudioProjects\Stratus\app\build\intermediates\pre-dexed\debug\classes-5a4c9234dc6ddb450bd3f591331635835e6c6c0d.jar
