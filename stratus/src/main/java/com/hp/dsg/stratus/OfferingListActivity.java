@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 
 import com.hp.dsg.stratus.entities.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
@@ -25,7 +24,6 @@ import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
 
 public class OfferingListActivity extends ActionBarActivity {
 
-    private List<Entity> offerings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +35,7 @@ public class OfferingListActivity extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Entity offering = offerings.get(position);
+                Entity offering = (Entity)parent.getItemAtPosition(position);
                 Intent i = new Intent(OfferingListActivity.this, OfferingActivity.class);
                 i.putExtra(OfferingActivity.OFFERING_EXTRA_KEY, offering.toJson());
                 startActivity(i);
@@ -92,17 +90,13 @@ public class OfferingListActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Boolean... params) {
 
-            offerings = M_STRATUS.getOfferings(params[0]);
+            final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
             final ListView listview = (ListView) findViewById(R.id.offeringList);
-            final List<String> list = new ArrayList<>();
-            for (Entity subscription : offerings) {
-                list.add(subscription.getProperty("displayName"));
-            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    final ArrayAdapter adapter = new ArrayAdapter(OfferingListActivity.this,
-                            android.R.layout.simple_list_item_1, list);
+                    final ArrayAdapter adapter = new ArrayAdapter<>(OfferingListActivity.this,
+                            android.R.layout.simple_list_item_1, offerings);
                     listview.setAdapter(adapter);
                     final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
                     progressBar.setVisibility(View.GONE);

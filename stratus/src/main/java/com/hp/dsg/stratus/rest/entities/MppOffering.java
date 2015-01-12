@@ -7,4 +7,10 @@ public class MppOffering extends CsaEntity {
     public MppOffering(Object json) {
         super(json);
     }
+
+    @Override
+    public String toString() {
+        return getProperty("displayName");
+    }
+
 }

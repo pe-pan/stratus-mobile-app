@@ -7,4 +7,9 @@ public class MppSubscription extends CsaEntity {
     public MppSubscription(Object json) {
         super(json);
     }
+
+    @Override
+    public String toString() {
+        return getProperty("name");
+    }
 }
