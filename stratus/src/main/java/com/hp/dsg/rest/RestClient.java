@@ -94,10 +94,8 @@ public class RestClient {
                 conn.setDoInput(true);
                 conn.setAllowUserInteraction(false);
                 conn.setInstanceFollowRedirects(false);
-                conn.setReadTimeout(10*1000);          //todo shouldn't be just 10*1000 -> offerings need longer timeout
-                conn.setConnectTimeout(10*1000);
-//                conn.setReadTimeout(300*1000);          //todo shouldn't be just 10*1000 -> offerings need longer timeout
-//                conn.setConnectTimeout(300*1000);
+                conn.setReadTimeout(30*1000);          //todo shouldn't be just 10*1000 -> offerings need longer timeout
+                conn.setConnectTimeout(30*1000);
                 String methodName = redirect ? "GET" : method.toString();
                 Log.d(TAG, "Doing "+methodName);
                 conn.setRequestMethod(methodName);
