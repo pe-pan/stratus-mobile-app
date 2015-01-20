@@ -22,7 +22,6 @@ public abstract class CsaEntityHandler extends EntityHandler {
 
     protected CsaEntityHandler() {
         super();
-//        columns.add(new Column("id"));
 
     }
     protected abstract String getListJson();
@@ -45,10 +44,5 @@ public abstract class CsaEntityHandler extends EntityHandler {
         lastEntities = returnValue;
         resetFilteredEntities();// every list resets also the filter
         return returnValue;
-    }
-
-    public void clearList() {
-        lastEntities = null;
-        filteredEntities = null;
     }
 }

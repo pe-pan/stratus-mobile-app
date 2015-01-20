@@ -13,12 +13,17 @@ import java.util.List;
  */
 public class Mpp extends AuthenticatedClient {
     private static final String TAG = Mpp.class.getSimpleName();
-    public static final String IDM_REST_URL = "https://csa4.hpswdemoportal.com:443/idm-service/v2.0/tokens";
+
+    public static final String STRATUS_URL = "https://csa4.hpswdemoportal.com";
+    public static final String REST_URL = STRATUS_URL+"/csa";
+    public static final String REST_API = REST_URL +"/api";
+    public static final String REST_URI = REST_URL +"/rest";
+
+    public static final String IDM_REST_URL = STRATUS_URL+"/idm-service/v2.0/tokens";
     public static final String TENANT_NAME = "CSADemo"; //todo should not be built-in
 
     private String username;
     private String password;
-//    private String token;
 
     public final static Mpp M_STRATUS = new Mpp();
     public Mpp() {
@@ -47,7 +52,6 @@ public class Mpp extends AuthenticatedClient {
         String token = JsonPath.read(response.getResponse(), "$.token.id");
         client.clearCustomHeader();
         client.setCustomHeader("X-Auth-Token", token);
-
     }
 
     @Override
@@ -58,13 +62,11 @@ public class Mpp extends AuthenticatedClient {
     public List<Entity> getSubscriptions(boolean enforce) {
         EntityHandler handler = EntityHandler.getHandler("mpp-subscriptions");
         return handler.list(enforce);
-//        return subscriptionHandler.list(false);
     }
 
     public List<Entity> getOfferings(boolean enforce) {
         EntityHandler handler = EntityHandler.getHandler("mpp-offerings");
         return handler.list(enforce);
-//        return subscriptionHandler.list(false);
     }
 
 }

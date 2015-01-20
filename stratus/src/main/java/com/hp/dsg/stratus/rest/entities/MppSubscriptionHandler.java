@@ -1,7 +1,7 @@
 package com.hp.dsg.stratus.rest.entities;
 
 import com.hp.dsg.stratus.entities.Entity;
-import com.hp.dsg.stratus.rest.Csa;
+import com.hp.dsg.stratus.rest.Mpp;
 
 /**
  * Created by panuska on 6.1.15.
@@ -15,7 +15,7 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
 
     @Override
     protected String getListJson() {
-        return client.doPost(Csa.REST_API + "/mpp/mpp-subscription/filter", "{}").getResponse();
+        return client.doPost(Mpp.REST_API + "/mpp/mpp-subscription/filter", "{}").getResponse();
     }
 
     @Override

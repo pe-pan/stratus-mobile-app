@@ -9,24 +9,19 @@ import com.jayway.jsonpath.JsonPath;
 public class CsaEntity extends Entity {
     private String json;
 
-    public CsaEntity(Object json) {
-        this.json = (String)json;
+    public CsaEntity(String json) {
+        init(json);
     }
 
     @Override
-    protected void init(Object o) {
-        this.json = (String) o;
+    protected void init(String o) {
+        this.json = o;
     }
 
     public String getId() {
         String self = getProperty("@self");
         int index = self.lastIndexOf('/');
         return self.substring(index+1);
-    }
-
-    @Override
-    public void clearDirty() {
-        throw new IllegalStateException("Not implemented!");
     }
 
     @Override
@@ -44,24 +39,7 @@ public class CsaEntity extends Entity {
     }
 
     @Override
-    public boolean isDirty(String key) {
-        //todo not properly implemented
-        return false;
-    }
-
-    @Override
-    public boolean isDirty() {
-        //todo not properly implemented
-        return false;
-    }
-
-    @Override
     public String toJson() {
         return json;
-    }
-
-    @Override
-    public String toXml() {
-        throw new IllegalStateException("Not implemented!");
     }
 }
