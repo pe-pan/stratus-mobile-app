@@ -13,8 +13,15 @@
             android:id="@+id/leftTopView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_alignParentStartLeft="true"
+            android:layout_alignParentLeft="true"
             />
+        <ImageView
+            android:id="@+id/offeringIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_launcher" />
         <TextView
             android:id="@+id/offeringName"
             android:layout_width="wrap_content"
@@ -25,13 +32,6 @@
             android:layout_alignLeft="@id/leftTopView"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ImageView
-            android:id="@+id/offeringIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_launcher" />
     </RelativeLayout>
 
     <TextView
