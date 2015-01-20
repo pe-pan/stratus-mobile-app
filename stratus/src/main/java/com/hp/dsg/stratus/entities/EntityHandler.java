@@ -60,7 +60,7 @@ public abstract class EntityHandler {
         this.filteredEntities = new LinkedList<>(this.lastEntities);
     }
 
-    protected abstract Entity newEntity(Object object); // todo hack
+    protected abstract Entity newEntity(String json);
 
     protected String context = "";
     public String getContext() {

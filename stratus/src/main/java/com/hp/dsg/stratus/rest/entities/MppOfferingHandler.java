@@ -20,8 +20,8 @@ public class MppOfferingHandler extends CsaEntityHandler {
     }
 
     @Override
-    protected Entity newEntity(Object object) {
-        return new MppOffering(object);
+    protected Entity newEntity(String json) {
+        return new MppOffering(json);
     }
 
     @Override

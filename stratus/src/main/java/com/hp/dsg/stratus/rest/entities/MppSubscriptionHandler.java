@@ -19,8 +19,8 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
     }
 
     @Override
-    protected Entity newEntity(Object object) {
-        return new MppSubscription(object);
+    protected Entity newEntity(String json) {
+        return new MppSubscription(json);
     }
 
     @Override
