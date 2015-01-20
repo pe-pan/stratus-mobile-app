@@ -12,7 +12,7 @@ import java.util.List;
  * Created by panuska on 6.1.2015.
  */
 public class Mpp extends AuthenticatedClient {
-    private static final String TAG = "MPP";
+    private static final String TAG = Mpp.class.getSimpleName();
     public static final String IDM_REST_URL = "https://csa4.hpswdemoportal.com:443/idm-service/v2.0/tokens";
     public static final String TENANT_NAME = "CSADemo"; //todo should not be built-in
 

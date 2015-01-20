@@ -13,7 +13,7 @@ import java.util.List;
  * Created by panuska on 5.1.2015.
  */
 public class Csa extends AuthenticatedClient {
-    private static final String TAG = "CSA";
+    private static final String TAG = Csa.class.getSimpleName();
     public static final String STRATUS_URL = "https://csa4.hpswdemoportal.com";
     public static final String REST_URL = STRATUS_URL+"/csa";
     public static final String REST_URI = REST_URL +"/rest";
