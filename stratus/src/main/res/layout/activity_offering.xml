@@ -5,16 +5,24 @@
     android:layout_margin="8dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <View
+            android:id="@+id/leftTopView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignParentStartLeft="true"
+            />
         <TextView
             android:id="@+id/offeringName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="ALM12 2.4 Demo Platform v1"
+            android:layout_toLeftOf="@id/offeringIcon"
+            android:layout_alignLeft="@id/leftTopView"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ImageView
@@ -22,8 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_alignParentRight="true"
             android:src="@drawable/ic_launcher" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/offeringDescription"
