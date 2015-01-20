@@ -1,0 +1,20 @@
+[12/Jan/2015]
+Version 0.0.2:
+-------------
+Bug fixes:
+  - Wrong offering position returned upon filter
+  - App crashes when clicking on 'register' link; FMI http://stackoverflow.com/questions/22563891/crash-on-samsung-devices-for-edittext-containing-links
+  - Extend REST API calls timeout to 30 secs (listing of offerings may take longer than 10 secs)
+  - Offering view layout (no icon rendered when offering name too long)
+
+[7/Jan/2015]
+Version 0.0.1:
+-------------
+Introduced features:
+  - Login form
+  - Remember entered credentials
+  - Get list of subscriptions
+  - Get list of published offerings
+  - Filter on offerings
+  - View offering details
+  - About
