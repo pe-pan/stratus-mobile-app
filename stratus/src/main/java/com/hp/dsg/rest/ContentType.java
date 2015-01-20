@@ -7,5 +7,6 @@ public enum ContentType {
     NONE,
     XML_XML,
     JSON_JSON,
-    FORM_JSON
+    FORM_JSON,
+    JSON_MULTI
 }

@@ -112,6 +112,12 @@ public class RestClient {
                         conn.setRequestProperty("Accept", "application/json");
                         break;
                     }
+                    case JSON_MULTI: {
+                        Log.d(TAG, "JSON_MULTI documents");
+                        conn.setRequestProperty("Content-type", "multipart/form-data; boundary=----WebKitFormBoundaryPxXpP71FeJBaYBqa");
+                        conn.setRequestProperty("Accept", "application/json");
+                        break;
+                    }
                     case XML_XML: {
                         Log.d(TAG, "XML_XML documents");
                         conn.setRequestProperty("Content-type", "application/xml; charset=UTF-8");
@@ -137,7 +143,14 @@ public class RestClient {
                     Log.d(TAG, "Data size: " + formData.length());
                     conn.setRequestProperty("Content-Length", Integer.toString(formData.length()));
                     Log.d(TAG, "Posting: " + formData);
+                    if (contentType == ContentType.JSON_MULTI) {                //todo hack
+                        IOUtils.write("------WebKitFormBoundaryPxXpP71FeJBaYBqa\n", conn.getOutputStream());
+                        IOUtils.write("Content-Disposition: form-data; name=\"requestForm\"\n\n", conn.getOutputStream());
+                    }
                     IOUtils.write(formData, conn.getOutputStream());
+                    if (contentType == ContentType.JSON_MULTI) {                //todo hack
+                        IOUtils.write("------WebKitFormBoundaryPxXpP71FeJBaYBqa\n", conn.getOutputStream());
+                    }
                     conn.getOutputStream().flush();
                     conn.getOutputStream().close();
                 }
