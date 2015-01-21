@@ -140,17 +140,16 @@ public class RestClient {
 
                 // write the data
                 if (!redirect && formData != null) {
+                    if (contentType == ContentType.JSON_MULTI) {  //todo hack
+                        formData =  "------WebKitFormBoundaryPxXpP71FeJBaYBqa\n" +
+                                    "Content-Disposition: form-data; name=\"requestForm\"\n\n" +
+                                    formData +
+                                    "------WebKitFormBoundaryPxXpP71FeJBaYBqa\n";
+                    }
                     Log.d(TAG, "Data size: " + formData.length());
                     conn.setRequestProperty("Content-Length", Integer.toString(formData.length()));
                     Log.d(TAG, "Posting: " + formData);
-                    if (contentType == ContentType.JSON_MULTI) {                //todo hack
-                        IOUtils.write("------WebKitFormBoundaryPxXpP71FeJBaYBqa\n", conn.getOutputStream());
-                        IOUtils.write("Content-Disposition: form-data; name=\"requestForm\"\n\n", conn.getOutputStream());
-                    }
                     IOUtils.write(formData, conn.getOutputStream());
-                    if (contentType == ContentType.JSON_MULTI) {                //todo hack
-                        IOUtils.write("------WebKitFormBoundaryPxXpP71FeJBaYBqa\n", conn.getOutputStream());
-                    }
                     conn.getOutputStream().flush();
                     conn.getOutputStream().close();
                 }
