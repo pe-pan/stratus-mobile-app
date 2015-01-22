@@ -71,4 +71,16 @@ public abstract class AuthenticatedClient  {
             throw e;
         }
     }
+
+    public HttpResponse doPost(String url, String data, ContentType type) {
+        try {
+            return client.doPost(url, data, type);
+        } catch (IllegalRestStateException e) {
+            if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                authenticate();
+                return client.doPost(url, data);
+            }
+            throw e;
+        }
+    }
 }

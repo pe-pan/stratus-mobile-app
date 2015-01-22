@@ -16,5 +16,19 @@
     <string name="done">Done</string>
     <string name="register_link"><a href="https://password.hpswdemoportal.com">To register click here</a></string>
     <string name="subscribe">Subscribe</string>
+    <string name="defaultOfferingName">ALM12 2.4 Demo Platform v1</string>
+    <string name="defaultEmailAddress">panuska@hp.com</string>
+    <string name="offeringDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>
+    <string name="offeringDefaultCatalog">CSADemo Catalog</string>
+    <string name="offeringDefaultUpdateDate">Oct 21, 2010 09:47 PM</string>
+    <string name="emailAddressTitle">Email\naddress</string>
+    <string name="subscriptionNameTitle">Subscr.\nname</string>
+    <string name="oppIdTitle">Opportunity ID</string>
+    <string name="howManyDaysTitle">Demo necessary for</string>
+    <string name="oppDefaultValue">OPP-XXXXXXXXXX</string>
+    <string name="howManyDaysDefaultValue">4</string>
+    <string name="daysTitle"> days</string>
+    <string name="requestSuccess">Subscription has been requested</string>
+    <string name="requestFailure">Subscription request has failed!</string>
 
 </resources>

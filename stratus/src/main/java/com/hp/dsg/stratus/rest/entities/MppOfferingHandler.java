@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus.rest.entities;
 
 
+import com.hp.dsg.rest.ContentType;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.rest.Mpp;
 
@@ -25,12 +26,13 @@ public class MppOfferingHandler extends CsaEntityHandler {
     }
 
     @Override
-    public Entity update(Entity entity) {
-        throw new IllegalStateException("Not implemented!");
-    }
+    public Entity loadDetails(Entity entity) {
+        String offeringId = entity.getId();
+        String catalogId = entity.getProperty("catalogId");
+        String category = entity.getProperty("category.name");
 
-    @Override
-    public void delete(Entity entity) {
-        throw new IllegalStateException("Not implemented!");
+        String json = client.doGet(Mpp.REST_API+"/mpp/mpp-offering/"+offeringId+"?catalogId="+catalogId+"&category="+category, ContentType.JSON_JSON).getResponse();
+        entity.init(json); //todo mark somewhere details have been loaded
+        return entity;
     }
 }

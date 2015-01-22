@@ -4,8 +4,12 @@ import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.rest.entities.MppOffering;
+import com.hp.dsg.stratus.rest.entities.MppRequest;
 import com.jayway.jsonpath.JsonPath;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,7 +60,7 @@ public class Mpp extends AuthenticatedClient {
 
     @Override
     public String getLoggedUserName() {
-        return null;
+        return username;
     }
 
     public List<Entity> getSubscriptions(boolean enforce) {
@@ -67,6 +71,42 @@ public class Mpp extends AuthenticatedClient {
     public List<Entity> getOfferings(boolean enforce) {
         EntityHandler handler = EntityHandler.getHandler("mpp-offerings");
         return handler.list(enforce);
+    }
+
+    public String createSubscription(MppOffering offering, String oppId, int days, String subscriptionName, String emailAddress) {
+
+        EntityHandler reqHandler = EntityHandler.getHandler("mpp-requests");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        MppRequest req = new MppRequest(null);
+        req.setProperty("action", "ORDER");
+        req.setProperty("offeringId", offering.getId());       // todo hack; these properties are not being sent in json but are part of URL
+        req.setProperty("catalogId", offering.getProperty("catalogId"));
+        req.setProperty("offeringName", offering.getProperty("displayName"));
+        req.setProperty("categoryName", offering.getProperty("category.name"));
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime()+ days * 24 * 60 * 60 * 1000);
+        req.setProperty("subscriptionName", subscriptionName);
+        req.setProperty("subscriptionDescription", subscriptionName);
+        req.setProperty("startDate", sdf.format(startDate));
+        req.setProperty("endDate", sdf.format(endDate));
+
+        EntityHandler offHandler = EntityHandler.getHandler("mpp-offerings");
+        offHandler.loadDetails(offering);
+        if (!offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
+            String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");
+            String oppDetailsId = offering.getProperty("field_OPPDETAILS");
+            req.setObjectProperty(checkBoxId, true);
+            req.setProperty(oppDetailsId, oppId);
+        } else {
+            String checkBoxId = offering.getProperty("field_E3332EC1_DFF5_3D5D_34A6_6F767683E54A");
+            String emailAddressId = offering.getProperty("field_EmailAddress");
+            req.setObjectProperty(checkBoxId, true);
+            req.setProperty(emailAddressId, emailAddress);
+        }
+        return reqHandler.create(req);
+
     }
 
 }

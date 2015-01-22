@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.stratus.rest.entities.MppOfferingHandler;
+import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
 import com.hp.dsg.stratus.rest.entities.MppSubscriptionHandler;
 
 import java.util.LinkedHashMap;
@@ -18,7 +19,7 @@ public abstract class EntityHandler {
     public static void initHandlers() {
         handlers = new LinkedHashMap<>();
         final Class[] entityClasses = new Class[] {
-                MppSubscriptionHandler.class, MppOfferingHandler.class, };
+                MppSubscriptionHandler.class, MppOfferingHandler.class, MppRequestHandler.class};
         for (Class entityClass : entityClasses) {
             try {
                 EntityHandler handler = (EntityHandler) entityClass.newInstance();
@@ -72,6 +73,9 @@ public abstract class EntityHandler {
     }
 
     public abstract List<Entity> list(boolean enforce);
+
+    public abstract String create(Entity entity);
+
     public abstract Entity update(Entity entity);
     public abstract void delete(Entity entity);
 
@@ -79,4 +83,5 @@ public abstract class EntityHandler {
         throw new IllegalStateException("Not implemented");
     }
 
+    public abstract Entity loadDetails(Entity entity);
 }

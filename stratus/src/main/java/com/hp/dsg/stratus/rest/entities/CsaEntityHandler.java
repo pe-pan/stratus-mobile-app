@@ -45,4 +45,23 @@ public abstract class CsaEntityHandler extends EntityHandler {
         resetFilteredEntities();// every list resets also the filter
         return returnValue;
     }
+
+    public String create(Entity entity) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    @Override
+    public Entity update(Entity entity) {
+        throw new IllegalStateException("Not implemented!");
+    }
+
+    @Override
+    public void delete(Entity entity) {
+        throw new IllegalStateException("Not implemented!");
+    }
+
+    @Override
+    public Entity loadDetails(Entity entity) {
+        throw new IllegalStateException("Not implemented");
+    }
 }

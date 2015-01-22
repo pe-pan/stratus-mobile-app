@@ -4,7 +4,19 @@ package com.hp.dsg.utils;
  * Created by panuska on 7.1.2015.
  */
 public class StringUtils {
-    String emptifyNullString(String s) {
+    public static String emptifyNullString(String s) {
         return s == null ? "" : s;
+    }
+
+    public static String nullifyNullObject(Object s) {
+        return s == null ? "null" : s.toString();
+    }
+
+    public static String toJsonString(Object o) {
+        if (o instanceof String) {
+            return "\""+o.toString()+"\"";
+        } else {
+            return o.toString();
+        }
     }
 }

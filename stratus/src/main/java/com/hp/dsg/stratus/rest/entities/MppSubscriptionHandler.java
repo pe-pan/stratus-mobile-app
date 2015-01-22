@@ -23,13 +23,4 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
         return new MppSubscription(json);
     }
 
-    @Override
-    public Entity update(Entity entity) {
-        throw new IllegalStateException("Not implemented!");
-    }
-
-    @Override
-    public void delete(Entity entity) {
-        throw new IllegalStateException("Not implemented!");
-    }
 }

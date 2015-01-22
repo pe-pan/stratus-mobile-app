@@ -1,21 +1,33 @@
 package com.hp.dsg.stratus.rest.entities;
 
+import android.util.Log;
+
 import com.hp.dsg.stratus.entities.Entity;
+import com.hp.dsg.utils.StringUtils;
+import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by panuska on 2.10.14.
  */
 public class CsaEntity extends Entity {
-    private String json;
+    private static final String TAG = CsaEntity.class.getSimpleName();
+    protected Map<String, Object> properties;
+    private boolean isDirty;
+    protected String json;
 
     public CsaEntity(String json) {
         init(json);
     }
 
     @Override
-    protected void init(String o) {
+    public void init(String o) {
         this.json = o;
+        properties = new HashMap<>();
+        isDirty = false;
     }
 
     public String getId() {
@@ -26,20 +38,64 @@ public class CsaEntity extends Entity {
 
     @Override
     public String getProperty(String key) {
-        if (key.equals("id")) {
-            return getId();
+        Object value = getObjectProperty(key);
+//        return value == null ? "null" : value.toString().replace('\n', ' '); //todo new lines should be removed differently
+        return StringUtils.nullifyNullObject(value);
+    }
+
+    public Object getObjectProperty(String key) {
+        Object value = properties.get(key);
+        if (value == null) {
+            try {
+                value = JsonPath.read(json, "$." + key);
+            } catch (InvalidPathException e) {
+                Log.d(TAG, "Invalid Path $." + key, e);
+            }
+            if (value != null) {
+                properties.put(key, value);
+            }
         }
-        Object value = JsonPath.read(json, "$."+key);
-        return value == null ? "null" : value.toString().replace('\n', ' '); //todo remove new lines
+        return value;
+    }
+
+    public String removeProperty(String key) {
+        String value = properties.remove(key).toString();
+        if (value != null) isDirty = true;
+        return value;
     }
 
     @Override
     public void setProperty(String key, String value) {
-        throw new IllegalStateException("Not implemented!");
+        setObjectProperty(key, value);
     }
+
+    public void setObjectProperty(String key, Object value) {
+        properties.put(key, value);
+        isDirty = true;
+    }
+
 
     @Override
     public String toJson() {
+        if (isDirty) {
+            json = "{ "
+                    +propertiesToJson()
+                    + " }";
+            isDirty = false;
+        }
         return json;
     }
+
+    protected String propertiesToJson() {
+        StringBuilder b = new StringBuilder();
+        for (String key : properties.keySet()) {
+            Object value = properties.get(key);
+            b.append("\"").append(key).append("\" : ").append(StringUtils.toJsonString(value)).append(", ");
+        }
+        b.deleteCharAt(b.length()-1);  // remove the very last comma
+        b.deleteCharAt(b.length()-1);
+
+        return b.toString();
+    }
+
 }
