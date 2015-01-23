@@ -1,17 +1,15 @@
 package com.hp.dsg.stratus;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.rest.Mpp;
 import com.hp.dsg.stratus.rest.entities.MppOffering;
 
@@ -23,7 +21,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by panuska on 7.1.2015.
  */
-public class OfferingActivity extends Activity {
+public class OfferingActivity extends ActionBarActivity {
     public static final String TAG = OfferingActivity.class.getSimpleName();
 
     public static final String OFFERING_EXTRA_KEY = "offering";
@@ -90,10 +88,6 @@ public class OfferingActivity extends Activity {
                 finish();
             }
         });
-
-        Window w = getWindow();
-        w.setTitle(offering.getProperty(properties[0]));
-        setTitle(offering.getProperty(properties[0]));
 
     }
 

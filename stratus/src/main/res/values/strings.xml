@@ -10,6 +10,7 @@
     <string name="title_activity_subscriptions">Provisioned Demos</string>
     <string name="title_activity_offerings">Available Demos</string>
     <string name="title_activity_about">About</string>
+    <string name="title_activity_offering">Demo Details</string>
     <string name="menu_refresh">Refresh</string>
     <string name="dsg">© Demo Solution Group</string>
     <string name="home_link"><a href="https://www.hpswdemoportal.com">HP SW Demo Portal</a></string>
