@@ -62,6 +62,21 @@ public class OfferingActivity extends Activity {
             findViewById(R.id.executiveParams).setVisibility(View.GONE);
         }
 
+        final EditText oppId = (EditText) findViewById(R.id.opportunityId);
+
+        oppId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    String text = oppId.getText().toString();
+                    if (text.startsWith("OPP-")) {
+                        oppId.setSelection("OPP-".length(), text.length());
+                    } else {
+                        oppId.selectAll();
+                    }
+                }
+            }
+        });
         Button subscribeButton = (Button) findViewById(R.id.subscribe);
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
