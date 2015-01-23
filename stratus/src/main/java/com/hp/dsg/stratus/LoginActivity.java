@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
@@ -91,6 +93,24 @@ public class LoginActivity extends ActionBarActivity {
 
         ((AutoCompleteTextView) findViewById(R.id.email)).setText(username);
         ((EditText) findViewById(R.id.password)).setText(password);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_about, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about : {
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            }
+            default : return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
