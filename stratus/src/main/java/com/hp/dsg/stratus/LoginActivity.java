@@ -38,8 +38,6 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
     private View mProgressView;
     private View mLoginFormView;
 
-//    private Csa csa;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +46,7 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
         TextView homeLink = (TextView) findViewById(R.id.registerLink);
         homeLink.setMovementMethod(LinkMovementMethod.getInstance());
 
-        // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-//        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -81,20 +77,7 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
 
         ((AutoCompleteTextView) findViewById(R.id.email)).setText(username);
         ((EditText) findViewById(R.id.password)).setText(password);
-
-
     }
-
-//    private void populateAutoComplete() {
-//        if (Build.VERSION.SDK_INT >= 14) {
-//            // Use ContactsContract.Profile (API 14+)
-//            getLoaderManager().initLoader(0, null, this);
-//        } else if (Build.VERSION.SDK_INT >= 8) {
-////            Use AccountManager (API 8+)
-//            new SetupEmailAutoCompleteTask().execute(null, null);
-//        }
-//    }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -117,25 +100,6 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
         boolean cancel = false;
         View focusView = null;
 
-
-//        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
-//
-//        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            focusView = mEmailView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
-
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -146,20 +110,10 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
             showProgress(true);
             M_STRATUS.setUsername(email);
             M_STRATUS.setPassword(password);
-//            csa = new Csa(email, password);
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -173,7 +127,6 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 //            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 //
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 //            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
 //                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
 //                @Override
@@ -182,7 +135,6 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
 //                }
 //            });
 //
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
 //            mProgressView.animate().setDuration(shortAnimTime).alpha(
 //                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
 //                @Override
@@ -223,60 +175,11 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
             String errorReason = null;
             try {
                 M_STRATUS.authenticate();
-//            } catch (IllegalRestStateException e) {
-//
-//                //if (e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
-//                    errorReason = e.getErrorStream();
-//                    if (errorReason == null) {
-//                        errorReason = e.getMessage();
-//                    }
-//                    if (errorReason == null) {
-//                        errorReason = getString(R.string.error_returned_http_code) + e.getResponseCode();
-//                    }
-////                    return errorReason;
-////                }
             } catch (Exception e) {
                 return false;
-//                errorReason = e.getLocalizedMessage();
-//                if (errorReason == null) {
-//                    errorReason = getString(R.string.error_exception_thrown) + e.toString();
-//                }
-
-//                return errorReason;
             }
-//            if (errorReason != null) {
-//                final Button signInButton = (Button) findViewById(R.id.email_sign_in_button);
-//                final String message = errorReason;
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        signInButton.setError(message);
-//
-//                    }
-//                });
-//                return false;
-//            }
             CsaEntityHandler.setClient(M_STRATUS);  //todo move this code to more appropriate place
             EntityHandler.initHandlers();
-
-
-//            csa.authenticate();
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-//
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(username)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(password);
-//                }
-//            }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -286,7 +189,6 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
 //            showProgress(false);
 
             if (success) {
-
                 startActivity(new Intent(LoginActivity.this, SubscriptionListActivity.class));
 
                 SharedPreferences credentials = getPreferences(MODE_PRIVATE);
@@ -310,6 +212,3 @@ public class LoginActivity extends Activity /*implements LoaderCallbacks<Cursor>
         }
     }
 }
-
-
-
