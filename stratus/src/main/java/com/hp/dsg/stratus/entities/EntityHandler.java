@@ -1,5 +1,6 @@
 package com.hp.dsg.stratus.entities;
 
+import com.hp.dsg.stratus.rest.entities.MppInstanceHandler;
 import com.hp.dsg.stratus.rest.entities.MppOfferingHandler;
 import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
 import com.hp.dsg.stratus.rest.entities.MppSubscriptionHandler;
@@ -19,7 +20,7 @@ public abstract class EntityHandler {
     public static void initHandlers() {
         handlers = new LinkedHashMap<>();
         final Class[] entityClasses = new Class[] {
-                MppSubscriptionHandler.class, MppOfferingHandler.class, MppRequestHandler.class};
+                MppSubscriptionHandler.class, MppOfferingHandler.class, MppRequestHandler.class, MppInstanceHandler.class};
         for (Class entityClass : entityClasses) {
             try {
                 EntityHandler handler = (EntityHandler) entityClass.newInstance();

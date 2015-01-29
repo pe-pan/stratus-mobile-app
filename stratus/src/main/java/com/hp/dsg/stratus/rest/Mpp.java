@@ -4,8 +4,10 @@ import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.rest.entities.MppInstance;
 import com.hp.dsg.stratus.rest.entities.MppOffering;
 import com.hp.dsg.stratus.rest.entities.MppRequest;
+import com.hp.dsg.stratus.rest.entities.MppSubscription;
 import com.jayway.jsonpath.JsonPath;
 
 import java.text.SimpleDateFormat;
@@ -109,4 +111,16 @@ public class Mpp extends AuthenticatedClient {
 
     }
 
+    public MppInstance getInstance(MppSubscription subscription) {
+        EntityHandler subHandler = EntityHandler.getHandler("mpp-subscriptions");
+        subscription = (MppSubscription) subHandler.loadDetails(subscription);
+
+        String catalogId = subscription.getProperty("catalogId");
+        String instanceId = subscription.getProperty("instanceId");
+
+        EntityHandler instanceHandler = EntityHandler.getHandler("mpp-instances");
+        MppInstance instance = new MppInstance("{ \"catalogId\" : \""+catalogId+"\", \"id\" : \""+instanceId+"\" }");
+        instanceHandler.loadDetails(instance);
+        return instance;
+    }
 }

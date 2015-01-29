@@ -32,6 +32,10 @@
             android:label="@string/title_activity_subscriptions" >
         </activity>
         <activity
+            android:name=".SubscriptionActivity"
+            android:label="Provisioned Demo Details" >
+        </activity>
+        <activity
             android:name=".OfferingListActivity"
             android:label="@string/title_activity_offerings" >
         </activity>

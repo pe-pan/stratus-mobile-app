@@ -33,6 +33,16 @@ public class SubscriptionListActivity extends ActionBarActivity {
 
         new GetSubscriptions().execute(false);
 
+        ListView list = (ListView) findViewById(R.id.subscriptionList);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Entity subscription = (Entity)parent.getItemAtPosition(position);
+                Intent i = new Intent(SubscriptionListActivity.this, SubscriptionActivity.class);
+                i.putExtra(SubscriptionActivity.SUBSCRIPTION_EXTRA_KEY, subscription.toJson());
+                startActivity(i);
+            }
+        });
     }
 
     @Override
