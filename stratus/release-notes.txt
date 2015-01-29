@@ -3,6 +3,7 @@ Version 0.0.2:
 -------------
 New features:
   - Subscribe for a demo offering (live or downloadable)
+  - Colorful background in subscription list indicates time to expiration (green more than 16 days; red approaching 0 days; purple no expiration)
 
 Bug fixes:
   - Wrong offering position returned upon filter

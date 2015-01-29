@@ -1,5 +1,7 @@
 package com.hp.dsg.stratus.entities;
 
+import java.util.Date;
+
 /**
  * Created by panuska on 24.9.14.
  */
@@ -17,6 +19,7 @@ public abstract class Entity {
     public abstract String removeProperty(String key);
     public abstract Object getObjectProperty(String key);
     public abstract void setObjectProperty(String key, Object value);
+    public abstract Date getDateProperty(String key);
     public abstract String toJson();
 
 }

@@ -7,6 +7,9 @@ import com.hp.dsg.utils.StringUtils;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,13 +52,25 @@ public class CsaEntity extends Entity {
             try {
                 value = JsonPath.read(json, "$." + key);
             } catch (InvalidPathException e) {
-                Log.d(TAG, "Invalid Path $." + key, e);
+                Log.d(TAG, "Invalid Path $." + key);
             }
             if (value != null) {
                 properties.put(key, value);
             }
         }
         return value;
+    }
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    public Date getDateProperty(String key) {
+        Object value = getObjectProperty(key);
+        if (value == null) return null;
+        try {
+            return sdf.parse((String)value);
+        } catch (ParseException e) {
+            Log.d(TAG, "Cannot parse property "+key+": "+value, e);
+        }
+        return null;
     }
 
     public String removeProperty(String key) {

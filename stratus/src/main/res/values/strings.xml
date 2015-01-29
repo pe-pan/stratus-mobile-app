@@ -32,4 +32,8 @@
     <string name="requestSuccess">Subscription has been requested</string>
     <string name="requestFailure">Subscription request has failed!</string>
 
+    <string name="defaultSubscriptionName">ALM12 2.4 Demo Platform v1</string>
+    <string name="subscriptionDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>
+    <string name="defaultSubscriptionIconDesc">Icon</string>
+
 </resources>

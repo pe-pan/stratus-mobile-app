@@ -4,16 +4,21 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.hp.dsg.stratus.entities.Entity;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
@@ -61,14 +66,6 @@ public class SubscriptionListActivity extends ActionBarActivity {
             default : return super.onOptionsItemSelected(item);
 
         }
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
     }
 
     private class GetSubscriptions extends AsyncTask<Boolean, Void, Boolean> {
@@ -80,17 +77,51 @@ public class SubscriptionListActivity extends ActionBarActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    final ListAdapter adapter = new ArrayAdapter<>(SubscriptionListActivity.this,
-                            android.R.layout.simple_list_item_1, subscriptions);
+                    final ListAdapter adapter = new ArrayAdapter<Entity>(SubscriptionListActivity.this,
+                            android.R.layout.simple_list_item_1, subscriptions) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            View row = convertView;
+                            if (row == null) {
+
+                                LayoutInflater inflater = (SubscriptionListActivity.this).getLayoutInflater();
+                                row = inflater.inflate(R.layout.subscription_list_item, parent, false);
+                            } else {
+                                row = convertView;
+                            }
+                            Entity subscription = subscriptions.get(position);
+
+                            ((TextView)row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
+
+                            Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
+                            int color;
+                            if (endDate == null) {
+                                color = 0xffa000a0;  // no end date => purple background
+                            } else {
+                                long now = System.currentTimeMillis();
+                                long diff = endDate.getTime() - now;
+                                if (diff <= 0) {
+                                    color = 0xff505050;   // gray       // expired => gray background
+                                } else if (diff > 16 * 24 * 60 * 60 * 1000) { // more than 16 days
+                                    color = 0xff00ff00;   // pure green
+                                } else {
+                                    int offs = (int) ((diff - 1) * 256 / (16 * 24 * 60 * 60 * 1000));
+                                    int red = 0xff - offs;
+                                    int green = offs;
+                                    int blue = 0x00;
+                                    color = 0xff * 256*256*256 + red * 256 * 256 + green * 256 + blue;
+                                }
+                            }
+                            row.findViewById(R.id.subscriptionListItem).setBackgroundColor(color);
+                            return row;
+                        }
+                    };
                     listview.setAdapter(adapter);
                     final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
                     progressBar.setVisibility(View.GONE);
-
                 }
             });
             return true;
         }
     }
-
-
 }
