@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.hp.dsg.stratus.rest.entities.MppOffering;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -28,7 +26,6 @@ public class OfferingActivity extends ActionBarActivity {
     public static final String TAG = OfferingActivity.class.getSimpleName();
 
     public static final String OFFERING_EXTRA_KEY = "offering";
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private static final SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
 
     @Override
@@ -50,11 +47,7 @@ public class OfferingActivity extends ActionBarActivity {
             text.setText(value);
         }
 
-        try {
-            text.setText(sdf2.format(sdf.parse(value)));  //todo the value is set second time -> change it
-        } catch (ParseException e) {
-            Log.d(TAG, e.toString());
-        }
+        text.setText(sdf2.format(offering.getDateProperty(properties[ids.length-1])));  //todo the value is set second time -> change it
 
         if (offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
             findViewById(R.id.subscriptionParameters).setVisibility(View.GONE);
