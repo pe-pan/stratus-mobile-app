@@ -9,7 +9,7 @@ New features:
 Bug fixes:
   - Wrong offering position returned upon filter
   - App crashes when clicking on 'register' link; FMI http://stackoverflow.com/questions/22563891/crash-on-samsung-devices-for-edittext-containing-links
-  - Extend REST API calls timeout to 30 secs (listing of offerings may take longer than 10 secs)
+  - Extend REST API calls timeout to 2 mins (listing of offerings may take longer than 10 secs)
   - Offering view layout (no icon rendered when offering name too long)
 
 [7/Jan/2015]
