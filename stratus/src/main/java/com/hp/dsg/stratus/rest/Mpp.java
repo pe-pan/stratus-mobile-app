@@ -7,6 +7,7 @@ import com.hp.dsg.stratus.entities.EntityHandler;
 import com.hp.dsg.stratus.rest.entities.MppInstance;
 import com.hp.dsg.stratus.rest.entities.MppOffering;
 import com.hp.dsg.stratus.rest.entities.MppRequest;
+import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
 import com.hp.dsg.stratus.rest.entities.MppSubscription;
 import com.jayway.jsonpath.JsonPath;
 
@@ -83,8 +84,8 @@ public class Mpp extends AuthenticatedClient {
 
         MppRequest req = new MppRequest(null);
         req.setProperty("action", "ORDER");
-        req.setProperty("offeringId", offering.getId());       // todo hack; these properties are not being sent in json but are part of URL
-        req.setProperty("catalogId", offering.getProperty("catalogId"));
+        req.setProperty(MppRequestHandler.SERVICE_ID_KEY, offering.getId());       // todo hack; these properties are not being sent in json but are part of URL
+        req.setProperty(MppRequestHandler.CATALOG_ID_KEY, offering.getProperty("catalogId"));
         req.setProperty("offeringName", offering.getProperty("displayName"));
         req.setProperty("categoryName", offering.getProperty("category.name"));
         Date startDate = new Date();

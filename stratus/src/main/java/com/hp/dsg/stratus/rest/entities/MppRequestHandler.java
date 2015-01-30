@@ -26,11 +26,14 @@ public class MppRequestHandler extends CsaEntityHandler {
         return new MppSubscription(json);
     }
 
+    public static final String SERVICE_ID_KEY = "serviceId";
+    public static final String CATALOG_ID_KEY = "catalogId";
+
     @Override
     public String create (Entity entity) {
-        String offeringId = entity.removeProperty("offeringId");
-        String catalogId = entity.removeProperty("catalogId");
-        HttpResponse response = client.doPost(Mpp.REST_API + "/mpp/mpp-request/"+offeringId+"?catalogId="+catalogId, entity.toJson(), ContentType.JSON_MULTI);
+        String serviceId = entity.removeProperty(SERVICE_ID_KEY);
+        String catalogId = entity.removeProperty(CATALOG_ID_KEY);
+        HttpResponse response = client.doPost(Mpp.REST_API + "/mpp/mpp-request/"+serviceId+"?"+CATALOG_ID_KEY+"="+catalogId, entity.toJson(), ContentType.JSON_MULTI);
         String id = JsonPath.read(response.getResponse(), "$.id");
         return id;
     }
