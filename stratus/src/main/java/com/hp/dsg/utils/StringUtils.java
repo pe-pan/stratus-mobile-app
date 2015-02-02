@@ -8,6 +8,8 @@ public class StringUtils {
         return s == null ? "" : s;
     }
 
+    public static String trimToEmpty(String s) { return s == null ? "" : s.trim(); }
+
     public static String nullifyNullObject(Object s) {
         return s == null ? "null" : s.toString();
     }

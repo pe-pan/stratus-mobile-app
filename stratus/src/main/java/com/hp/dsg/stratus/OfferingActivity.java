@@ -14,8 +14,7 @@ import android.widget.Toast;
 
 import com.hp.dsg.stratus.rest.Mpp;
 import com.hp.dsg.stratus.rest.entities.MppOffering;
-
-import org.apache.commons.lang.StringUtils;
+import com.hp.dsg.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 
