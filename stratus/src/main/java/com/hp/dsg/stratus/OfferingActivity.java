@@ -132,7 +132,7 @@ public class OfferingActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            String statusMessage = s == null ?  getString(R.string.requestFailure) : getString(R.string.requestSuccess);
+            String statusMessage = s == null ?  getString(R.string.subscriptionRequestFailure) : getString(R.string.subscriptionRequestSuccess);
             Toast.makeText(OfferingActivity.this, statusMessage, Toast.LENGTH_LONG).show();
         }
     }

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" android:visibility="visible">
+    android:orientation="vertical" android:visibility="visible"
+    android:id="@+id/subscriptionPropertyList">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -26,72 +27,5 @@
             android:text="CSA"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textIsSelectable="true" android:selectAllOnFocus="true"/>
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/privateIpValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="172.16.239.169"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true" android:selectAllOnFocus="true"/>
-        <TextView
-            android:id="@+id/privateIpTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/privateIpValue"
-            android:text="Private IP"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/publicIpValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="15.126.254.219"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true" android:selectAllOnFocus="true"/>
-        <TextView
-            android:id="@+id/publicIpTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/publicIpValue"
-            android:text="Public IP"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/vpnInfoValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="10.20.40.94:172.16.239.85"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true" android:selectAllOnFocus="true"/>
-        <TextView
-            android:id="@+id/vpnInfoTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/vpnInfoValue"
-            android:text="VPN"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
     </RelativeLayout>
 </LinearLayout>

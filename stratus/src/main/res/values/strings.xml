@@ -29,8 +29,11 @@
     <string name="oppDefaultValue">OPP-XXXXXXXXXX</string>
     <string name="howManyDaysDefaultValue">4</string>
     <string name="daysTitle"> days</string>
-    <string name="requestSuccess">Subscription has been requested</string>
-    <string name="requestFailure">Subscription request has failed!</string>
+    <string name="subscriptionRequestSuccess">Subscription has been requested</string>
+    <string name="subscriptionRequestFailure">Subscription request has failed!</string>
+    <string name="serviceActionRequestSuccess">Operation has been requested</string>
+    <string name="serviceActionRequestFailure">Operation request has failed!</string>
+    <string name="noOpsDefined">No defined operation to execute!</string>
 
     <string name="defaultSubscriptionName">ALM12 2.4 Demo Platform v1</string>
     <string name="subscriptionDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>

@@ -110,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/expandComponentProperties"
                 android:text="Expand servers"
+                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
 
             <LinearLayout

@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,11 +11,18 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.support.v7.widget.PopupMenu;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hp.dsg.stratus.rest.entities.MppInstance;
+import com.hp.dsg.stratus.rest.entities.MppRequest;
+import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
 import com.hp.dsg.stratus.rest.entities.MppSubscription;
+import com.hp.dsg.stratus.rest.entities.Server;
+import com.hp.dsg.stratus.rest.entities.ServerProperty;
+import com.hp.dsg.stratus.rest.entities.ServiceAction;
 
 import java.util.Date;
 
@@ -74,23 +82,6 @@ public class SubscriptionActivity extends ActionBarActivity {
             }
         }
 
-        final TextView expandTextView = (TextView) findViewById(R.id.expandComponentProperties);
-        expandTextView.setOnClickListener(new View.OnClickListener() {
-            private boolean expanded = false;
-
-            @Override
-            public void onClick(View v) {
-                expanded = !expanded;
-                View properties = findViewById(R.id.subscriptionProperties);
-                if (expanded) {
-                    expand(properties);
-                    expandTextView.setText("Collapse servers");
-                } else {
-                    collapse(properties);
-                    expandTextView.setText("Expand servers");
-                }
-            }
-        });
     }
 
     @Override
@@ -113,50 +104,120 @@ public class SubscriptionActivity extends ActionBarActivity {
     private class GetSubscriptionDetails extends AsyncTask<MppSubscription, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(MppSubscription... params) {
+        protected Boolean doInBackground(final MppSubscription... params) {
             final MppInstance instance = M_STRATUS.getInstance(params[0]);
-            final String[] demoNames = instance.getComponentProperties("DEMONAME");
-            final Boolean[] actives = instance.getBooleanComponentProperties("ACTIVATED");
-            final String[] publicIps = instance.getComponentProperties("PublicIPAddress");
-            final String[] privateIps = instance.getComponentProperties("PRIVATEIP");
-            final String[] vpnInfos = instance.getComponentProperties("vpninfo.txt");
+            final Server[] servers = instance.getServers();
 
-            final LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
+            if (servers == null) {
+                return false;
+            }
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < demoNames.length; i++) {
+                    final TextView expandTextView = (TextView) findViewById(R.id.expandComponentProperties);
+                    expandTextView.setVisibility(View.VISIBLE);
+                    expandTextView.setOnClickListener(new View.OnClickListener() {
+                        private boolean expanded = false;
+
+                        @Override
+                        public void onClick(View v) {
+                            expanded = !expanded;
+                            View properties = findViewById(R.id.subscriptionProperties);
+                            if (expanded) {
+                                expand(properties);
+                                expandTextView.setText("Collapse servers");
+                            } else {
+                                collapse(properties);
+                                expandTextView.setText("Expand servers");
+                            }
+                        }
+                    });
+
+                    LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
+                    for (final Server server : servers) {
                         View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
-                        ((TextView)row.findViewById(R.id.demoNameValue)).setText(demoNames[i]);
-                        if (actives.length != demoNames.length) {
-                            row.findViewById(R.id.activatedValue).setVisibility(View.GONE);
-                        } else {
-                            ((TextView) row.findViewById(R.id.activatedValue)).setText(actives[i] ? "ACTIVE" : "HALT");
+                        for (ServerProperty property : server.properties) {
+
+                            switch (property.name) {
+                                case "DEMONAME" :
+                                    ((TextView)row.findViewById(R.id.demoNameValue)).setText((String) property.value);
+                                    break;
+                                case "ACTIVATED" :
+                                    ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean)property.value ? "ACTIVE" : "HALT");
+                                    break;
+                                default:
+                                    LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
+                                    View pair = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_pair, null);
+
+                                    TextView title = (TextView)pair.findViewById(R.id.propertyTitle);
+                                    title.setText(property.displayName);
+
+                                    TextView value = (TextView)pair.findViewById(R.id.propertyValue);
+                                    value.setText(property.value.toString());
+
+                                    propertyList.addView(pair);
+                            }
                         }
-                        if (privateIps.length != demoNames.length) {
-                            row.findViewById(R.id.privateIpTitle).setVisibility(View.GONE);
-                            row.findViewById(R.id.privateIpValue).setVisibility(View.GONE);
-                        } else {
-                            ((TextView)row.findViewById(R.id.privateIpValue)).setText(privateIps[i]);
-                        }
-                        if (publicIps.length != demoNames.length) {
-                            row.findViewById(R.id.publicIpTitle).setVisibility(View.GONE);
-                            row.findViewById(R.id.publicIpValue).setVisibility(View.GONE);
-                        } else {
-                            ((TextView)row.findViewById(R.id.publicIpValue)).setText(publicIps[i]);
-                        }
-                        if (vpnInfos.length != demoNames.length) {
-                            row.findViewById(R.id.vpnInfoTitle).setVisibility(View.GONE);
-                            row.findViewById(R.id.vpnInfoValue).setVisibility(View.GONE);
-                        } else {
-                            ((TextView)row.findViewById(R.id.vpnInfoValue)).setText(vpnInfos[i]);
-                        }
-                        properties.addView(row, i);
+                        row.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(final View v) {
+                                if (server.serviceSubscriptionId == null) {
+                                    Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
+                                } else {
+                                    PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
+                                    for (int i = 0; i < server.actions.length; i++) {
+                                        ServiceAction action = server.actions[i];
+                                        menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
+                                    }
+                                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            ServiceAction action = server.actions[item.getItemId()];
+                                            MppRequest req = new MppRequest(null);
+                                            req.setProperty("action", action.name);
+                                            req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
+                                            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                                            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
+                                            new SendServiceAction().execute(req);
+                                            return true;
+                                        }
+                                    });
+                                    final int color = v.getDrawingCacheBackgroundColor();
+                                    menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                                        @Override
+                                        public void onDismiss(PopupMenu popupMenu) {
+                                            v.setBackgroundColor(color);
+                                        }
+                                    });
+                                    v.setBackgroundColor(Color.GRAY);
+                                    menu.show();
+                                }
+                                return true;
+                            }
+                        });
+                        properties.addView(row);
                     }
                 }
             });
             return true;
+        }
+    }
+
+    private class SendServiceAction extends AsyncTask<MppRequest, Void, String> {
+        @Override
+        protected String doInBackground(final MppRequest... params) {
+            MppRequestHandler reqHandler = new MppRequestHandler();
+            try {
+                return reqHandler.create(params[0]);
+            } catch (Exception e) {
+                return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+            }
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            String statusMessage = s == null ?  getString(R.string.serviceActionRequestFailure) : getString(R.string.serviceActionRequestSuccess);
+            Toast.makeText(SubscriptionActivity.this, statusMessage, Toast.LENGTH_LONG).show();
         }
     }
 
