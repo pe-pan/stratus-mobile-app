@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -106,14 +107,14 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
                             int color;
                             if (endDate == null) {
-                                color = 0xffa000a0;  // no end date => purple background
+                                color = Color.MAGENTA;  // no end date => purple background
                             } else {
                                 long now = System.currentTimeMillis();
                                 long diff = endDate.getTime() - now;
                                 if (diff <= 0) {
-                                    color = 0xff505050;   // gray       // expired => gray background
+                                    color = Color.GRAY;   // gray       // expired => gray background
                                 } else if (diff > 16 * 24 * 60 * 60 * 1000) { // more than 16 days
-                                    color = 0xff00ff00;   // pure green
+                                    color = Color.GREEN;   // pure green
                                 } else {
                                     int offs = (int) ((diff - 1) * 256 / (16 * 24 * 60 * 60 * 1000));
                                     int red = 0xff - offs;
