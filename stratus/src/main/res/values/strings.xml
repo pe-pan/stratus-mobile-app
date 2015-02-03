@@ -3,7 +3,7 @@
 
     <string name="app_name">Stratus</string>
     <string name="app_description">Stratus Mobile App</string>
-    <string name="app_version">version 0.0.1</string>
+    <string name="app_version">version 0.0.2</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
