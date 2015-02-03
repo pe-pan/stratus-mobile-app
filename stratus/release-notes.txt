@@ -1,4 +1,4 @@
-[12/Jan/2015]
+[3/Feb/2015]
 Version 0.0.2:
 -------------
 New features:
