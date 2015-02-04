@@ -16,17 +16,18 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hp.dsg.stratus.rest.entities.MppInstance;
-import com.hp.dsg.stratus.rest.entities.MppRequest;
-import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
-import com.hp.dsg.stratus.rest.entities.MppSubscription;
-import com.hp.dsg.stratus.rest.entities.Server;
-import com.hp.dsg.stratus.rest.entities.ServerProperty;
-import com.hp.dsg.stratus.rest.entities.ServiceAction;
+import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.entities.MppInstance;
+import com.hp.dsg.stratus.entities.MppRequest;
+import com.hp.dsg.stratus.entities.MppRequestHandler;
+import com.hp.dsg.stratus.entities.MppSubscription;
+import com.hp.dsg.stratus.entities.Server;
+import com.hp.dsg.stratus.entities.ServerProperty;
+import com.hp.dsg.stratus.entities.ServiceAction;
 
 import java.util.Date;
 
-import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 /**
  * Created by panuska on 7.1.2015.
@@ -207,7 +208,7 @@ public class SubscriptionActivity extends ActionBarActivity {
     private class SendServiceAction extends AsyncTask<MppRequest, Void, String> {
         @Override
         protected String doInBackground(final MppRequest... params) {
-            MppRequestHandler reqHandler = new MppRequestHandler();
+            EntityHandler reqHandler = EntityHandler.getHandler(MppRequestHandler.class);
             try {
                 return reqHandler.create(params[0]);
             } catch (Exception e) {

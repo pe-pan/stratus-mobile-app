@@ -1,4 +1,4 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 /**
  * Created by panuska on 30.1.2015.

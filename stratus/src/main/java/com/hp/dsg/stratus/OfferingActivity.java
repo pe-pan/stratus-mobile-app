@@ -12,8 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hp.dsg.stratus.rest.Mpp;
-import com.hp.dsg.stratus.rest.entities.MppOffering;
+import com.hp.dsg.stratus.entities.MppOffering;
 import com.hp.dsg.utils.StringUtils;
 
 import java.text.SimpleDateFormat;

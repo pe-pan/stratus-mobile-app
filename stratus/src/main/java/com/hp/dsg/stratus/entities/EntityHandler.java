@@ -1,22 +1,16 @@
 package com.hp.dsg.stratus.entities;
 
-import com.hp.dsg.stratus.rest.entities.MppInstanceHandler;
-import com.hp.dsg.stratus.rest.entities.MppOfferingHandler;
-import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
-import com.hp.dsg.stratus.rest.entities.MppSubscriptionHandler;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by panuska on 2.10.14.
  */
 public abstract class EntityHandler {
 
-    private static Map<String, EntityHandler> handlers;
+    private static Map<Class, EntityHandler> handlers;
     public static void initHandlers() {
         handlers = new LinkedHashMap<>();
         final Class[] entityClasses = new Class[] {
@@ -24,18 +18,15 @@ public abstract class EntityHandler {
         for (Class entityClass : entityClasses) {
             try {
                 EntityHandler handler = (EntityHandler) entityClass.newInstance();
-                handlers.put(handler.getContexts(), handler);
+                handlers.put(entityClass, handler);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new IllegalStateException(e);
             }
         }
     }
 
-    public static EntityHandler getHandler(String contexts) {
-        return handlers.get(contexts);
-    }
-    public static Set<String> getHandlerNames() {
-        return handlers.keySet();
+    public static EntityHandler getHandler(Class clazz) {
+        return handlers.get(clazz);
     }
 
     protected List<Entity> lastEntities = null;

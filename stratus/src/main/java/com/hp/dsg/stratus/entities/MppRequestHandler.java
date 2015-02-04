@@ -1,9 +1,8 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.rest.ContentType;
 import com.hp.dsg.rest.HttpResponse;
-import com.hp.dsg.stratus.entities.Entity;
-import com.hp.dsg.stratus.rest.Mpp;
+import com.hp.dsg.stratus.Mpp;
 import com.jayway.jsonpath.JsonPath;
 
 /**
@@ -11,14 +10,9 @@ import com.jayway.jsonpath.JsonPath;
  */
 public class MppRequestHandler extends CsaEntityHandler {
 
-    public MppRequestHandler() {
+    protected MppRequestHandler() {
         super();
         this.context = "mpp-request";
-    }
-
-    @Override
-    protected String getListJson() {
-        return client.doPost(Mpp.REST_API + "/mpp/mpp-request", "{}").getResponse();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.utils.StringUtils;
 

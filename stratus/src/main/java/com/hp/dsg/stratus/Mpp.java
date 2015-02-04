@@ -1,14 +1,17 @@
-package com.hp.dsg.stratus.rest;
+package com.hp.dsg.stratus;
 
 import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
-import com.hp.dsg.stratus.rest.entities.MppInstance;
-import com.hp.dsg.stratus.rest.entities.MppOffering;
-import com.hp.dsg.stratus.rest.entities.MppRequest;
-import com.hp.dsg.stratus.rest.entities.MppRequestHandler;
-import com.hp.dsg.stratus.rest.entities.MppSubscription;
+import com.hp.dsg.stratus.entities.MppInstance;
+import com.hp.dsg.stratus.entities.MppInstanceHandler;
+import com.hp.dsg.stratus.entities.MppOffering;
+import com.hp.dsg.stratus.entities.MppOfferingHandler;
+import com.hp.dsg.stratus.entities.MppRequest;
+import com.hp.dsg.stratus.entities.MppRequestHandler;
+import com.hp.dsg.stratus.entities.MppSubscription;
+import com.hp.dsg.stratus.entities.MppSubscriptionHandler;
 import com.jayway.jsonpath.JsonPath;
 
 import java.text.SimpleDateFormat;
@@ -67,18 +70,18 @@ public class Mpp extends AuthenticatedClient {
     }
 
     public List<Entity> getSubscriptions(boolean enforce) {
-        EntityHandler handler = EntityHandler.getHandler("mpp-subscriptions");
+        EntityHandler handler = EntityHandler.getHandler(MppSubscriptionHandler.class);
         return handler.list(enforce);
     }
 
     public List<Entity> getOfferings(boolean enforce) {
-        EntityHandler handler = EntityHandler.getHandler("mpp-offerings");
+        EntityHandler handler = EntityHandler.getHandler(MppOfferingHandler.class);
         return handler.list(enforce);
     }
 
     public String createSubscription(MppOffering offering, String oppId, int days, String subscriptionName, String emailAddress) {
 
-        EntityHandler reqHandler = EntityHandler.getHandler("mpp-requests");
+        EntityHandler reqHandler = EntityHandler.getHandler(MppRequestHandler.class);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -95,7 +98,7 @@ public class Mpp extends AuthenticatedClient {
         req.setProperty("startDate", sdf.format(startDate));
         req.setProperty("endDate", sdf.format(endDate));
 
-        EntityHandler offHandler = EntityHandler.getHandler("mpp-offerings");
+        EntityHandler offHandler = EntityHandler.getHandler(MppOfferingHandler.class);
         offHandler.loadDetails(offering);
         if (!offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
             String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");
@@ -113,13 +116,13 @@ public class Mpp extends AuthenticatedClient {
     }
 
     public MppInstance getInstance(MppSubscription subscription) {
-        EntityHandler subHandler = EntityHandler.getHandler("mpp-subscriptions");
+        EntityHandler subHandler = EntityHandler.getHandler(MppSubscriptionHandler.class);
         subscription = (MppSubscription) subHandler.loadDetails(subscription);
 
         String catalogId = subscription.getProperty("catalogId");
         String instanceId = subscription.getProperty("instanceId");
 
-        EntityHandler instanceHandler = EntityHandler.getHandler("mpp-instances");
+        EntityHandler instanceHandler = EntityHandler.getHandler(MppInstanceHandler.class);
         MppInstance instance = new MppInstance("{ \"catalogId\" : \""+catalogId+"\", \"id\" : \""+instanceId+"\" }");
         instanceHandler.loadDetails(instance);
         return instance;

@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import com.hp.dsg.stratus.entities.Entity;
 import java.util.List;
 
-import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 public class OfferingListActivity extends ActionBarActivity {
 

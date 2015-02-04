@@ -1,8 +1,7 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.rest.AuthenticatedClient;
-import com.hp.dsg.stratus.entities.Entity;
-import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.Mpp;
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -24,7 +23,10 @@ public abstract class CsaEntityHandler extends EntityHandler {
         super();
 
     }
-    protected abstract String getListJson();
+
+    protected String getListJson() {
+        return client.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}").getResponse();
+    }
 
     public List<Entity> list(boolean enforce) {
         if (lastEntities != null && !enforce) {

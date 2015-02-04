@@ -1,8 +1,7 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 import android.util.Log;
 
-import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.utils.StringUtils;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;

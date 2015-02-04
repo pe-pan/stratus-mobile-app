@@ -1,23 +1,17 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 
 import com.hp.dsg.rest.ContentType;
-import com.hp.dsg.stratus.entities.Entity;
-import com.hp.dsg.stratus.rest.Mpp;
+import com.hp.dsg.stratus.Mpp;
 
 /**
  * Created by panuska on 6.1.15.
  */
 public class MppInstanceHandler extends CsaEntityHandler {
 
-    public MppInstanceHandler() {
+    protected MppInstanceHandler() {
         super();
         this.context = "mpp-instance";
-    }
-
-    @Override
-    protected String getListJson() {
-        return client.doPost(Mpp.REST_API+"/mpp/mpp-instance/filter", "{}").getResponse();
     }
 
     @Override

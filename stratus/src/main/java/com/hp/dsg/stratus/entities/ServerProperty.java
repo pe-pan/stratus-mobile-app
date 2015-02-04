@@ -1,4 +1,4 @@
-package com.hp.dsg.stratus.rest.entities;
+package com.hp.dsg.stratus.entities;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;

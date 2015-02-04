@@ -21,11 +21,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hp.dsg.stratus.entities.EntityHandler;
-import com.hp.dsg.stratus.rest.entities.CsaEntityHandler;
+import com.hp.dsg.stratus.entities.CsaEntityHandler;
 
 import java.lang.reflect.Field;
 
-import static com.hp.dsg.stratus.rest.Mpp.M_STRATUS;
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 /**
  * A login screen that offers login via email/password.
@@ -201,11 +201,11 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-//            System.setProperty("java.net.useSystemProxies", "false");
-//            System.setProperty("https.proxyHost", "proxy.bbn.hp.com");
-//            System.setProperty("https.proxyPort", "8080");
-//            System.setProperty("http.proxyHost", "proxy.bbn.hp.com");
-//            System.setProperty("http.proxyPort", "8080");
+            System.setProperty("java.net.useSystemProxies", "false");
+            System.setProperty("https.proxyHost", "proxy.bbn.hp.com");
+            System.setProperty("https.proxyPort", "8080");
+            System.setProperty("http.proxyHost", "proxy.bbn.hp.com");
+            System.setProperty("http.proxyPort", "8080");
             String errorReason = null;
             try {
                 M_STRATUS.authenticate();
