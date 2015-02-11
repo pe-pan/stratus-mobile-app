@@ -24,6 +24,7 @@ import com.hp.dsg.stratus.entities.MppSubscription;
 import com.hp.dsg.stratus.entities.Server;
 import com.hp.dsg.stratus.entities.ServerProperty;
 import com.hp.dsg.stratus.entities.ServiceAction;
+import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
 
@@ -49,40 +50,7 @@ public class SubscriptionActivity extends ActionBarActivity {
         ((TextView) findViewById(R.id.subscriptionName2)).setText(subscription.getProperty("name"));
         ((TextView) findViewById(R.id.subscriptionStatus)).setText(subscription.getProperty("status"));
         Date finishTime = subscription.getDateProperty("subscriptionTerm.endDate");
-        TextView expiresIn = (TextView) findViewById(R.id.expiresIn);
-        if (finishTime == null) {
-            expiresIn.setText("Never");
-        } else {
-            long now = System.currentTimeMillis();
-            long diff = finishTime.getTime() - now;
-            if (diff <= 1000) {       // less than a second or already expired
-                expiresIn.setText("Expired");
-            } else {
-                diff = diff / 1000;
-                if (diff < 60) {
-                    expiresIn.setText(diff+" seconds");
-                } else {
-                    diff = diff / 60;
-                    if (diff < 60) {
-                        expiresIn.setText(diff+" minutes");
-                    } else {
-                        diff = diff / 60;
-                        if (diff < 24) {
-                            expiresIn.setText(diff+" hours");
-                        } else {
-                            diff = diff / 24;
-                            if (diff < 7) {
-                                expiresIn.setText(diff+ " days");
-                            } else {
-                                diff = diff / 7;
-                                expiresIn.setText(diff+ " weeks");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        ((TextView) findViewById(R.id.expiresIn)).setText(finishTime == null ? "Never" : TimeUtils.getPeriod(finishTime.getTime()));
     }
 
     @Override
