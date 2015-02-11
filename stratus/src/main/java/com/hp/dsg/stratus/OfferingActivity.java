@@ -48,7 +48,7 @@ public class OfferingActivity extends ActionBarActivity {
         text.setText(sdf2.format(offering.getDateProperty(properties[ids.length-1])));  //todo the value is set second time -> change it
 
         if (offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
-            findViewById(R.id.subscriptionParameters).setVisibility(View.GONE);
+            findViewById(R.id.offeringParameters).setVisibility(View.GONE);
             ((EditText)findViewById(R.id.emailAddress)).setText(Mpp.M_STRATUS.getLoggedUserName());
         } else {
             findViewById(R.id.executiveParams).setVisibility(View.GONE);
