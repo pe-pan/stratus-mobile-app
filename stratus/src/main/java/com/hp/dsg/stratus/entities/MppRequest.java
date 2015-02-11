@@ -1,7 +1,5 @@
 package com.hp.dsg.stratus.entities;
 
-import com.hp.dsg.utils.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +20,7 @@ public class MppRequest extends CsaEntity {
             if (key.startsWith("field")) {
                 fields.put(key, value);
             } else {
-                b.append("\"").append(key).append("\" : ").append(StringUtils.toJsonString(value)).append(", ");
+                b.append("\"").append(key).append("\" : ").append(toJsonString(value)).append(", ");
             }
         }
         b.deleteCharAt(b.length()-1);  // remove the very last comma
@@ -32,7 +30,7 @@ public class MppRequest extends CsaEntity {
             b.append(", \"fields\" : {");
             for (String key : fields.keySet()) {
                 Object value = fields.get(key);
-                b.append("\"").append(key).append("\" : ").append(StringUtils.toJsonString(value)).append(", ");
+                b.append("\"").append(key).append("\" : ").append(toJsonString(value)).append(", ");
             }
             b.deleteCharAt(b.length()-1);  // remove the very last comma
             b.deleteCharAt(b.length()-1);

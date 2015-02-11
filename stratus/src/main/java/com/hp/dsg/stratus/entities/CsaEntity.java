@@ -104,12 +104,21 @@ public class CsaEntity extends Entity {
         StringBuilder b = new StringBuilder();
         for (String key : properties.keySet()) {
             Object value = properties.get(key);
-            b.append("\"").append(key).append("\" : ").append(StringUtils.toJsonString(value)).append(", ");
+            b.append("\"").append(key).append("\" : ").append(toJsonString(value)).append(", ");
         }
         b.deleteCharAt(b.length()-1);  // remove the very last comma
         b.deleteCharAt(b.length()-1);
 
         return b.toString();
+    }
+
+    public static String toJsonString(Object o) {
+        if (o instanceof String) {
+            return "\""+o.toString()+"\"";
+        } else if (o instanceof Date) {
+            return "\""+sdf.format(o)+"\"";
+        } else
+            return o.toString();
     }
 
 }
