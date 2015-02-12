@@ -24,6 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hp.dsg.stratus.entities.Entity;
+import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.entities.MppRequest;
+import com.hp.dsg.stratus.entities.MppRequestHandler;
 import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
@@ -115,7 +118,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
     private void onSwipeLeftFinish(final View v) {
         ObjectAnimator oa = animateViewTo(v, -v.getWidth());
         animatedView = v;
-        Entity subscription = (Entity) v.getTag();
+        Entity subscription = ((ViewHolder) v.getTag()).subscription;
         final Intent i = new Intent(SubscriptionListActivity.this, SubscriptionActivity.class);
         i.putExtra(SubscriptionActivity.SUBSCRIPTION_EXTRA_KEY, subscription.toJson());
         final Bundle options = ActivityOptions.makeScaleUpAnimation(v, 0, v.getHeight()/2, v.getWidth(), 0).toBundle();
@@ -205,7 +208,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             } else {
                                 row = convertView;
                             }
-                            final Entity subscription = subscriptions.get(position);
+                            Entity subscription = subscriptions.get(position);
 
                             ((TextView)row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
 
@@ -233,7 +236,8 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             }
                             View item = row.findViewById(R.id.subscriptionListItem);
                             item.setBackgroundColor(color);
-                            item.setTag(subscription);
+                            final ViewHolder holder = new ViewHolder(subscription, row);
+                            item.setTag(holder);
                             item.setOnTouchListener(gestureListener);
 
                             View button = row.findViewById(R.id.extendButton);
@@ -241,8 +245,8 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Log.d(TAG, "Extend button pressed");
-                                    Toast.makeText(SubscriptionListActivity.this, "Extend button pressed", Toast.LENGTH_SHORT).show();
+                                    v.setEnabled(false);
+                                    new ExtendSubscription().execute(holder);
                                 }
                             });
                             button = row.findViewById(R.id.shareButton);
@@ -272,6 +276,49 @@ public class SubscriptionListActivity extends ActionBarActivity {
                 }
             });
             return true;
+        }
+    }
+
+    private class ViewHolder {
+        private Entity subscription;
+        private View topView;
+
+        private ViewHolder(Entity subscription, View topView) {
+            this.subscription = subscription;
+            this.topView = topView;
+        }
+    }
+
+    public static final int DEFAULT_EXTENSION_PERIOD = 3;
+
+    private class ExtendSubscription extends AsyncTask<ViewHolder, Void, String> {
+        private View extendButton;
+        @Override
+        protected String doInBackground(ViewHolder... params) {
+            Entity subscription = params[0].subscription;
+            extendButton = params[0].topView.findViewById(R.id.extendButton);
+
+            MppRequest req = new MppRequest(null);
+            req.setProperty("action", "MODIFY_SUBSCRIPTION");
+            req.setProperty("subscriptionId", subscription.getProperty("serviceId"));
+            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, subscription.getId());
+            long endDate = subscription.getDateProperty("subscriptionTerm.endDate").getTime();
+            long newEndDate = endDate + DEFAULT_EXTENSION_PERIOD * 24 * 60 * 60 * 1000;  // add 3 more days
+            req.setObjectProperty("endDate", new Date(newEndDate));
+            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            try {
+                return handler.create(req);
+            } catch (Exception e) {
+                return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            String statusMessage = s == null ? getString(R.string.extensionRequestFailure) : String.format(getString(R.string.extensionRequestSuccess), DEFAULT_EXTENSION_PERIOD);
+            Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
+            extendButton.setEnabled(true);
         }
     }
 }
