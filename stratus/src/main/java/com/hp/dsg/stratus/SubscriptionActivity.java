@@ -145,6 +145,9 @@ public class SubscriptionActivity extends ActionBarActivity {
                                             ServiceAction action = server.actions[item.getItemId()];
                                             MppRequest req = new MppRequest(null);
                                             req.setProperty("action", action.name);
+                                            if (action.emailProperty != null) {
+                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                            }
                                             req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
                                             req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
                                             req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
