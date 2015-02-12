@@ -43,68 +43,11 @@
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/subscriptionParameters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <include layout="@layout/subscription_parameters"
                 android:layout_marginTop="24dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Status"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true">
-                        <requestFocus/> <!-- the focus related attributes are here to remove the focus from subscriptionName upon activity start-->
-                    </TextView>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Expires in"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:id="@+id/subscriptionStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:selectAllOnFocus="true"
-                        android:text="ACTIVE"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/expiresIn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:selectAllOnFocus="true"
-                        android:text="4 days"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                </LinearLayout>
-            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

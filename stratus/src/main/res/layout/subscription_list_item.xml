@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-    android:id="@+id/subscriptionListItem">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/subscriptionTopListItem"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight">
 
-    <ImageView
-        android:id="@+id/subscriptionIconList"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/subscriptionButtons"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/activity_margin"
-        android:contentDescription="@string/defaultSubscriptionIconDesc"
-        android:src="@drawable/ic_launcher" />
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/subscriptionNameList"
+        <include layout="@layout/subscription_operations" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/subscriptionBackground"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toLeftOf="@id/subscriptionIconList"
-        android:gravity="center_vertical"
-        android:text="@string/defaultSubscriptionName"
-        android:layout_marginLeft="@dimen/activity_margin"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_height="fill_parent"
+        android:visibility="visible">
 
+        <include layout="@layout/subscription_parameters" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/subscriptionListItem"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <ImageView
+            android:id="@+id/subscriptionIconList"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/activity_margin"
+            android:contentDescription="@string/defaultSubscriptionIconDesc"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/subscriptionNameList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginLeft="@dimen/activity_margin"
+            android:layout_toLeftOf="@id/subscriptionIconList"
+            android:gravity="center_vertical"
+            android:text="@string/defaultSubscriptionName"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
 </RelativeLayout>
