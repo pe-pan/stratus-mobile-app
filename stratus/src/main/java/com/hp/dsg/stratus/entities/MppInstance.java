@@ -66,4 +66,26 @@ public class MppInstance extends CsaEntity {
         cachedServers = servers;
         return servers;
     }
+
+    private String cachedShareServiceId;
+    public String getShareServiceId() {
+        if (cachedShareServiceId != null) {
+            return cachedShareServiceId.length() == 0 ? null : cachedShareServiceId;
+        }
+        try {
+            cachedShareServiceId = JsonPath.read(json, "$.components[*].resourceSubscription[?(@.name == '361196ac-5614-4781-a7f8-d552877ef1da')].id[0]");
+            //todo this should be done differently; e.g. to have a structure returning both parameters at once; but not to have a single method parsing 2 strings and returning them one upon another method
+            cachedShareActionName = JsonPath.read(json,"$.components[*].resourceSubscription[?(@.name == '361196ac-5614-4781-a7f8-d552877ef1da')].serviceAction[?(@.displayName == 'Share Demo Access')].name[0]");
+            return cachedShareServiceId;
+        } catch (Exception e) {
+            Log.d(TAG, "No share service found: "+json, e);
+            cachedShareServiceId = "";  // mark the json has been already parsed but no service ID has been found
+            return null;
+        }
+    }
+
+    private String cachedShareActionName;
+    public String getShareActionName() {
+        return cachedShareActionName;
+    }
 }
