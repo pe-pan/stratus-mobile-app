@@ -12,4 +12,18 @@ public class MppSubscription extends CsaEntity {
     public String toString() {
         return getProperty("name");
     }
+
+    public MppInstance getInstance() {
+        EntityHandler subHandler = EntityHandler.getHandler(MppSubscriptionHandler.class);
+        subHandler.loadDetails(this);
+
+        String catalogId = getProperty("catalogId");
+        String instanceId = getProperty("instanceId");
+
+        EntityHandler instanceHandler = EntityHandler.getHandler(MppInstanceHandler.class);
+        MppInstance instance = new MppInstance("{ \"catalogId\" : \""+catalogId+"\", \"id\" : \""+instanceId+"\" }");
+        instanceHandler.loadDetails(instance);
+        return instance;
+    }
+
 }

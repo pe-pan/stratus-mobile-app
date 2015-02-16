@@ -115,16 +115,4 @@ public class Mpp extends AuthenticatedClient {
 
     }
 
-    public MppInstance getInstance(MppSubscription subscription) {
-        EntityHandler subHandler = EntityHandler.getHandler(MppSubscriptionHandler.class);
-        subscription = (MppSubscription) subHandler.loadDetails(subscription);
-
-        String catalogId = subscription.getProperty("catalogId");
-        String instanceId = subscription.getProperty("instanceId");
-
-        EntityHandler instanceHandler = EntityHandler.getHandler(MppInstanceHandler.class);
-        MppInstance instance = new MppInstance("{ \"catalogId\" : \""+catalogId+"\", \"id\" : \""+instanceId+"\" }");
-        instanceHandler.loadDetails(instance);
-        return instance;
-    }
 }

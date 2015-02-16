@@ -74,7 +74,7 @@ public class SubscriptionActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(final MppSubscription... params) {
-            final MppInstance instance = M_STRATUS.getInstance(params[0]);
+            final MppInstance instance = params[0].getInstance();
             final Server[] servers = instance.getServers();
 
             if (servers == null) {
