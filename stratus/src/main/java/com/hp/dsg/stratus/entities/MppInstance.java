@@ -27,7 +27,10 @@ public class MppInstance extends CsaEntity {
         return getProperty("name");
     }
 
+    private Server[] cachedServers;
+
     public Server[] getServers() {
+        if (cachedServers != null) return cachedServers;
         Filter fooOrBar = Filter.filter(Criteria.where("name").regex(Pattern.compile("^HPCSSERVER.*")));
         List<JSONObject> components = JsonPath.read(json, "$.components[?]", fooOrBar);
         if (components.size() == 0) return null;
@@ -60,6 +63,7 @@ public class MppInstance extends CsaEntity {
             Server server = new Server(sps, serviceSubscriptionId, sas);
             servers[j] = server;
         }
+        cachedServers = servers;
         return servers;
     }
 }
