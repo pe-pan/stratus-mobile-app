@@ -26,7 +26,7 @@ public abstract class EntityHandler {
     }
 
     public static EntityHandler getHandler(Class clazz) {
-        return handlers.get(clazz);
+        return handlers.get(clazz); //todo this throws NPE upon app restore
     }
 
     protected List<Entity> lastEntities = null;
