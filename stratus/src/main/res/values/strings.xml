@@ -39,6 +39,11 @@
     <string name="extensionRequestFailure">Request for extension has failed!</string>
     <string name="extensionRequestMissing">This demo cannot be extended!</string>
 
+    <string name="shareRequestSuccess">Demo sharing requested</string>
+    <string name="shareRequestFailure">Request for sharing has failed!</string>
+    <string name="shareRequestMissing">This demo cannot be shared!</string>
+    <string name="defaultShareEmail">e-mail@hp.com</string>
+
     <string name="defaultSubscriptionName">ALM12 2.4 Demo Platform v1</string>
     <string name="subscriptionDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>
     <string name="defaultSubscriptionIconDesc">Icon</string>

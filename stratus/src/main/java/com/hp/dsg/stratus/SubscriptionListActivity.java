@@ -3,7 +3,9 @@ package com.hp.dsg.stratus;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -16,7 +18,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -25,8 +29,10 @@ import android.widget.Toast;
 
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
+import com.hp.dsg.stratus.entities.MppInstance;
 import com.hp.dsg.stratus.entities.MppRequest;
 import com.hp.dsg.stratus.entities.MppRequestHandler;
+import com.hp.dsg.stratus.entities.MppSubscription;
 import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
@@ -38,10 +44,13 @@ import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 public class SubscriptionListActivity extends ActionBarActivity {
     private static final String TAG = SubscriptionListActivity.class.getSimpleName();
 
+    private ListView listview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription_list);
+        listview = (ListView) findViewById(R.id.subscriptionList);
 
         new GetSubscriptions().execute(false);
     }
@@ -93,20 +102,27 @@ public class SubscriptionListActivity extends ActionBarActivity {
         return oa;
     }
 
-    private void onSwipeCancel(final View v) {
-        animateViewTo(v, 0);
+    private ObjectAnimator onSwipeCancel(final View v) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(  //hide keyboard if there is one shown
+                Context.INPUT_METHOD_SERVICE);
+        EditText editText = (EditText) ((View)v.getParent()).findViewById(R.id.shareEmail);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
         animatedView = null;
+        return animateViewTo(v, 0);
     }
 
     private void onSwipeRightStart(final View v) {
         v.setTranslationX(difference);
         ((View)v.getParent()).findViewById(R.id.subscriptionButtons).setVisibility(View.VISIBLE);
         ((View)v.getParent()).findViewById(R.id.subscriptionParameters).setVisibility(View.GONE);
+        ((View)v.getParent()).findViewById(R.id.subscriptionShareButtons).setVisibility(View.GONE);
     }
 
     private void onSwipeLeftStart(final View v) {
         v.setTranslationX(difference);
         ((View)v.getParent()).findViewById(R.id.subscriptionButtons).setVisibility(View.GONE);
+        ((View)v.getParent()).findViewById(R.id.subscriptionShareButtons).setVisibility(View.GONE);
         ((View)v.getParent()).findViewById(R.id.subscriptionParameters).setVisibility(View.VISIBLE);
     }
 
@@ -155,7 +171,6 @@ public class SubscriptionListActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             final List<Entity> subscriptions = M_STRATUS.getSubscriptions(params[0]);
-            final ListView listview = (ListView) findViewById(R.id.subscriptionList);
             final View.OnTouchListener gestureListener = new View.OnTouchListener() {
                 public boolean onTouch(final View v, MotionEvent event) {
                     if (animatedView != null && animatedView != v) { // something has been animated but now I'm clicking somewhere else
@@ -201,14 +216,14 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             android.R.layout.simple_list_item_1, subscriptions) {
                         @Override
                         public View getView(int position, View convertView, ViewGroup parent) {
-                            View row;
+                            final View row;
                             if (convertView == null) {
                                 LayoutInflater inflater = (SubscriptionListActivity.this).getLayoutInflater();
                                 row = inflater.inflate(R.layout.subscription_list_item, parent, false);
                             } else {
                                 row = convertView;
                             }
-                            final Entity subscription = subscriptions.get(position);
+                            final MppSubscription subscription = (MppSubscription) subscriptions.get(position);
 
                             ((TextView)row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
 
@@ -257,9 +272,22 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             button.getBackground().setColorFilter(0xFFFFCC00, PorterDuff.Mode.MULTIPLY);
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    Log.d(TAG, "Share button pressed");
-                                    Toast.makeText(SubscriptionListActivity.this, "Share button pressed", Toast.LENGTH_SHORT).show();
+                                public void onClick(final View v) {
+                                    View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
+                                    shareButtons.setTranslationX(-row.getWidth()*2/3);
+                                    shareButtons.setVisibility(View.VISIBLE);
+
+                                    final EditText editText = (EditText) shareButtons.findViewById(R.id.shareEmail);
+                                    String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
+                                    editText.setText(oldValue);
+                                    int index = oldValue.indexOf('@');
+                                    if (index < 0) index = oldValue.length();
+                                    editText.setSelection(0, index); // select up to the @ char or whole string
+                                    editText.requestFocusFromTouch();
+
+                                    animateViewTo(shareButtons, 0);
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
                                 }
                             });
                             button = row.findViewById(R.id.cancelButton);
@@ -269,6 +297,20 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                 public void onClick(View v) {
                                     Log.d(TAG, "Cancel button pressed");
                                     Toast.makeText(SubscriptionListActivity.this, "Cancel button pressed", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            button = row.findViewById(R.id.sendShareRequestButton);
+                            button.getBackground().setColorFilter(0xFFFFCC00, PorterDuff.Mode.MULTIPLY);
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    row.findViewById(R.id.shareButton).setEnabled(false);
+                                    onSwipeCancel(row.findViewById(R.id.subscriptionListItem));
+                                    new ShareSubscription().execute(holder);
+
+                                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                    editor.putString("shareEmail", ((EditText) row.findViewById(R.id.shareEmail)).getText().toString());
+                                    editor.apply();
                                 }
                             });
                             return row;
@@ -284,10 +326,10 @@ public class SubscriptionListActivity extends ActionBarActivity {
     }
 
     private class ViewHolder {
-        private Entity subscription;
+        private MppSubscription subscription;
         private View topView;
 
-        private ViewHolder(Entity subscription, View topView) {
+        private ViewHolder(MppSubscription subscription, View topView) {
             this.subscription = subscription;
             this.topView = topView;
         }
@@ -323,6 +365,44 @@ public class SubscriptionListActivity extends ActionBarActivity {
             String statusMessage = s == null ? getString(R.string.extensionRequestFailure) : String.format(getString(R.string.extensionRequestSuccess), DEFAULT_EXTENSION_PERIOD);
             Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
             extendButton.setEnabled(true);
+        }
+    }
+
+    private class ShareSubscription extends AsyncTask<ViewHolder, Void, String> {
+        private View shareButton;
+        @Override
+        protected String doInBackground(ViewHolder... params) {
+            MppSubscription subscription = params[0].subscription;
+            MppInstance instance = subscription.getInstance();
+            shareButton= params[0].topView.findViewById(R.id.shareButton);
+
+            String serviceId = instance.getShareServiceId();
+            if (serviceId == null) {
+                return "";
+            }
+
+            MppRequest req = new MppRequest(null);
+            req.setProperty("action", instance.getShareActionName());
+            req.setProperty("subscriptionId", subscription.getId());
+            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, serviceId);
+
+            EditText shareEmail = (EditText) params[0].topView.findViewById(R.id.shareEmail);
+            req.setProperty("field_shareEmail", shareEmail.getText().toString().trim());
+
+            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            try {
+                return handler.create(req);
+            } catch (Exception e) {
+                return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            String statusMessage = s == null ? getString(R.string.shareRequestFailure) : s.length() == 0 ? getString(R.string.shareRequestMissing) : getString(R.string.shareRequestSuccess);
+            Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
+            shareButton.setEnabled(true);
         }
     }
 }

@@ -7,24 +7,24 @@
     android:weightSum="3">
 
     <Button
-        android:id="@+id/extendButton"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/activity_margin"
-        android:layout_weight="1"
-        android:text="@string/extendButton" />
-
-    <Button
         android:id="@+id/shareButton"
-        android:layout_width="fill_parent"
+        android:layout_width="0px"
         android:layout_height="fill_parent"
         android:layout_margin="@dimen/activity_margin"
         android:layout_weight="1"
         android:text="@string/shareButton" />
 
     <Button
+        android:id="@+id/extendButton"
+        android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/activity_margin"
+        android:layout_weight="1"
+        android:text="@string/extendButton" />
+
+    <Button
         android:id="@+id/cancelButton"
-        android:layout_width="fill_parent"
+        android:layout_width="0px"
         android:layout_height="fill_parent"
         android:layout_margin="@dimen/activity_margin"
         android:layout_weight="1"

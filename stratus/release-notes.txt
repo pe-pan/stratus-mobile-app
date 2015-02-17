@@ -1,3 +1,19 @@
+[]
+Version 0.0.3:
+-------------
+New features:
+  - Extend a subscription for 3 days
+  - Share a subscription
+  - Cancel a subscription
+  - Delete a subscription
+
+Enhancements:
+  - Swipe left in subscription list to open the subscription
+  - Swipe right in subscription list to execute an operation on a subscription
+
+Bug fixes:
+  - Power ON/OFF operations (send also the confirmation e-mail)
+
 [3/Feb/2015]
 Version 0.0.2:
 -------------

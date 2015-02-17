@@ -14,6 +14,16 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/subscriptionShareButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffffff"
+        android:visibility="gone">
+
+        <include layout="@layout/subscription_share" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/subscriptionBackground"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
