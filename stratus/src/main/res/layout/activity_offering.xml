@@ -100,7 +100,8 @@
                     android:layout_toRightOf="@id/emailTitle"
                     android:selectAllOnFocus="true"
                     android:text="@string/defaultEmailAddress"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:inputType="textEmailAddress" />
             </RelativeLayout>
 
             <LinearLayout
