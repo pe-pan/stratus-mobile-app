@@ -37,6 +37,7 @@
 
     <string name="extensionRequestSuccess">Requested %d more days</string>
     <string name="extensionRequestFailure">Request for extension has failed!</string>
+    <string name="extensionRequestMissing">This demo cannot be extended!</string>
 
     <string name="defaultSubscriptionName">ALM12 2.4 Demo Platform v1</string>
     <string name="subscriptionDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>
