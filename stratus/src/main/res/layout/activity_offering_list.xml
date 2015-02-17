@@ -12,7 +12,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/activity_margin"
         android:visibility="visible"
         android:layout_centerInParent="true"
         />

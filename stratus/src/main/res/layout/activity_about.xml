@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/double_margin"
             android:text="@string/app_description"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/activity_margin"
             android:text="@string/dsg"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/activity_margin"
             android:text="@string/app_version"
             android:textAppearance="?android:attr/textAppearanceSmall" />
         <Button
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="@dimen/octuple_margin"
             android:text="@string/done"
             android:textStyle="bold" />
 
@@ -68,7 +68,7 @@
         android:id="@+id/homeLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/activity_margin"
         android:text="@string/home_link"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"

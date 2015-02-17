@@ -27,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="8dp"
+                    android:layout_margin="@dimen/activity_margin"
                     android:src="@drawable/ic_launcher" />
 
                 <TextView
@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/leftTopView"
-                    android:layout_margin="8dp"
+                    android:layout_margin="@dimen/activity_margin"
                     android:layout_toLeftOf="@id/subscriptionIcon"
                     android:text="@string/defaultSubscriptionName"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -44,7 +44,7 @@
             </RelativeLayout>
 
             <include layout="@layout/subscription_parameters"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/triple_margin"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"/>
 
