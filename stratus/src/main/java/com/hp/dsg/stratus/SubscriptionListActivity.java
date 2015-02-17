@@ -256,7 +256,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             item.setOnTouchListener(gestureListener);
 
                             View button = row.findViewById(R.id.extendButton);
-                            button.getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+                            button.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -269,7 +269,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                 }
                             });
                             button = row.findViewById(R.id.shareButton);
-                            button.getBackground().setColorFilter(0xFFFFCC00, PorterDuff.Mode.MULTIPLY);
+                            button.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(final View v) {
@@ -291,7 +291,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                 }
                             });
                             button = row.findViewById(R.id.cancelButton);
-                            button.getBackground().setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
+                            button.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.MULTIPLY);
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -300,7 +300,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                 }
                             });
                             button = row.findViewById(R.id.sendShareRequestButton);
-                            button.getBackground().setColorFilter(0xFFFFCC00, PorterDuff.Mode.MULTIPLY);
+                            button.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

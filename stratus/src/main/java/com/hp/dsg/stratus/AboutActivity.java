@@ -2,6 +2,7 @@ package com.hp.dsg.stratus;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -34,6 +35,7 @@ public class AboutActivity extends Activity {
                 finish();
             }
         });
+        okButton.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
 
         String s;
         try{

@@ -3,6 +3,7 @@ package com.hp.dsg.stratus;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -83,6 +84,7 @@ public class LoginActivity extends ActionBarActivity {
                 attemptLogin();
             }
         });
+        mEmailSignInButton.getBackground().setColorFilter(getResources().getColor(android.R.color.holo_blue_dark), PorterDuff.Mode.MULTIPLY);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);

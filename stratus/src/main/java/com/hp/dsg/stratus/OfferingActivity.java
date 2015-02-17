@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -70,6 +71,7 @@ public class OfferingActivity extends ActionBarActivity {
             }
         });
         Button subscribeButton = (Button) findViewById(R.id.subscribe);
+        subscribeButton.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

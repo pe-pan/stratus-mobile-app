@@ -17,7 +17,7 @@
         android:id="@+id/subscriptionShareButtons"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#ffffffff"
+        android:background="@android:color/white"
         android:visibility="gone">
 
         <include layout="@layout/subscription_share" />
