@@ -208,7 +208,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             } else {
                                 row = convertView;
                             }
-                            Entity subscription = subscriptions.get(position);
+                            final Entity subscription = subscriptions.get(position);
 
                             ((TextView)row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
 
@@ -245,8 +245,12 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    v.setEnabled(false);
-                                    new ExtendSubscription().execute(holder);
+                                    if (subscription.getProperty("subscriptionTerm.endDate") == null) {
+                                        Toast.makeText(SubscriptionListActivity.this, getResources().getString(R.string.extensionRequestMissing), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        v.setEnabled(false);
+                                        new ExtendSubscription().execute(holder);
+                                    }
                                 }
                             });
                             button = row.findViewById(R.id.shareButton);
