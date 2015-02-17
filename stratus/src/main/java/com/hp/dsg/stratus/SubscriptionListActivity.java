@@ -3,7 +3,9 @@ package com.hp.dsg.stratus;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -273,6 +276,33 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(final View v) {
+                                    final EditText input = new EditText(SubscriptionListActivity.this);
+                                    String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
+                                    input.setText(oldValue);
+                                    int index = oldValue.indexOf('@');
+                                    if (index < 0) index = oldValue.length();
+                                    input.setSelection(0, index); // select up to the @ char or whole string
+                                    input.setFocusable(true);
+
+                                    AlertDialog dialog = new AlertDialog.Builder(SubscriptionListActivity.this)
+                                            .setTitle("Share demo to")
+                                            .setMessage("Enter e-mail address")
+                                            .setView(input)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {
+                                                    ((EditText)row.findViewById(R.id.shareEmail)).setText(input.getText());  //todo hack
+                                                    new ShareSubscription().execute(holder);
+                                                    v.setEnabled(false);
+                                                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                                    editor.putString("shareEmail", input.getText().toString());
+                                                    editor.apply();
+                                                }
+                                            }).setNegativeButton("Cancel", null).create();
+                                    dialog.getWindow().setSoftInputMode(
+                                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                                    dialog.show();
+
+/*
                                     View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
                                     shareButtons.setTranslationX(-row.getWidth()*2/3);
                                     shareButtons.setVisibility(View.VISIBLE);
@@ -288,6 +318,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     animateViewTo(shareButtons, 0);
                                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+*/
                                 }
                             });
                             button = row.findViewById(R.id.cancelButton);
