@@ -16,9 +16,6 @@
             android:focusableInTouchMode="true"
             android:text="Status"
             android:textAppearance="?android:attr/textAppearanceSmall">
-
-            <requestFocus />
-            <!-- the focus related attributes are here to remove the focus from subscriptionName upon activity start-->
         </TextView>
 
         <View

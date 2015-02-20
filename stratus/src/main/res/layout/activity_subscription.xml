@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_margin="@dimen/activity_margin"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
     <ScrollView
         android:layout_width="match_parent"
