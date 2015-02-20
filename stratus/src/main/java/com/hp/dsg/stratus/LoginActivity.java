@@ -64,6 +64,7 @@ public class LoginActivity extends ActionBarActivity {
         homeLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -93,8 +94,8 @@ public class LoginActivity extends ActionBarActivity {
         String username = credentials.getString("username", "");
         String password = credentials.getString("password", "");
 
-        ((AutoCompleteTextView) findViewById(R.id.email)).setText(username);
-        ((EditText) findViewById(R.id.password)).setText(password);
+        mEmailView.setText(username);
+        mPasswordView.setText(password);
     }
 
 
@@ -203,12 +204,13 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            System.setProperty("java.net.useSystemProxies", "false");
-            System.setProperty("https.proxyHost", "proxy.bbn.hp.com");
-            System.setProperty("https.proxyPort", "8080");
-            System.setProperty("http.proxyHost", "proxy.bbn.hp.com");
-            System.setProperty("http.proxyPort", "8080");
-            String errorReason = null;
+            if ("sdk_google_phone_x86".equals( Build.PRODUCT )) {
+                System.setProperty("java.net.useSystemProxies", "false");
+                System.setProperty("https.proxyHost", "proxy.bbn.hp.com");
+                System.setProperty("https.proxyPort", "8080");
+                System.setProperty("http.proxyHost", "proxy.bbn.hp.com");
+                System.setProperty("http.proxyPort", "8080");
+            }
             try {
                 M_STRATUS.authenticate();
             } catch (Exception e) {

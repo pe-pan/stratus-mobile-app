@@ -50,7 +50,9 @@ public class OfferingActivity extends ActionBarActivity {
 
         if (offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
             findViewById(R.id.offeringParameters).setVisibility(View.GONE);
-            ((EditText)findViewById(R.id.emailAddress)).setText(Mpp.M_STRATUS.getLoggedUserName());
+            EditText email = (EditText)findViewById(R.id.emailAddress);
+            email.setText(Mpp.M_STRATUS.getLoggedUserName());
+            email.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
         } else {
             findViewById(R.id.executiveParams).setVisibility(View.GONE);
         }
@@ -75,10 +77,10 @@ public class OfferingActivity extends ActionBarActivity {
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String oppId = ((EditText)findViewById(R.id.opportunityId)).getText().toString();
-                String days = ((EditText)findViewById(R.id.howManyDays)).getText().toString();
-                String subscriptionName = ((EditText)findViewById(R.id.subscriptionName)).getText().toString();
-                String emailAddress = ((EditText)findViewById(R.id.emailAddress)).getText().toString();
+                String oppId = ((EditText) findViewById(R.id.opportunityId)).getText().toString();
+                String days = ((EditText) findViewById(R.id.howManyDays)).getText().toString();
+                String subscriptionName = ((EditText) findViewById(R.id.subscriptionName)).getText().toString();
+                String emailAddress = ((EditText) findViewById(R.id.emailAddress)).getText().toString();
                 ServiceRequestTask requestServiceTask = new ServiceRequestTask(offering, oppId, days, subscriptionName, emailAddress);
                 requestServiceTask.execute((Void) null);
                 finish();

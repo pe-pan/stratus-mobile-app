@@ -280,9 +280,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     final EditText editText = (EditText) shareButtons.findViewById(R.id.shareEmail);
                                     String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
                                     editText.setText(oldValue);
-                                    int index = oldValue.indexOf('@');
-                                    if (index < 0) index = oldValue.length();
-                                    editText.setSelection(0, index); // select up to the @ char or whole string
+                                    editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
                                     editText.requestFocusFromTouch();
 
                                     animateViewTo(shareButtons, 0);
