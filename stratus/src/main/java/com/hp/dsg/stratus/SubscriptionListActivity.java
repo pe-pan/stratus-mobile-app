@@ -281,11 +281,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
                                     editText.setText(oldValue);
                                     editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
-                                    editText.requestFocusFromTouch();
-
                                     animateViewTo(shareButtons, 0);
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
                                 }
                             });
                             button = row.findViewById(R.id.cancelButton);
