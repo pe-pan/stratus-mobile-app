@@ -41,6 +41,8 @@
                     android:layout_margin="@dimen/activity_margin"
                     android:layout_toLeftOf="@id/offeringIcon"
                     android:text="@string/defaultOfferingName"
+                    android:textIsSelectable="true"
+                    android:selectAllOnFocus="true"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             </RelativeLayout>
@@ -52,6 +54,8 @@
                 android:layout_marginTop="@dimen/activity_margin"
                 android:text="@string/offeringDefaultDescription"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textIsSelectable="true"
+                android:selectAllOnFocus="true"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -64,6 +68,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/offeringDefaultCatalog"
+                    android:textIsSelectable="true"
+                    android:selectAllOnFocus="true"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <View
@@ -76,6 +82,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/offeringDefaultUpdateDate"
+                    android:textIsSelectable="true"
+                    android:selectAllOnFocus="true"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
