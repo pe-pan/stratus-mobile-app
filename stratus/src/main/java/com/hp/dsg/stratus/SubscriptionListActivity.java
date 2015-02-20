@@ -1,6 +1,7 @@
 package com.hp.dsg.stratus;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -293,13 +294,22 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     Toast.makeText(SubscriptionListActivity.this, "Cancel button pressed", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            button = row.findViewById(R.id.sendShareRequestButton);
-                            button.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
-                            button.setOnClickListener(new View.OnClickListener() {
+                            final View sendShareButton = row.findViewById(R.id.sendShareRequestButton);
+                            sendShareButton.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
+                            sendShareButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     row.findViewById(R.id.shareButton).setEnabled(false);
-                                    onSwipeCancel(row.findViewById(R.id.subscriptionListItem));
+                                    sendShareButton.setEnabled(false);
+                                    final View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
+                                    ObjectAnimator oa = animateViewTo(shareButtons, -row.getWidth()*2/3);
+                                    oa.addListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            shareButtons.setVisibility(View.GONE);
+                                            sendShareButton.setEnabled(true);  // enable it for next use
+                                        }
+                                    });
                                     new ShareSubscription().execute(holder);
 
                                     SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
