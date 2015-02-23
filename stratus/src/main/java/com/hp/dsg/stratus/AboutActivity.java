@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -18,7 +19,7 @@ import java.util.zip.ZipFile;
  */
 public class AboutActivity extends Activity {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mma");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mma", Locale.ENGLISH);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
