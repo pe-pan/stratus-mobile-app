@@ -3,6 +3,7 @@ package com.hp.dsg.stratus;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -96,9 +99,13 @@ public class SubscriptionListActivity extends ActionBarActivity {
 
     public static final int CLICK = 10;  // everything below this value is considered not to be a swipe
 
-    private ObjectAnimator animateViewTo(View v, int where) {
+    private static final TimeInterpolator bounceInterpolator = new BounceInterpolator();
+    private static final TimeInterpolator decelerateInterpolator = new DecelerateInterpolator();
+
+    private ObjectAnimator animateViewTo(View v, int where, TimeInterpolator interpolator) {
         ObjectAnimator oa = ObjectAnimator.ofFloat(v, "translationX", where);
-        oa.setDuration(400);
+        oa.setDuration(600);
+        oa.setInterpolator(interpolator);
         oa.start();
         return oa;
     }
@@ -110,7 +117,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
         animatedView = null;
-        return animateViewTo(v, 0);
+        return animateViewTo(v, 0, bounceInterpolator);
     }
 
     private void onSwipeRightStart(final View v) {
@@ -128,12 +135,12 @@ public class SubscriptionListActivity extends ActionBarActivity {
     }
 
     private void onSwipeRightFinish(final View v) {
-        animateViewTo(v, v.getWidth());
+        animateViewTo(v, v.getWidth(), decelerateInterpolator);
         animatedView = v;
     }
 
     private void onSwipeLeftFinish(final View v) {
-        ObjectAnimator oa = animateViewTo(v, -v.getWidth());
+        ObjectAnimator oa = animateViewTo(v, -v.getWidth(), decelerateInterpolator);
         animatedView = v;
         Entity subscription = ((ViewHolder) v.getTag()).subscription;
         final Intent i = new Intent(SubscriptionListActivity.this, SubscriptionActivity.class);
@@ -287,7 +294,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
                                     editText.setText(oldValue);
                                     editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
-                                    animateViewTo(shareButtons, 0);
+                                    animateViewTo(shareButtons, 0, decelerateInterpolator);
                                 }
                             });
                             final Button cancelButton = (Button) row.findViewById(R.id.cancelButton);
@@ -329,7 +336,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     row.findViewById(R.id.shareButton).setEnabled(false);
                                     sendShareButton.setEnabled(false);
                                     final View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
-                                    ObjectAnimator oa = animateViewTo(shareButtons, -row.getWidth()*2/3);
+                                    ObjectAnimator oa = animateViewTo(shareButtons, -row.getWidth()*2/3, decelerateInterpolator);
                                     oa.addListener(new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
