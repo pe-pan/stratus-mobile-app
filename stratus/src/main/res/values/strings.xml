@@ -44,11 +44,18 @@
     <string name="shareRequestMissing">This demo cannot be shared!</string>
     <string name="defaultShareEmail">e-mail@hp.com</string>
 
+    <string name="cancelRequestSuccess">Demo cancellation requested</string>
+    <string name="cancelRequestFailure">Request for cancellation has failed!</string>
+
+    <string name="deleteRequestSuccess">Demo deleted</string>
+    <string name="deleteRequestFailure">Deleting demo has failed!</string>
+
     <string name="defaultSubscriptionName">ALM12 2.4 Demo Platform v1</string>
     <string name="subscriptionDefaultDescription">NOTE: Only Client, SERVER &amp; AOB host included; you must manually select others. Demo includes ALM suite v12.01 (ALM, ALI) </string>
     <string name="defaultSubscriptionIconDesc">Icon</string>
     <string name="extendButton">Extend</string>
     <string name="shareButton">Share</string>
     <string name="cancelButton">Cancel</string>
+    <string name="deleteButton">Delete</string>
 
 </resources>

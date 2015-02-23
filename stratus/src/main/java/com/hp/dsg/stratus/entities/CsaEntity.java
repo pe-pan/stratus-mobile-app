@@ -72,6 +72,18 @@ public class CsaEntity extends Entity {
         return null;
     }
 
+    @Override
+    public Boolean getBooleanProperty(String key) {
+        Object value = getObjectProperty(key);
+        if (value == null) return null;
+        try {
+            return (Boolean) value;
+        } catch (ClassCastException e) {
+            Log.d(TAG, "Property cannot be casted to boolean "+key+": "+value, e);
+        }
+        return null;
+    }
+
     public String removeProperty(String key) {
         String value = properties.remove(key).toString();
         if (value != null) isDirty = true;

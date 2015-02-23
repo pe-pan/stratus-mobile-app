@@ -20,6 +20,7 @@ public abstract class Entity {
     public abstract Object getObjectProperty(String key);
     public abstract void setObjectProperty(String key, Object value);
     public abstract Date getDateProperty(String key);
+    public abstract Boolean getBooleanProperty(String key);
     public abstract String toJson();
 
 }

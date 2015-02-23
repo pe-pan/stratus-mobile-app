@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -255,6 +256,13 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             final ViewHolder holder = new ViewHolder(subscription, row);
                             item.setTag(holder);
                             item.setOnTouchListener(gestureListener);
+                            if (subscription.getBooleanProperty("deleted") != null) {
+                                item.setEnabled(false);
+                                item.findViewById(R.id.removedIcon).setVisibility(View.VISIBLE);
+                            } else {
+                                item.setEnabled(true);
+                                item.findViewById(R.id.removedIcon).setVisibility(View.GONE);
+                            }
 
                             View button = row.findViewById(R.id.extendButton);
                             button.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
@@ -285,13 +293,35 @@ public class SubscriptionListActivity extends ActionBarActivity {
                                     animateViewTo(shareButtons, 0);
                                 }
                             });
-                            button = row.findViewById(R.id.cancelButton);
-                            button.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.MULTIPLY);
-                            button.setOnClickListener(new View.OnClickListener() {
+                            final Button cancelButton = (Button) row.findViewById(R.id.cancelButton);
+                            boolean deletable = subscription.getBooleanProperty("deletable");
+                            boolean cancelable = subscription.getBooleanProperty("cancelable");
+                            cancelButton.setText(getString(deletable ? R.string.deleteButton : R.string.cancelButton));
+                            cancelButton.setEnabled(cancelable || deletable);
+
+                            cancelButton.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.MULTIPLY);
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Log.d(TAG, "Cancel button pressed");
-                                    Toast.makeText(SubscriptionListActivity.this, "Cancel button pressed", Toast.LENGTH_SHORT).show();
+                                    if (holder.cancelTask != null) {
+                                        holder.cancelTask.cancel(true);
+                                        holder.cancelTask = null;
+                                        cancelButton.setText(getString(R.string.cancelButton));
+                                    } else {
+                                        if (subscription.getBooleanProperty("cancelable")) {
+                                            cancelButton.setText(""+10);  // set the text now so it's visible in UI immediately
+                                            holder.cancelTask = new CancelSubscription();
+                                            holder.cancelTask.executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                        } else {
+                                            if (subscription.getBooleanProperty("deletable")) {
+                                                cancelButton.setEnabled(false);
+                                                new DeleteSubscription().execute(holder);
+                                            } else {
+                                                //todo this should never happen
+                                                Toast.makeText(SubscriptionListActivity.this, "This demo cannot be canceled nor deleted", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
                                 }
                             });
                             final View sendShareButton = row.findViewById(R.id.sendShareRequestButton);
@@ -348,6 +378,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
             this.subscription = subscription;
             this.topView = topView;
         }
+        private CancelSubscription cancelTask;
     }
 
     public static final int DEFAULT_EXTENSION_PERIOD = 3;
@@ -418,6 +449,112 @@ public class SubscriptionListActivity extends ActionBarActivity {
             String statusMessage = s == null ? getString(R.string.shareRequestFailure) : s.length() == 0 ? getString(R.string.shareRequestMissing) : getString(R.string.shareRequestSuccess);
             Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
             shareButton.setEnabled(true);
+        }
+    }
+
+    private class CancelSubscription extends AsyncTask<ViewHolder, Void, String> {
+        private Button cancelButton;
+        private ViewHolder holder;
+
+        private void setCancelButtonText(final String text, final boolean enabled) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cancelButton.setText(text);
+                    cancelButton.setEnabled(enabled);
+                }
+            });
+        }
+
+        private void taskCanceled() {
+            setCancelButtonText(getString(R.string.cancelButton), true);
+        }
+
+        @Override
+        protected String doInBackground(ViewHolder... params) {
+            cancelButton = (Button) params[0].topView.findViewById(R.id.cancelButton);
+            holder = params[0];
+
+            for (int i = Integer.parseInt(cancelButton.getText().toString()); i >= 0; i--) {
+                setCancelButtonText("" + i, true);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    taskCanceled();
+                    return null; // onPostExecute will not be executed
+                }
+            }
+            if (isCancelled()) { // give the last chance to abort the cancellation
+                taskCanceled();
+                return null; // onPostExecute will not be executed
+            }
+            setCancelButtonText(getString(R.string.cancelButton), false);
+            holder.subscription.setObjectProperty("cancelable", false); // keep cancel button even upon UI refresh (till REST API call)
+
+            MppRequest req = new MppRequest(null);
+            req.setProperty("action", "CANCEL_SUBSCRIPTION");
+            req.setProperty("subscriptionId", holder.subscription.getId());
+            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, holder.subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, holder.subscription.getId());
+
+            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            try {
+                return handler.create(req);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception when cancelling "+holder.subscription, e);
+                return null;//todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+            }
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            String statusMessage;
+            if (s == null) {
+                statusMessage = getString(R.string.cancelRequestFailure);
+                setCancelButtonText(getString(R.string.cancelButton), true); // enable the button to try cancel later
+            } else {
+                statusMessage = getString(R.string.cancelRequestSuccess);
+                holder.subscription.setObjectProperty("cancelable", false); // keep cancel button even upon UI refresh (till
+                // do not enable the button to make the user to refresh the view
+            }
+            Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
+            holder.cancelTask = null;
+        }
+    }
+
+    private class DeleteSubscription extends AsyncTask<ViewHolder, Void, String> {
+        private View cancelButton;
+        private ViewHolder holder;
+
+        @Override
+        protected String doInBackground(ViewHolder... params) {
+            MppSubscription subscription = params[0].subscription;
+            cancelButton = params[0].topView.findViewById(R.id.cancelButton);
+            holder = params[0];
+
+            try {
+                return subscription.delete();
+            } catch (Exception e) {
+                Log.e(TAG, "Exception when deleting "+subscription, e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            String statusMessage;
+            if (s == null) {
+                statusMessage = getString(R.string.deleteRequestFailure);
+            } else {
+                statusMessage = getString(R.string.deleteRequestSuccess);
+                holder.subscription.setObjectProperty("deleted", true);
+                holder.topView.findViewById(R.id.subscriptionListItem).setEnabled(false);
+                holder.topView.findViewById(R.id.removedIcon).setVisibility(View.VISIBLE);
+                if (holder.topView.findViewById(R.id.subscriptionListItem) == animatedView) { // the line being removed is animated
+                    onSwipeCancel(animatedView);
+                }
+            }
+            Toast.makeText(SubscriptionListActivity.this, statusMessage, Toast.LENGTH_LONG).show();
+            cancelButton.setEnabled(true);
         }
     }
 }

@@ -26,4 +26,8 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }
+
+    public String delete(Entity entity) {
+        return client.doDelete(Mpp.REST_API+"/mpp/mpp-subscription/"+entity.getId()).getResponse();
+    }
 }

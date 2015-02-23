@@ -58,7 +58,7 @@ public abstract class CsaEntityHandler extends EntityHandler {
     }
 
     @Override
-    public void delete(Entity entity) {
+    public String delete(Entity entity) {
         throw new IllegalStateException("Not implemented!");
     }
 

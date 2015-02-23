@@ -292,7 +292,7 @@ public class RestClient {
     }
 
     public HttpResponse doDelete(String url) {
-        return doRequest(url, (String) null, Method.DELETE, ContentType.NONE);
+        return doRequest(url, (String) null, Method.DELETE, ContentType.JSON_JSON);
     }
 
 }

@@ -69,7 +69,7 @@ public abstract class EntityHandler {
     public abstract String create(Entity entity);
 
     public abstract Entity update(Entity entity);
-    public abstract void delete(Entity entity);
+    public abstract String delete(Entity entity);
 
     public Entity get(String id) {
         throw new IllegalStateException("Not implemented");

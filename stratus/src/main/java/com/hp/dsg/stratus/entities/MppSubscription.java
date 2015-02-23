@@ -26,4 +26,8 @@ public class MppSubscription extends CsaEntity {
         return instance;
     }
 
+    public String delete() {
+        EntityHandler handler = EntityHandler.getHandler(MppSubscriptionHandler.class);
+        return handler.delete(this);
+    }
 }
