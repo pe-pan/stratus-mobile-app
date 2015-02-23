@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
     android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:layout_margin="@dimen/activity_margin">
 
     <TextView
         android:id="@+id/buildTime"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:text="build_time_goes_here"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:orientation="vertical">
 
         <ImageView
@@ -53,24 +53,40 @@
             android:layout_marginTop="@dimen/activity_margin"
             android:text="@string/app_version"
             android:textAppearance="?android:attr/textAppearanceSmall" />
-        <Button
-            android:id="@+id/ok"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/octuple_margin"
-            android:text="@string/done"
-            android:textStyle="bold" />
+            android:weightSum="3">
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/ok"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/done" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
+
     <TextView
         android:id="@+id/homeLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_margin"
-        android:text="@string/home_link"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:layout_margin="@dimen/activity_margin"
+        android:text="@string/home_link"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 </RelativeLayout>
