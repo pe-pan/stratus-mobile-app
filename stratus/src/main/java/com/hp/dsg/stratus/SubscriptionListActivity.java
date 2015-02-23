@@ -7,7 +7,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -233,26 +232,24 @@ public class SubscriptionListActivity extends ActionBarActivity {
                             Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
                             ((TextView) row.findViewById(R.id.expiresIn)).setText(endDate == null ? "Never" : TimeUtils.getPeriod(endDate.getTime()));
 
-                            int color;
+                            long length;
+                            int maxWidth = parent.getMeasuredWidth(); //todo not correct; we should take the part of the row where the line lies, not the whole row length
+                            int maxPeriod = 7 * 24 * 60 * 60 * 1000; // 7 days in in millis
                             if (endDate == null) {
-                                color = Color.MAGENTA;  // no end date => purple background
+                                length = maxWidth;
                             } else {
                                 long now = System.currentTimeMillis();
                                 long diff = endDate.getTime() - now;
                                 if (diff <= 0) {
-                                    color = Color.GRAY;   // gray       // expired => gray background
-                                } else if (diff > 16 * 24 * 60 * 60 * 1000) { // more than 16 days
-                                    color = Color.GREEN;   // pure green
+                                    length = 0;
+                                } else if (diff > maxPeriod) { // more than 7 days
+                                    length = maxWidth;
                                 } else {
-                                    int offs = (int) ((diff - 1) * 256 / (16 * 24 * 60 * 60 * 1000));
-                                    int red = 0xff - offs;
-                                    int green = offs;
-                                    int blue = 0x00;
-                                    color = 0xff * 256*256*256 + red * 256 * 256 + green * 256 + blue;
+                                    length = diff * maxWidth / maxPeriod;
                                 }
                             }
                             View item = row.findViewById(R.id.subscriptionListItem);
-                            item.setBackgroundColor(color);
+                            row.findViewById(R.id.expirationLine).getLayoutParams().width = (int)length;
                             final ViewHolder holder = new ViewHolder(subscription, row);
                             item.setTag(holder);
                             item.setOnTouchListener(gestureListener);

@@ -65,5 +65,19 @@
             android:layout_height="fill_parent"
             android:src="@drawable/removed"
             android:visibility="gone"/>
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/half_margin"
+            android:background="@drawable/red_rectangle" />
+
+        <ImageView
+            android:id="@+id/expirationLine"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/half_margin"
+            android:background="@drawable/green_rectangle" />
     </RelativeLayout>
 </RelativeLayout>
