@@ -28,6 +28,9 @@ public class AboutActivity extends Activity {
         TextView homeLink = (TextView) findViewById(R.id.homeLink);
         homeLink.setMovementMethod(LinkMovementMethod.getInstance());
 
+        TextView supportLink = (TextView) findViewById(R.id.supportLink);
+        supportLink.setMovementMethod(LinkMovementMethod.getInstance());
+
         Button okButton = (Button) findViewById(R.id.ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
