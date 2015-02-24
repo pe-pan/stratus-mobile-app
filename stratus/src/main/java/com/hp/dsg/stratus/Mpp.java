@@ -56,7 +56,7 @@ public class Mpp extends AuthenticatedClient {
                 "    },\n" +
                 "    \"tenantName\":\""+TENANT_NAME+"\"\n" +
                 "}";
-        client.setCustomHeader("Authorization", "Basic "+"aWRtVHJhbnNwb3J0VXNlcjppZG1UcmFuc3BvcnRVc2Vy");
+        client.setCustomHeader("Authorization", "Basic "+"aWRtVHJhbnNwb3J0VXNlcjppZG1UcmFuc3BvcnRVc2Vy"); // "idmTransportUser:idmTransportUser" in Base64
 
         HttpResponse response = client.doPost(IDM_REST_URL, json);
         String token = JsonPath.read(response.getResponse(), "$.token.id");
