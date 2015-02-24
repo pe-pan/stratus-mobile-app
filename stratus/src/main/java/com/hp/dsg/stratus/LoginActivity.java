@@ -216,8 +216,6 @@ public class LoginActivity extends ActionBarActivity {
             } catch (Exception e) {
                 return false;
             }
-            CsaEntityHandler.setClient(M_STRATUS);  //todo move this code to more appropriate place
-            EntityHandler.initHandlers();
             return true;
         }
 

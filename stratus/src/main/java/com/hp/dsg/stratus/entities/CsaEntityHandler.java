@@ -1,10 +1,10 @@
 package com.hp.dsg.stratus.entities;
 
-import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.stratus.Mpp;
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,6 @@ import java.util.List;
  * Created by panuska on 2.10.14.
  */
 public abstract class CsaEntityHandler extends EntityHandler {
-    protected static AuthenticatedClient client;
-
-    public static void setClient(AuthenticatedClient client) {
-        CsaEntityHandler.client = client;
-    }
 
     protected CsaEntityHandler() {
         super();
@@ -25,7 +20,7 @@ public abstract class CsaEntityHandler extends EntityHandler {
     }
 
     protected String getListJson() {
-        return client.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}").getResponse();
+        return M_STRATUS.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}").getResponse();
     }
 
     public List<Entity> list(boolean enforce) {

@@ -2,16 +2,19 @@ package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.rest.ContentType;
 import com.hp.dsg.stratus.Mpp;
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 /**
  * Created by panuska on 6.1.15.
  */
 public class MppSubscriptionHandler extends CsaEntityHandler {
 
-    protected MppSubscriptionHandler() {
+    private MppSubscriptionHandler() {
         super();
         this.context = "mpp-subscription";
     }
+
+    public static final MppSubscriptionHandler INSTANCE = new MppSubscriptionHandler();
 
     @Override
     protected Entity newEntity(String json) {
@@ -22,12 +25,12 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
     public Entity loadDetails(Entity entity) {
         String subscriptionId = entity.getId();
 
-        String json = client.doGet(Mpp.REST_API+"/mpp/mpp-subscription/"+subscriptionId, ContentType.JSON_JSON).getResponse();
+        String json = M_STRATUS.doGet(Mpp.REST_API+"/mpp/mpp-subscription/"+subscriptionId, ContentType.JSON_JSON).getResponse();
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }
 
     public String delete(Entity entity) {
-        return client.doDelete(Mpp.REST_API+"/mpp/mpp-subscription/"+entity.getId()).getResponse();
+        return M_STRATUS.doDelete(Mpp.REST_API+"/mpp/mpp-subscription/"+entity.getId()).getResponse();
     }
 }

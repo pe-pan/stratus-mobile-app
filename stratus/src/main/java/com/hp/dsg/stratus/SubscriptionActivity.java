@@ -179,7 +179,7 @@ public class SubscriptionActivity extends ActionBarActivity {
     private class SendServiceAction extends AsyncTask<MppRequest, Void, String> {
         @Override
         protected String doInBackground(final MppRequest... params) {
-            EntityHandler reqHandler = EntityHandler.getHandler(MppRequestHandler.class);
+            EntityHandler reqHandler = MppRequestHandler.INSTANCE;
             try {
                 return reqHandler.create(params[0]);
             } catch (Exception e) {

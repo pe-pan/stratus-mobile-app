@@ -1,33 +1,12 @@
 package com.hp.dsg.stratus.entities;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by panuska on 2.10.14.
  */
 public abstract class EntityHandler {
-
-    private static Map<Class, EntityHandler> handlers;
-    public static void initHandlers() {
-        handlers = new LinkedHashMap<>();
-        final Class[] entityClasses = new Class[] {
-                MppSubscriptionHandler.class, MppOfferingHandler.class, MppRequestHandler.class, MppInstanceHandler.class};
-        for (Class entityClass : entityClasses) {
-            try {
-                EntityHandler handler = (EntityHandler) entityClass.newInstance();
-                handlers.put(entityClass, handler);
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    }
-
-    public static EntityHandler getHandler(Class clazz) {
-        return handlers.get(clazz); //todo this throws NPE upon app restore
-    }
 
     protected List<Entity> lastEntities = null;
     protected List<Entity> filteredEntities = null;

@@ -35,7 +35,7 @@ public class Mpp extends AuthenticatedClient {
     private String username;
     private String password;
 
-    public final static Mpp M_STRATUS = new Mpp();
+    public static final Mpp M_STRATUS = new Mpp();
     public Mpp() {
     }
 
@@ -70,18 +70,18 @@ public class Mpp extends AuthenticatedClient {
     }
 
     public List<Entity> getSubscriptions(boolean enforce) {
-        EntityHandler handler = EntityHandler.getHandler(MppSubscriptionHandler.class);
+        EntityHandler handler = MppSubscriptionHandler.INSTANCE;
         return handler.list(enforce);
     }
 
     public List<Entity> getOfferings(boolean enforce) {
-        EntityHandler handler = EntityHandler.getHandler(MppOfferingHandler.class);
+        EntityHandler handler = MppOfferingHandler.INSTANCE;
         return handler.list(enforce);
     }
 
     public String createSubscription(MppOffering offering, String oppId, int days, String subscriptionName, String emailAddress) {
 
-        EntityHandler reqHandler = EntityHandler.getHandler(MppRequestHandler.class);
+        EntityHandler reqHandler = MppRequestHandler.INSTANCE;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -98,7 +98,7 @@ public class Mpp extends AuthenticatedClient {
         req.setProperty("startDate", sdf.format(startDate));
         req.setProperty("endDate", sdf.format(endDate));
 
-        EntityHandler offHandler = EntityHandler.getHandler(MppOfferingHandler.class);
+        EntityHandler offHandler = MppOfferingHandler.INSTANCE;
         offHandler.loadDetails(offering);
         if (!offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
             String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");

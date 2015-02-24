@@ -402,7 +402,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
             long endDate = subscription.getDateProperty("subscriptionTerm.endDate").getTime();
             long newEndDate = endDate + DEFAULT_EXTENSION_PERIOD * 24 * 60 * 60 * 1000;  // add 3 more days
             req.setObjectProperty("endDate", new Date(newEndDate));
-            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            EntityHandler handler = MppRequestHandler.INSTANCE;
             try {
                 return handler.create(req);
             } catch (Exception e) {
@@ -440,7 +440,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
             EditText shareEmail = (EditText) params[0].topView.findViewById(R.id.shareEmail);
             req.setProperty("field_shareEmail", shareEmail.getText().toString().trim());
 
-            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            EntityHandler handler = MppRequestHandler.INSTANCE;
             try {
                 return handler.create(req);
             } catch (Exception e) {
@@ -501,7 +501,7 @@ public class SubscriptionListActivity extends ActionBarActivity {
             req.setProperty(MppRequestHandler.CATALOG_ID_KEY, holder.subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
             req.setProperty(MppRequestHandler.SERVICE_ID_KEY, holder.subscription.getId());
 
-            EntityHandler handler = EntityHandler.getHandler(MppRequestHandler.class);
+            EntityHandler handler = MppRequestHandler.INSTANCE;
             try {
                 return handler.create(req);
             } catch (Exception e) {
