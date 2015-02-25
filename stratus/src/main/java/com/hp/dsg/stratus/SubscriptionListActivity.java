@@ -4,13 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -145,23 +146,18 @@ public class SubscriptionListActivity extends StratusActivity {
         Entity subscription = ((ViewHolder) v.getTag()).subscription;
         final Intent i = new Intent(SubscriptionListActivity.this, SubscriptionActivity.class);
         i.putExtra(SubscriptionActivity.SUBSCRIPTION_EXTRA_KEY, subscription.toJson());
-        final Bundle options = ActivityOptions.makeScaleUpAnimation(v, 0, v.getHeight()/2, v.getWidth(), 0).toBundle();
-
-        oa.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                startActivity(i, options);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) { }
-
-            @Override
-            public void onAnimationCancel(Animator animation) { }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) { }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final Bundle options = ActivityOptions.makeScaleUpAnimation(v, 0, v.getHeight()/2, v.getWidth(), 0).toBundle();
+            oa.addListener(new AnimatorListenerAdapter() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    startActivity(i, options);
+                }
+            });
+        } else {
+            startActivity(i);
+        }
     }
 
     @Override
