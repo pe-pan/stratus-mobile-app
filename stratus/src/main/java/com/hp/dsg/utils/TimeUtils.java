@@ -10,19 +10,19 @@ public class TimeUtils {
             return ("Expired");
         } else {
             diff = diff / 1000;
-            if (diff < 60) {
+            if (diff < 2*60) {
                 return (diff+" seconds");
             } else {
                 diff = diff / 60;
-                if (diff < 60) {
+                if (diff < 2*60) {
                     return (diff+" minutes");
                 } else {
                     diff = diff / 60;
-                    if (diff < 24) {
+                    if (diff < 2*24) {
                         return (diff+" hours");
                     } else {
                         diff = diff / 24;
-                        if (diff < 7) {
+                        if (diff < 2*7) {
                             return (diff+ " days");
                         } else {
                             diff = diff / 7;
