@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,7 @@ import com.hp.dsg.stratus.entities.MppOffering;
 import com.hp.dsg.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Created by panuska on 7.1.2015.
@@ -25,7 +25,7 @@ public class OfferingActivity extends StratusActivity {
     public static final String TAG = OfferingActivity.class.getSimpleName();
 
     public static final String OFFERING_EXTRA_KEY = "offering";
-    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
+    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.ENGLISH);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
