@@ -23,7 +23,7 @@ public abstract class CsaEntityHandler extends EntityHandler {
         return M_STRATUS.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}").getResponse();
     }
 
-    public List<Entity> list(boolean enforce) {
+    public synchronized List<Entity> list(boolean enforce) {
         if (lastEntities != null && !enforce) {
             resetFilteredEntities();
             return lastEntities;
