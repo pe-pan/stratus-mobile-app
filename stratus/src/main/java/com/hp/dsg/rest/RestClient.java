@@ -210,8 +210,8 @@ public class RestClient {
         }
     }
 
-    private String headerName = null;
-    private String headerValue = null;
+    protected String headerName = null;
+    protected String headerValue = null;
     public void setCustomHeader(String headerName, String headerValue) {
         this.headerName = headerName;
         this.headerValue = headerValue;

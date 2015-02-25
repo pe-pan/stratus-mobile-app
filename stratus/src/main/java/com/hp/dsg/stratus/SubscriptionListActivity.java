@@ -45,7 +45,7 @@ import java.util.List;
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 
-public class SubscriptionListActivity extends ActionBarActivity {
+public class SubscriptionListActivity extends StratusActivity {
     private static final String TAG = SubscriptionListActivity.class.getSimpleName();
 
     private ListView listview;

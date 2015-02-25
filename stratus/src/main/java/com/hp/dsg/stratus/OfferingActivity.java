@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by panuska on 7.1.2015.
  */
-public class OfferingActivity extends ActionBarActivity {
+public class OfferingActivity extends StratusActivity {
     public static final String TAG = OfferingActivity.class.getSimpleName();
 
     public static final String OFFERING_EXTRA_KEY = "offering";

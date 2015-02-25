@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,12 +27,10 @@ import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
 
-import static com.hp.dsg.stratus.Mpp.M_STRATUS;
-
 /**
  * Created by panuska on 7.1.2015.
  */
-public class SubscriptionActivity extends ActionBarActivity {
+public class SubscriptionActivity extends StratusActivity {
     public static final String TAG = SubscriptionActivity.class.getSimpleName();
 
     public static final String SUBSCRIPTION_EXTRA_KEY = "subscription";

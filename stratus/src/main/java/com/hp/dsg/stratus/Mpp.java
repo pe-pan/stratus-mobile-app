@@ -4,13 +4,10 @@ import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
-import com.hp.dsg.stratus.entities.MppInstance;
-import com.hp.dsg.stratus.entities.MppInstanceHandler;
 import com.hp.dsg.stratus.entities.MppOffering;
 import com.hp.dsg.stratus.entities.MppOfferingHandler;
 import com.hp.dsg.stratus.entities.MppRequest;
 import com.hp.dsg.stratus.entities.MppRequestHandler;
-import com.hp.dsg.stratus.entities.MppSubscription;
 import com.hp.dsg.stratus.entities.MppSubscriptionHandler;
 import com.jayway.jsonpath.JsonPath;
 
@@ -48,7 +45,7 @@ public class Mpp extends AuthenticatedClient {
     }
 
     @Override
-    public void authenticate() {
+    public String authenticate() {
         String json = "{\n" +
                 "    \"passwordCredentials\":{\n" +
                 "        \"username\":\""+username+"\",\n" +
@@ -60,8 +57,8 @@ public class Mpp extends AuthenticatedClient {
 
         HttpResponse response = client.doPost(IDM_REST_URL, json);
         String token = JsonPath.read(response.getResponse(), "$.token.id");
-        client.clearCustomHeader();
-        client.setCustomHeader("X-Auth-Token", token);
+        setAuthenticationHeader(token);
+        return token;
     }
 
     @Override

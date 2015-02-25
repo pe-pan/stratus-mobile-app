@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 public abstract class AuthenticatedClient  {
     protected RestClient client;
 
-    public abstract void authenticate();
+    public abstract String authenticate();
 
     public abstract String getLoggedUserName();
 
@@ -20,12 +20,31 @@ public abstract class AuthenticatedClient  {
         return doGet(url, ContentType.XML_XML);
     }
 
+    public boolean isAuthenticated() {
+        return client.headerValue != null;
+    }
+
+    public void setAuthenticationHeader(String headerValue) {
+        client.setCustomHeader("X-Auth-Token", headerValue);
+        client.headerValue = headerValue;
+    }
+
+    public interface AuthenticationListener {
+        boolean onNoAuthentication();
+    }
+
+    private AuthenticationListener listener;
+
+    public void setAuthenticationListener(AuthenticationListener listener) {
+        this.listener = listener;
+    }
+
     public HttpResponse doGet(String url, ContentType type) {
         try {
             return client.doGet(url, type);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                authenticate();
+                if (listener != null) listener.onNoAuthentication();
                 return client.doGet(url, type);
             }
             throw e;
@@ -37,7 +56,7 @@ public abstract class AuthenticatedClient  {
             return client.doPut(url, data, type);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
-                authenticate();
+                if (listener != null) listener.onNoAuthentication();
                 return client.doPut(url, data, type);
             }
             throw e;
@@ -53,7 +72,7 @@ public abstract class AuthenticatedClient  {
             return client.doDelete(url);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
-                authenticate();
+                if (listener != null) if (!listener.onNoAuthentication()) ;
                 return client.doDelete(url);
             }
             throw e;
@@ -65,7 +84,7 @@ public abstract class AuthenticatedClient  {
             return client.doPost(url, data);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
-                authenticate();
+                if (listener != null) listener.onNoAuthentication();
                 return client.doPost(url, data);
             }
             throw e;
@@ -77,7 +96,7 @@ public abstract class AuthenticatedClient  {
             return client.doPost(url, data, type);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                authenticate();
+                if (listener != null) listener.onNoAuthentication();
                 return client.doPost(url, data);
             }
             throw e;
