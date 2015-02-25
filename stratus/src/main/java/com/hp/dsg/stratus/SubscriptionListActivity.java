@@ -370,6 +370,7 @@ public class SubscriptionListActivity extends StratusActivity {
                     progressBar.setVisibility(View.GONE);
                 }
             });
+            M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
             return true;
         }
     }
