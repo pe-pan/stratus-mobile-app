@@ -82,7 +82,7 @@ public class OfferingActivity extends StratusActivity {
                 String subscriptionName = ((EditText) findViewById(R.id.subscriptionName)).getText().toString();
                 String emailAddress = ((EditText) findViewById(R.id.emailAddress)).getText().toString();
                 ServiceRequestTask requestServiceTask = new ServiceRequestTask(offering, oppId, days, subscriptionName, emailAddress);
-                requestServiceTask.execute((Void) null);
+                requestServiceTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 finish();
             }
         });

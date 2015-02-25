@@ -27,7 +27,7 @@ public class OfferingListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offering_list);
 
-        new GetOfferings().execute(false);
+        new GetOfferings().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
 
         ListView list = (ListView) findViewById(R.id.offeringList);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,7 +51,7 @@ public class OfferingListActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case  R.id.offerings : {
-                new GetOfferings().execute(true); //refresh;
+                new GetOfferings().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh;
                 return true;
             }
             case R.id.subscriptions : {

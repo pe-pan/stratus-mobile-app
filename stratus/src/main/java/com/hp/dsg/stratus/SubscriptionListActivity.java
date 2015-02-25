@@ -56,7 +56,7 @@ public class SubscriptionListActivity extends StratusActivity {
         setContentView(R.layout.activity_subscription_list);
         listview = (ListView) findViewById(R.id.subscriptionList);
 
-        new GetSubscriptions().execute(false);
+        new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SubscriptionListActivity extends StratusActivity {
 //                startActivity
             }
             case R.id.subscriptions : {
-                new GetSubscriptions().execute(true); //refresh subscriptions
+                new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh subscriptions
                 return true;
             }
             case R.id.about : {
@@ -277,7 +277,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                         Toast.makeText(SubscriptionListActivity.this, getResources().getString(R.string.extensionRequestMissing), Toast.LENGTH_LONG).show();
                                     } else {
                                         v.setEnabled(false);
-                                        new ExtendSubscription().execute(holder);
+                                        new ExtendSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
                                     }
                                 }
                             });
@@ -319,7 +319,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                         } else {
                                             if (subscription.getBooleanProperty("deletable")) {
                                                 cancelButton.setEnabled(false);
-                                                new DeleteSubscription().execute(holder);
+                                                new DeleteSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
                                             } else {
                                                 //todo this should never happen
                                                 Toast.makeText(SubscriptionListActivity.this, "This demo cannot be canceled nor deleted", Toast.LENGTH_SHORT).show();
@@ -344,7 +344,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                             sendShareButton.setEnabled(true);  // enable it for next use
                                         }
                                     });
-                                    new ShareSubscription().execute(holder);
+                                    new ShareSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
 
                                     SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
                                     editor.putString("shareEmail", ((EditText) row.findViewById(R.id.shareEmail)).getText().toString());

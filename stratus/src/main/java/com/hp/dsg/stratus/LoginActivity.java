@@ -132,7 +132,7 @@ public class LoginActivity extends StratusActivity {
             M_STRATUS.setPassword(password);
 
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.executeOnExecutor(UserLoginTask.THREAD_POOL_EXECUTOR, (Void) null);
+            mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
 

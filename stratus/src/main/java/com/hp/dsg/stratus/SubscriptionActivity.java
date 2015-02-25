@@ -42,7 +42,7 @@ public class SubscriptionActivity extends StratusActivity {
 
         String json = getIntent().getStringExtra(SUBSCRIPTION_EXTRA_KEY);
         final MppSubscription subscription= new MppSubscription(json);
-        new GetSubscriptionDetails().execute(subscription);
+        new GetSubscriptionDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subscription);
 
         ((TextView) findViewById(R.id.subscriptionName2)).setText(subscription.getProperty("name"));
         ((TextView) findViewById(R.id.subscriptionStatus)).setText(subscription.getProperty("status"));
@@ -148,7 +148,7 @@ public class SubscriptionActivity extends StratusActivity {
                                             req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
                                             req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
                                             req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
-                                            new SendServiceAction().execute(req);
+                                            new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
                                             return true;
                                         }
                                     });

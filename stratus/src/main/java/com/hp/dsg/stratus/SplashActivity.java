@@ -19,7 +19,7 @@ public class SplashActivity extends StratusActivity {
         super.onCreate(icicle);
         setContentView(R.layout.activity_splash);
 
-        new GetSubscriptions().execute(false);
+        new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
 
     @Override
