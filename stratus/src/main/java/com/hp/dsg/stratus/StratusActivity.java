@@ -46,7 +46,7 @@ public class StratusActivity extends ActionBarActivity {
             M_STRATUS.setAuthenticationHeader(token);
             M_STRATUS.setUsername(authenticationTokenFile.getString(USERNAME_PKEY, null));
             M_STRATUS.setPassword(authenticationTokenFile.getString(PASSWORD_PKEY, null));
-            Log.d(TAG, "Not authenticated; restoring token ..."+token.substring(token.length()-30));
+            Log.d(TAG, "Not authenticated; restoring token: "+token);
         }
     }
 
