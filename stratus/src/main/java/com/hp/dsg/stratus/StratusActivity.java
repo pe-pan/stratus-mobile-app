@@ -44,6 +44,8 @@ public class StratusActivity extends ActionBarActivity {
             SharedPreferences authenticationTokenFile = getSharedPreferences(AUTHENTICATION_FILE, MODE_PRIVATE);
             String token = authenticationTokenFile.getString(AUTHENTICATION_TOKEN_PKEY, null);
             M_STRATUS.setAuthenticationHeader(token);
+            M_STRATUS.setUsername(authenticationTokenFile.getString(USERNAME_PKEY, null));
+            M_STRATUS.setPassword(authenticationTokenFile.getString(PASSWORD_PKEY, null));
             Log.d(TAG, "Not authenticated; restoring token ..."+token.substring(token.length()-30));
         }
     }
