@@ -155,13 +155,6 @@ public class LoginActivity extends StratusActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            if ("sdk_google_phone_x86".equals( Build.PRODUCT )) {
-                System.setProperty("java.net.useSystemProxies", "false");
-                System.setProperty("https.proxyHost", "proxy.bbn.hp.com");
-                System.setProperty("https.proxyPort", "8080");
-                System.setProperty("http.proxyHost", "proxy.bbn.hp.com");
-                System.setProperty("http.proxyPort", "8080");
-            }
             try {
                 M_STRATUS.authenticate();
             } catch (Exception e) {
