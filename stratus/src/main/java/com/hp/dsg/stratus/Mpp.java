@@ -14,6 +14,7 @@ import com.jayway.jsonpath.JsonPath;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by panuska on 6.1.2015.
@@ -80,7 +81,7 @@ public class Mpp extends AuthenticatedClient {
 
         EntityHandler reqHandler = MppRequestHandler.INSTANCE;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
         MppRequest req = new MppRequest(null);
         req.setProperty("action", "ORDER");
