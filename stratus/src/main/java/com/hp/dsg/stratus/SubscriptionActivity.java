@@ -1,5 +1,6 @@
 package com.hp.dsg.stratus;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -8,7 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.animation.Transformation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.support.v7.widget.PopupMenu;
 import android.widget.RadioGroup;
@@ -67,109 +71,157 @@ public class SubscriptionActivity extends StratusActivity {
         }
     }
 
-    private class GetSubscriptionDetails extends AsyncTask<MppSubscription, Void, Boolean> {
+    private class GetSubscriptionDetails extends AsyncTask<MppSubscription, Void, Server[]> {
+        private MppInstance instance;
+        private ImageView expandTriangle;
 
         @Override
-        protected Boolean doInBackground(final MppSubscription... params) {
-            final MppInstance instance = params[0].getInstance();
-            final Server[] servers = instance.getServers();
+        protected Server[] doInBackground(final MppSubscription... params) {
+            expandTriangle = (ImageView) findViewById(R.id.expandComponentProperties);
+            RotateAnimation a = (RotateAnimation) AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation);
+            expandTriangle.startAnimation(a);
 
+            instance = params[0].getInstance();
+            return instance.getServers();
+        }
+
+        @Override
+        protected void onPostExecute(Server[] servers) {
+            Animation a = expandTriangle.getAnimation();
             if (servers == null) {
-                return false;
-            }
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final TextView expandTextView = (TextView) findViewById(R.id.expandComponentProperties);
-                    expandTextView.setVisibility(View.VISIBLE);
-                    expandTextView.setOnClickListener(new View.OnClickListener() {
-                        private boolean expanded = false;
-
+                final Animation rotateScaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation_scale);
+                // (2) and once it's scaled out, the icon is gone forever
+                rotateScaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        expandTriangle.setVisibility(View.GONE);
+                    }
+                });
+                final Animation scaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.scale_out);
+                scaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        findViewById(R.id.leftLine).setVisibility(View.GONE);
+                        findViewById(R.id.rightLine).setVisibility(View.GONE);
+                    }
+                });
+                // (1) once the animation finishes the cycle, start a new animation that scales the icon out
+                if (a != null) { // if there is an animation running, stop it once it finishes a cycle
+                    a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
                         @Override
-                        public void onClick(View v) {
-                            expanded = !expanded;
-                            View properties = findViewById(R.id.subscriptionProperties);
-                            if (expanded) {
-                                expand(properties);
-                                expandTextView.setText("Collapse servers");
-                            } else {
-                                collapse(properties);
-                                expandTextView.setText("Expand servers");
-                            }
+                        public void onAnimationRepeat(Animation animation) {
+                            expandTriangle.startAnimation(rotateScaleOut);
+                            findViewById(R.id.leftLine).startAnimation(scaleOut);
+                            findViewById(R.id.rightLine).startAnimation(scaleOut);
                         }
                     });
-
-                    LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
-                    for (final Server server : servers) {
-                        View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
-                        for (ServerProperty property : server.properties) {
-
-                            switch (property.name) {
-                                case "DEMONAME" :
-                                    ((TextView)row.findViewById(R.id.demoNameValue)).setText((String) property.value);
-                                    break;
-                                case "ACTIVATED" :
-                                    ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean)property.value ? "ACTIVE" : "HALT");
-                                    break;
-                                default:
-                                    LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
-                                    View pair = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_pair, null);
-
-                                    TextView title = (TextView)pair.findViewById(R.id.propertyTitle);
-                                    title.setText(property.displayName);
-
-                                    TextView value = (TextView)pair.findViewById(R.id.propertyValue);
-                                    value.setText(property.value.toString());
-
-                                    propertyList.addView(pair);
-                            }
-                        }
-                        row.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(final View v) {
-                                if (server.serviceSubscriptionId == null) {
-                                    Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
-                                } else {
-                                    PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
-                                    for (int i = 0; i < server.actions.length; i++) {
-                                        ServiceAction action = server.actions[i];
-                                        menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
-                                    }
-                                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                        @Override
-                                        public boolean onMenuItemClick(MenuItem item) {
-                                            ServiceAction action = server.actions[item.getItemId()];
-                                            MppRequest req = new MppRequest(null);
-                                            req.setProperty("action", action.name);
-                                            if (action.emailProperty != null) {
-                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
-                                            }
-                                            req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
-                                            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-                                            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
-                                            new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
-                                            return true;
-                                        }
-                                    });
-                                    final int color = v.getDrawingCacheBackgroundColor();
-                                    menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                                        @Override
-                                        public void onDismiss(PopupMenu popupMenu) {
-                                            v.setBackgroundColor(color);
-                                        }
-                                    });
-                                    v.setBackgroundColor(Color.GRAY);
-                                    menu.show();
-                                }
-                                return true;
-                            }
-                        });
-                        properties.addView(row);
-                    }
+                } else {
+                    expandTriangle.startAnimation(rotateScaleOut);
+                    findViewById(R.id.leftLine).startAnimation(scaleOut);
+                    findViewById(R.id.rightLine).startAnimation(scaleOut);
                 }
-            });
-            return true;
+
+            } else {
+                if (a != null) { // if there is an animation running, stop it once it finishes a cycle
+                    a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                            expandTriangle.clearAnimation();
+                        }
+                    });
+                }
+                expandTriangle.setPivotX(1f/2f * expandTriangle.getWidth());
+                expandTriangle.setPivotY(2f/3f * expandTriangle.getHeight());
+                final ObjectAnimator rotationUp = ObjectAnimator.ofFloat(expandTriangle, "rotation", 0);
+                rotationUp.setDuration(600);
+                final ObjectAnimator rotationDown = ObjectAnimator.ofFloat(expandTriangle, "rotation", 180);
+                rotationDown.setDuration(600);
+
+                expandTriangle.setOnClickListener(new View.OnClickListener() {
+                    private boolean expanded = false;
+
+                    @Override
+                    public void onClick(View v) {
+                        expanded = !expanded;
+                        View properties = findViewById(R.id.subscriptionProperties);
+                        if (expanded) {
+                            rotationDown.start();
+                            expand(properties);
+                        } else {
+                            rotationUp.start();
+                            collapse(properties);
+                        }
+                    }
+                });
+
+                LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
+                for (final Server server : servers) {
+                    View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
+                    for (ServerProperty property : server.properties) {
+
+                        switch (property.name) {
+                            case "DEMONAME" :
+                                ((TextView)row.findViewById(R.id.demoNameValue)).setText((String) property.value);
+                                break;
+                            case "ACTIVATED" :
+                                ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean)property.value ? "ACTIVE" : "HALT");
+                                break;
+                            default:
+                                LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
+                                View pair = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_pair, null);
+
+                                TextView title = (TextView)pair.findViewById(R.id.propertyTitle);
+                                title.setText(property.displayName);
+
+                                TextView value = (TextView)pair.findViewById(R.id.propertyValue);
+                                value.setText(property.value.toString());
+
+                                propertyList.addView(pair);
+                        }
+                    }
+                    row.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(final View v) {
+                            if (server.serviceSubscriptionId == null) {
+                                Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
+                            } else {
+                                PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
+                                for (int i = 0; i < server.actions.length; i++) {
+                                    ServiceAction action = server.actions[i];
+                                    menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
+                                }
+                                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        ServiceAction action = server.actions[item.getItemId()];
+                                        MppRequest req = new MppRequest(null);
+                                        req.setProperty("action", action.name);
+                                        if (action.emailProperty != null) {
+                                            req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                        }
+                                        req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
+                                        req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                                        req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
+                                        new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                        return true;
+                                    }
+                                });
+                                final int color = v.getDrawingCacheBackgroundColor();
+                                menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(PopupMenu popupMenu) {
+                                        v.setBackgroundColor(color);
+                                    }
+                                });
+                                v.setBackgroundColor(Color.GRAY);
+                                menu.show();
+                            }
+                            return true;
+                        }
+                    });
+                    properties.addView(row);
+                }
+            }
         }
     }
 
