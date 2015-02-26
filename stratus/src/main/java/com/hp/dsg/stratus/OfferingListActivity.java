@@ -90,14 +90,10 @@ public class OfferingListActivity extends ActionBarActivity {
                         }
 
                         @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
+                        public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
                         @Override
-                        public void afterTextChanged(Editable s) {
-
-                        }
+                        public void afterTextChanged(Editable s) { }
                     });
                 }
             });

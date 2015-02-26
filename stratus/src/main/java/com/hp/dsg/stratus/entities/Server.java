@@ -13,5 +13,4 @@ public class Server {
         this.serviceSubscriptionId = serviceSubscriptionId;
         this.actions = actions;
     }
-
 }

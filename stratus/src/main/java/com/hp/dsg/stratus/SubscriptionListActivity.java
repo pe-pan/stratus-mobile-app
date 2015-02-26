@@ -62,23 +62,17 @@ public class SubscriptionListActivity extends StratusActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_subscription, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         switch (item.getItemId()) {
             case  R.id.offerings : {
                 startActivity(new Intent(this, OfferingListActivity.class));
                 finish();
                 return true;
-//                startActivity
             }
             case R.id.subscriptions : {
                 new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh subscriptions
@@ -94,8 +88,8 @@ public class SubscriptionListActivity extends StratusActivity {
     }
 
     private float difference = 0;
-    private float initialx = 0;
-    private float currentx = 0;
+    private float initialX = 0;
+    private float currentX = 0;
     private View animatedView = null;
 
     public static final int CLICK = 10;  // everything below this value is considered not to be a swipe
@@ -184,13 +178,13 @@ public class SubscriptionListActivity extends StratusActivity {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN :
                                 difference = 0;
-                                initialx = event.getRawX();
-                                currentx = event.getRawX();
-                                Log.d(TAG, "Motion down " + initialx);
+                                initialX = event.getRawX();
+                                currentX = event.getRawX();
+                                Log.d(TAG, "Motion down " + initialX);
                                 return true;
                             case MotionEvent.ACTION_MOVE :
-                                currentx = event.getRawX();
-                                difference = currentx - initialx;
+                                currentX = event.getRawX();
+                                difference = currentX - initialX;
                                 if (difference > CLICK)
                                     onSwipeRightStart(v);
                                 if (difference > v.getWidth() / 4) {

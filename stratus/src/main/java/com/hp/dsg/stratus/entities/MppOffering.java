@@ -43,5 +43,4 @@ public class MppOffering extends CsaEntity {
         }
         return value;
     }
-
 }

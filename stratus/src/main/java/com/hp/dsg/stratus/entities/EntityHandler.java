@@ -39,10 +39,6 @@ public abstract class EntityHandler {
         return context;
     }
 
-    public String getContexts() {
-        return context+"s";
-    }
-
     public abstract List<Entity> list(boolean enforce);
 
     public abstract String create(Entity entity);

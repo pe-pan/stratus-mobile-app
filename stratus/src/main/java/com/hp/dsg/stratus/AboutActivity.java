@@ -18,7 +18,6 @@ import java.util.zip.ZipFile;
  * Created by panuska on 6.1.2015.
  */
 public class AboutActivity extends Activity {
-
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mma", Locale.ENGLISH);
 
     @Override
@@ -55,7 +54,5 @@ public class AboutActivity extends Activity {
         }
         TextView buildTime = (TextView) findViewById(R.id.buildTime);
         buildTime.setText(s);
-
-
     }
 }

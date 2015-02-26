@@ -36,8 +36,6 @@ public class MppRequest extends CsaEntity {
             b.deleteCharAt(b.length()-1);
             b.append("}");
         }
-
         return b.toString();
     }
-
 }

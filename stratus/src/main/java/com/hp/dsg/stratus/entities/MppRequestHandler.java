@@ -34,5 +34,4 @@ public class MppRequestHandler extends CsaEntityHandler {
         String id = JsonPath.read(response.getResponse(), "$.id");
         return id;
     }
-
 }

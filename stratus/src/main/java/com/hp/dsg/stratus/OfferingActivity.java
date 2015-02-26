@@ -39,7 +39,7 @@ public class OfferingActivity extends StratusActivity {
         String properties[] = {"displayName", "description", "catalogName", "displayName", "publishedDate"};
 
         TextView text = null;
-        String value = null;
+        String value;
         for (int i = 0; i < ids.length; i++) {
             text = (TextView) findViewById(ids[i]);
             value = StringUtils.trimToEmpty(offering.getProperty(properties[i]));
