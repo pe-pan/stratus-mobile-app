@@ -48,7 +48,7 @@ public class OfferingActivity extends StratusActivity {
 
         text.setText(sdf2.format(offering.getDateProperty(properties[ids.length-1])));  //todo the value is set second time -> change it
 
-        if (offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
+        if ("EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
             findViewById(R.id.offeringParameters).setVisibility(View.GONE);
             EditText email = (EditText)findViewById(R.id.emailAddress);
             email.setText(Mpp.M_STRATUS.getLoggedUserName());

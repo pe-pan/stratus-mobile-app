@@ -98,7 +98,7 @@ public class Mpp extends AuthenticatedClient {
 
         EntityHandler offHandler = MppOfferingHandler.INSTANCE;
         offHandler.loadDetails(offering);
-        if (!offering.getProperty("category.name").equals("EXECUTIVE_DEMOS")) {
+        if (!"EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
             String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");
             String oppDetailsId = offering.getProperty("field_OPPDETAILS");
             req.setObjectProperty(checkBoxId, true);
