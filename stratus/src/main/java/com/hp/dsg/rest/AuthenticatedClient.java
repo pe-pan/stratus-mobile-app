@@ -55,7 +55,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doPut(url, data, type);
         } catch (IllegalRestStateException e) {
-            if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
+            if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doPut(url, data, type);
             }
@@ -71,7 +71,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doDelete(url);
         } catch (IllegalRestStateException e) {
-            if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
+            if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 if (listener != null) if (!listener.onNoAuthentication()) ;
                 return client.doDelete(url);
             }
@@ -83,7 +83,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doPost(url, data);
         } catch (IllegalRestStateException e) {
-            if (e.getResponseCode() == HttpURLConnection .HTTP_UNAUTHORIZED) {
+            if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doPost(url, data);
             }
