@@ -225,7 +225,7 @@ public class SubscriptionActivity extends StratusActivity {
                                                 v.setBackgroundColor(color);
                                             }
                                         });
-                                        v.setBackgroundColor(Color.GRAY);
+                                        v.setBackgroundColor(getResources().getColor(R.color.darker_gray));
                                         menu.show();
                                     }
                                     return true;
