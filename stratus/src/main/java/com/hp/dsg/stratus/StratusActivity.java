@@ -1,14 +1,19 @@
 package com.hp.dsg.stratus;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ViewConfiguration;
+import android.widget.Toast;
 
 import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.IllegalRestStateException;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.lang.reflect.Field;
 
@@ -103,5 +108,32 @@ public class StratusActivity extends ActionBarActivity {
             // Ignore
         }
 
+    }
+    public void showSendErrorDialog(final Exception e) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("A critical error has appeared. The application will get closed.\nDo you want to report this error to authors?")
+                .setTitle("Fatal Error")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
+                        i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_mail_subj));
+                        i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e)));
+                        try {
+                            startActivity(Intent.createChooser(i, getString(R.string.mail_client_title)));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(StratusActivity.this, getString(R.string.no_mail_clients), Toast.LENGTH_LONG).show();
+                        }
+                        finish();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).create().show();
     }
 }

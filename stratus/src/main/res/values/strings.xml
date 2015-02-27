@@ -8,7 +8,7 @@
     <string name="support_mail_subj">Support needed for Stratus Mobile App (version 0.0.2)</string>
     <string name="support_mail_body">An exception thrown:\n%1$s</string>
     <string name="support_mail_to">petr.panuska@hp.com</string>
-    <string name="mail_client_title">Send mail...</string>
+    <string name="mail_client_title">Send error report</string>
     <string name="no_mail_clients">There are no email clients installed.</string>
 
     <string name="action_settings">Settings</string>
