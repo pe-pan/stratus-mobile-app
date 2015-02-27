@@ -125,7 +125,7 @@ public class RestClient {
                         break;
                     }
                 }
-                if (headerName != null) {
+                if (headerName != null && headerValue != null) {
                     conn.setRequestProperty(headerName, headerValue);
                     Log.d(TAG, "Setting "+headerName+": "+headerValue);
 //                    headerName = null;
@@ -201,6 +201,9 @@ public class RestClient {
                 }
             } catch (IOException e1) {
                 Log.d(TAG, "Cannot convert error stream to string");
+            }
+            if (e.getMessage().equals("Received authentication challenge is null")) {
+                responseCode = HttpURLConnection.HTTP_UNAUTHORIZED; // todo hack, FMI, see http://stackoverflow.com/questions/1357372
             }
             throw new IllegalRestStateException(responseCode, errorStream == null ? e.getMessage() : errorStream, errorStream, e);
         } finally {
