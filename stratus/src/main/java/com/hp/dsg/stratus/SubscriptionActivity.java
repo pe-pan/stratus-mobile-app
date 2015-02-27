@@ -77,150 +77,169 @@ public class SubscriptionActivity extends StratusActivity {
 
         @Override
         protected Server[] doInBackground(final MppSubscription... params) {
-            expandTriangle = (ImageView) findViewById(R.id.expandComponentProperties);
-            RotateAnimation a = (RotateAnimation) AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation);
-            expandTriangle.startAnimation(a);
+            try {
+                expandTriangle = (ImageView) findViewById(R.id.expandComponentProperties);
+                RotateAnimation a = (RotateAnimation) AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation);
+                expandTriangle.startAnimation(a);
 
-            instance = params[0].getInstance();
-            return instance.getServers();
+                instance = params[0].getInstance();
+                return instance.getServers();
+            } catch (Exception e) {
+                showSendErrorDialog(e);
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(Server[] servers) {
-            Animation a = expandTriangle.getAnimation();
-            if (servers == null) {
-                final Animation rotateScaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation_scale);
-                // (2) and once it's scaled out, the icon is gone forever
-                rotateScaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        expandTriangle.setVisibility(View.GONE);
-                    }
-                });
-                final Animation scaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.scale_out);
-                scaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        findViewById(R.id.leftLine).setVisibility(View.GONE);
-                        findViewById(R.id.rightLine).setVisibility(View.GONE);
-                    }
-                });
-                // (1) once the animation finishes the cycle, start a new animation that scales the icon out
-                if (a != null) { // if there is an animation running, stop it once it finishes a cycle
-                    a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+            try {
+                Animation a = expandTriangle.getAnimation();
+                if (servers == null) {
+                    final Animation rotateScaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation_scale);
+                    // (2) and once it's scaled out, the icon is gone forever
+                    rotateScaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
                         @Override
-                        public void onAnimationRepeat(Animation animation) {
-                            expandTriangle.startAnimation(rotateScaleOut);
-                            findViewById(R.id.leftLine).startAnimation(scaleOut);
-                            findViewById(R.id.rightLine).startAnimation(scaleOut);
+                        public void onAnimationEnd(Animation animation) {
+                            expandTriangle.setVisibility(View.GONE);
                         }
                     });
-                } else {
-                    expandTriangle.startAnimation(rotateScaleOut);
-                    findViewById(R.id.leftLine).startAnimation(scaleOut);
-                    findViewById(R.id.rightLine).startAnimation(scaleOut);
-                }
-
-            } else {
-                if (a != null) { // if there is an animation running, stop it once it finishes a cycle
-                    a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                    final Animation scaleOut = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.scale_out);
+                    scaleOut.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
                         @Override
-                        public void onAnimationRepeat(Animation animation) {
-                            expandTriangle.clearAnimation();
+                        public void onAnimationEnd(Animation animation) {
+                            findViewById(R.id.leftLine).setVisibility(View.GONE);
+                            findViewById(R.id.rightLine).setVisibility(View.GONE);
                         }
                     });
-                }
-                expandTriangle.setPivotX(1f/2f * expandTriangle.getWidth());
-                expandTriangle.setPivotY(2f/3f * expandTriangle.getHeight());
-                final ObjectAnimator rotationUp = ObjectAnimator.ofFloat(expandTriangle, "rotation", 0);
-                rotationUp.setDuration(600);
-                final ObjectAnimator rotationDown = ObjectAnimator.ofFloat(expandTriangle, "rotation", 180);
-                rotationDown.setDuration(600);
-
-                expandTriangle.setOnClickListener(new View.OnClickListener() {
-                    private boolean expanded = false;
-
-                    @Override
-                    public void onClick(View v) {
-                        expanded = !expanded;
-                        View properties = findViewById(R.id.subscriptionProperties);
-                        if (expanded) {
-                            rotationDown.start();
-                            expand(properties);
-                        } else {
-                            rotationUp.start();
-                            collapse(properties);
-                        }
-                    }
-                });
-
-                LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
-                for (final Server server : servers) {
-                    View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
-                    for (ServerProperty property : server.properties) {
-
-                        switch (property.name) {
-                            case "DEMONAME" :
-                                ((TextView)row.findViewById(R.id.demoNameValue)).setText((String) property.value);
-                                break;
-                            case "ACTIVATED" :
-                                ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean)property.value ? "ACTIVE" : "HALT");
-                                break;
-                            default:
-                                LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
-                                View pair = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_pair, null);
-
-                                TextView title = (TextView)pair.findViewById(R.id.propertyTitle);
-                                title.setText(property.displayName);
-
-                                TextView value = (TextView)pair.findViewById(R.id.propertyValue);
-                                value.setText(property.value.toString());
-
-                                propertyList.addView(pair);
-                        }
-                    }
-                    row.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(final View v) {
-                            if (server.serviceSubscriptionId == null) {
-                                Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
-                            } else {
-                                PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
-                                for (int i = 0; i < server.actions.length; i++) {
-                                    ServiceAction action = server.actions[i];
-                                    menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
-                                }
-                                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        ServiceAction action = server.actions[item.getItemId()];
-                                        MppRequest req = new MppRequest(null);
-                                        req.setProperty("action", action.name);
-                                        if (action.emailProperty != null) {
-                                            req.setProperty("field_EMAIL_CONF", action.emailProperty);
-                                        }
-                                        req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
-                                        req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-                                        req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
-                                        new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
-                                        return true;
-                                    }
-                                });
-                                final int color = v.getDrawingCacheBackgroundColor();
-                                menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                                    @Override
-                                    public void onDismiss(PopupMenu popupMenu) {
-                                        v.setBackgroundColor(color);
-                                    }
-                                });
-                                v.setBackgroundColor(Color.GRAY);
-                                menu.show();
+                    // (1) once the animation finishes the cycle, start a new animation that scales the icon out
+                    if (a != null) { // if there is an animation running, stop it once it finishes a cycle
+                        a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                                expandTriangle.startAnimation(rotateScaleOut);
+                                findViewById(R.id.leftLine).startAnimation(scaleOut);
+                                findViewById(R.id.rightLine).startAnimation(scaleOut);
                             }
-                            return true;
+                        });
+                    } else {
+                        expandTriangle.startAnimation(rotateScaleOut);
+                        findViewById(R.id.leftLine).startAnimation(scaleOut);
+                        findViewById(R.id.rightLine).startAnimation(scaleOut);
+                    }
+
+                } else {
+                    if (a != null) { // if there is an animation running, stop it once it finishes a cycle
+                        a.setAnimationListener(new ViewUtils.AnimationListenerAdapter() {
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                                expandTriangle.clearAnimation();
+                            }
+                        });
+                    }
+                    expandTriangle.setPivotX(1f / 2f * expandTriangle.getWidth());
+                    expandTriangle.setPivotY(2f / 3f * expandTriangle.getHeight());
+                    final ObjectAnimator rotationUp = ObjectAnimator.ofFloat(expandTriangle, "rotation", 0);
+                    rotationUp.setDuration(600);
+                    final ObjectAnimator rotationDown = ObjectAnimator.ofFloat(expandTriangle, "rotation", 180);
+                    rotationDown.setDuration(600);
+
+                    expandTriangle.setOnClickListener(new View.OnClickListener() {
+                        private boolean expanded = false;
+
+                        @Override
+                        public void onClick(View v) {
+                            expanded = !expanded;
+                            View properties = findViewById(R.id.subscriptionProperties);
+                            if (expanded) {
+                                rotationDown.start();
+                                expand(properties);
+                            } else {
+                                rotationUp.start();
+                                collapse(properties);
+                            }
                         }
                     });
-                    properties.addView(row);
+
+                    LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
+                    for (final Server server : servers) {
+                        View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
+                        for (ServerProperty property : server.properties) {
+
+                            switch (property.name) {
+                                case "DEMONAME":
+                                    ((TextView) row.findViewById(R.id.demoNameValue)).setText((String) property.value);
+                                    break;
+                                case "ACTIVATED":
+                                    ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean) property.value ? "ACTIVE" : "HALT");
+                                    break;
+                                default:
+                                    LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
+                                    View pair = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_pair, null);
+
+                                    TextView title = (TextView) pair.findViewById(R.id.propertyTitle);
+                                    title.setText(property.displayName);
+
+                                    TextView value = (TextView) pair.findViewById(R.id.propertyValue);
+                                    value.setText(property.value.toString());
+
+                                    propertyList.addView(pair);
+                            }
+                        }
+                        row.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(final View v) {
+                                try {
+                                    if (server.serviceSubscriptionId == null) {
+                                        Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
+                                        for (int i = 0; i < server.actions.length; i++) {
+                                            ServiceAction action = server.actions[i];
+                                            menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
+                                        }
+                                        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                            @Override
+                                            public boolean onMenuItemClick(MenuItem item) {
+                                                try {
+                                                    ServiceAction action = server.actions[item.getItemId()];
+                                                    MppRequest req = new MppRequest(null);
+                                                    req.setProperty("action", action.name);
+                                                    if (action.emailProperty != null) {
+                                                        req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                                    }
+                                                    req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
+                                                    req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                                                    req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
+                                                    new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                                    return true;
+                                                } catch (Exception e) {
+                                                    showSendErrorDialog(e);
+                                                    return false;
+                                                }
+                                            }
+                                        });
+                                        final int color = v.getDrawingCacheBackgroundColor();
+                                        menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss(PopupMenu popupMenu) {
+                                                v.setBackgroundColor(color);
+                                            }
+                                        });
+                                        v.setBackgroundColor(Color.GRAY);
+                                        menu.show();
+                                    }
+                                    return true;
+                                } catch (Exception e) {
+                                    showSendErrorDialog(e);
+                                    return false;
+                                }
+                            }
+                        });
+                        properties.addView(row);
+                    }
                 }
+            } catch (Exception e) {
+                showSendErrorDialog(e);
             }
         }
     }

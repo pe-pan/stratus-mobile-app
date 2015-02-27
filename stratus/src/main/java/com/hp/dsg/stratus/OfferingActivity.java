@@ -29,63 +29,67 @@ public class OfferingActivity extends StratusActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offering);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_offering);
 
-        String json = getIntent().getStringExtra(OFFERING_EXTRA_KEY);
-        final MppOffering offering = new MppOffering(json);
+            String json = getIntent().getStringExtra(OFFERING_EXTRA_KEY);
+            final MppOffering offering = new MppOffering(json);
 
-        int ids[] = {R.id.offeringName, R.id.offeringDescription, R.id.offeringCatalog, R.id.subscriptionName, R.id.offeringUpdateOn };
-        String properties[] = {"displayName", "description", "catalogName", "displayName", "publishedDate"};
+            int ids[] = {R.id.offeringName, R.id.offeringDescription, R.id.offeringCatalog, R.id.subscriptionName, R.id.offeringUpdateOn};
+            String properties[] = {"displayName", "description", "catalogName", "displayName", "publishedDate"};
 
-        TextView text = null;
-        String value;
-        for (int i = 0; i < ids.length; i++) {
-            text = (TextView) findViewById(ids[i]);
-            value = StringUtils.trimToEmpty(offering.getProperty(properties[i]));
-            text.setText(value);
-        }
+            TextView text = null;
+            String value;
+            for (int i = 0; i < ids.length; i++) {
+                text = (TextView) findViewById(ids[i]);
+                value = StringUtils.trimToEmpty(offering.getProperty(properties[i]));
+                text.setText(value);
+            }
 
-        text.setText(sdf2.format(offering.getDateProperty(properties[ids.length-1])));  //todo the value is set second time -> change it
+            text.setText(sdf2.format(offering.getDateProperty(properties[ids.length - 1])));  //todo the value is set second time -> change it
 
-        if ("EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
-            findViewById(R.id.offeringParameters).setVisibility(View.GONE);
-            EditText email = (EditText)findViewById(R.id.emailAddress);
-            email.setText(Mpp.M_STRATUS.getLoggedUserName());
-            email.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
-        } else {
-            findViewById(R.id.executiveParams).setVisibility(View.GONE);
-        }
+            if ("EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
+                findViewById(R.id.offeringParameters).setVisibility(View.GONE);
+                EditText email = (EditText) findViewById(R.id.emailAddress);
+                email.setText(Mpp.M_STRATUS.getLoggedUserName());
+                email.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
+            } else {
+                findViewById(R.id.executiveParams).setVisibility(View.GONE);
+            }
 
-        final EditText oppId = (EditText) findViewById(R.id.opportunityId);
+            final EditText oppId = (EditText) findViewById(R.id.opportunityId);
 
-        oppId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    String text = oppId.getText().toString();
-                    if (text.startsWith("OPP-")) {
-                        oppId.setSelection("OPP-".length(), text.length());
-                    } else {
-                        oppId.selectAll();
+            oppId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        String text = oppId.getText().toString();
+                        if (text.startsWith("OPP-")) {
+                            oppId.setSelection("OPP-".length(), text.length());
+                        } else {
+                            oppId.selectAll();
+                        }
                     }
                 }
-            }
-        });
-        Button subscribeButton = (Button) findViewById(R.id.subscribe);
-        subscribeButton.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
-        subscribeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String oppId = ((EditText) findViewById(R.id.opportunityId)).getText().toString();
-                String days = ((EditText) findViewById(R.id.howManyDays)).getText().toString();
-                String subscriptionName = ((EditText) findViewById(R.id.subscriptionName)).getText().toString();
-                String emailAddress = ((EditText) findViewById(R.id.emailAddress)).getText().toString();
-                ServiceRequestTask requestServiceTask = new ServiceRequestTask(offering, oppId, days, subscriptionName, emailAddress);
-                requestServiceTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-                finish();
-            }
-        });
+            });
+            Button subscribeButton = (Button) findViewById(R.id.subscribe);
+            subscribeButton.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
+            subscribeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String oppId = ((EditText) findViewById(R.id.opportunityId)).getText().toString();
+                    String days = ((EditText) findViewById(R.id.howManyDays)).getText().toString();
+                    String subscriptionName = ((EditText) findViewById(R.id.subscriptionName)).getText().toString();
+                    String emailAddress = ((EditText) findViewById(R.id.emailAddress)).getText().toString();
+                    ServiceRequestTask requestServiceTask = new ServiceRequestTask(offering, oppId, days, subscriptionName, emailAddress);
+                    requestServiceTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                    finish();
+                }
+            });
+        } catch (Exception e) {
+            showSendErrorDialog(e);
+        }
     }
 
     @Override

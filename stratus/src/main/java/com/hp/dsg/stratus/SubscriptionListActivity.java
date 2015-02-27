@@ -45,7 +45,6 @@ import java.util.List;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
-
 public class SubscriptionListActivity extends StratusActivity {
     private static final String TAG = SubscriptionListActivity.class.getSimpleName();
 
@@ -168,200 +167,219 @@ public class SubscriptionListActivity extends StratusActivity {
 
         @Override
         protected Boolean doInBackground(Boolean... params) {
-            final List<Entity> subscriptions = M_STRATUS.getSubscriptions(params[0]);
-            final View.OnTouchListener gestureListener = new View.OnTouchListener() {
-                public boolean onTouch(final View v, MotionEvent event) {
-                    if (animatedView != null && animatedView != v) { // something has been animated but now I'm clicking somewhere else
-                        onSwipeCancel(animatedView);
-                    }
-                    if (animatedView == null) {                      // nothing has been animated yet
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN :
-                                difference = 0;
-                                initialX = event.getRawX();
-                                currentX = event.getRawX();
-                                Log.d(TAG, "Motion down " + initialX);
-                                return true;
-                            case MotionEvent.ACTION_MOVE :
-                                currentX = event.getRawX();
-                                difference = currentX - initialX;
-                                if (difference > CLICK)
-                                    onSwipeRightStart(v);
-                                if (difference > v.getWidth() / 4) {
-                                    onSwipeRightFinish(v);
-                                }
-                                if (difference < -CLICK)
-                                    onSwipeLeftStart(v);
-                                if (difference < -v.getWidth() / 4)
-                                    onSwipeLeftFinish(v);
+            try {
+                final List<Entity> subscriptions = M_STRATUS.getSubscriptions(params[0]);
+                final View.OnTouchListener gestureListener = new View.OnTouchListener() {
+                    public boolean onTouch(final View v, MotionEvent event) {
+                        try {
+                            if (animatedView != null && animatedView != v) { // something has been animated but now I'm clicking somewhere else
+                                onSwipeCancel(animatedView);
+                            }
+                            if (animatedView == null) {                      // nothing has been animated yet
+                                switch (event.getAction()) {
+                                    case MotionEvent.ACTION_DOWN:
+                                        difference = 0;
+                                        initialX = event.getRawX();
+                                        currentX = event.getRawX();
+                                        Log.d(TAG, "Motion down " + initialX);
+                                        return true;
+                                    case MotionEvent.ACTION_MOVE:
+                                        currentX = event.getRawX();
+                                        difference = currentX - initialX;
+                                        if (difference > CLICK)
+                                            onSwipeRightStart(v);
+                                        if (difference > v.getWidth() / 4) {
+                                            onSwipeRightFinish(v);
+                                        }
+                                        if (difference < -CLICK)
+                                            onSwipeLeftStart(v);
+                                        if (difference < -v.getWidth() / 4)
+                                            onSwipeLeftFinish(v);
 
-                                Log.d(TAG, "Motion left/right " + difference);
-                                return true;
-                            case MotionEvent.ACTION_UP :
-                            case MotionEvent.ACTION_CANCEL :
-                                onSwipeCancel(v);
-                                return false;
+                                        Log.d(TAG, "Motion left/right " + difference);
+                                        return true;
+                                    case MotionEvent.ACTION_UP:
+                                    case MotionEvent.ACTION_CANCEL:
+                                        onSwipeCancel(v);
+                                        return false;
+                                }
+                            }
+                            return false;
+                        } catch (Exception e) {
+                            showSendErrorDialog(e);
+                            return false;
                         }
                     }
-                    return false;
-                }
-            };
+                };
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final ListAdapter adapter = new ArrayAdapter<Entity>(SubscriptionListActivity.this,
-                            android.R.layout.simple_list_item_1, subscriptions) {
-                        @Override
-                        public View getView(int position, View convertView, ViewGroup parent) {
-                            final View row;
-                            if (convertView == null) {
-                                LayoutInflater inflater = (SubscriptionListActivity.this).getLayoutInflater();
-                                row = inflater.inflate(R.layout.subscription_list_item, parent, false);
-                            } else {
-                                row = convertView;
-                            }
-                            final MppSubscription subscription = (MppSubscription) subscriptions.get(position);
-
-                            ((TextView)row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
-
-                            ((TextView) row.findViewById(R.id.subscriptionStatus)).setText(subscription.getProperty("status"));
-                            Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
-                            ((TextView) row.findViewById(R.id.expiresIn)).setText(endDate == null ? "Never" : TimeUtils.getPeriod(endDate.getTime()));
-
-                            long length;
-                            int maxWidth = parent.getMeasuredWidth(); //todo not correct; we should take the part of the row where the line lies, not the whole row length
-                            int maxPeriod = 7 * 24 * 60 * 60 * 1000; // 7 days in in millis
-                            if (endDate == null) {
-                                length = maxWidth;
-                            } else {
-                                long now = System.currentTimeMillis();
-                                long diff = endDate.getTime() - now;
-                                if (diff <= 0) {
-                                    length = 0;
-                                } else if (diff > maxPeriod) { // more than 7 days
-                                    length = maxWidth;
-                                } else {
-                                    length = diff * maxWidth / maxPeriod;
-                                }
-                            }
-                            View item = row.findViewById(R.id.subscriptionListItem);
-                            row.findViewById(R.id.expirationLine).getLayoutParams().width = (int)length;
-                            final ViewHolder holder = new ViewHolder(subscription, row);
-                            item.setTag(holder);
-                            item.setOnTouchListener(gestureListener);
-                            if (subscription.getBooleanProperty("deleted") != null) {
-                                item.setEnabled(false);
-                                item.findViewById(R.id.removedIcon).setVisibility(View.VISIBLE);
-                            } else {
-                                item.setEnabled(true);
-                                item.findViewById(R.id.removedIcon).setVisibility(View.GONE);
-                            }
-
-                            View button = row.findViewById(R.id.extendButton);
-                            button.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
-                            button.setOnClickListener(new View.OnClickListener() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final ListAdapter adapter = new ArrayAdapter<Entity>(SubscriptionListActivity.this,
+                                    android.R.layout.simple_list_item_1, subscriptions) {
                                 @Override
-                                public void onClick(View v) {
-                                    if (subscription.getProperty("subscriptionTerm.endDate") == null) {
-                                        Toast.makeText(SubscriptionListActivity.this, getResources().getString(R.string.extensionRequestMissing), Toast.LENGTH_LONG).show();
-                                    } else {
-                                        v.setEnabled(false);
-                                        new ExtendSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
-                                    }
-                                }
-                            });
-                            button = row.findViewById(R.id.shareButton);
-                            button.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
-                            button.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(final View v) {
-                                    View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
-                                    shareButtons.setTranslationX(-row.getWidth()*2/3);
-                                    shareButtons.setVisibility(View.VISIBLE);
-
-                                    final EditText editText = (EditText) shareButtons.findViewById(R.id.shareEmail);
-                                    String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
-                                    editText.setText(oldValue);
-                                    editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
-                                    animateViewTo(shareButtons, 0, decelerateInterpolator);
-                                }
-                            });
-                            final Button cancelButton = (Button) row.findViewById(R.id.cancelButton);
-                            boolean deletable = subscription.getBooleanProperty("deletable");
-                            boolean cancelable = subscription.getBooleanProperty("cancelable");
-                            cancelButton.setText(getString(deletable ? R.string.deleteButton : R.string.cancelButton));
-                            cancelButton.setEnabled(cancelable || deletable);
-
-                            cancelButton.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.MULTIPLY);
-                            cancelButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (holder.cancelTask != null) {
-                                        holder.cancelTask.cancel(true);
-                                        holder.cancelTask = null;
-                                        cancelButton.setText(getString(R.string.cancelButton));
-                                    } else {
-                                        if (subscription.getBooleanProperty("cancelable")) {
-                                            cancelButton.setText(""+10);  // set the text now so it's visible in UI immediately
-                                            holder.cancelTask = new CancelSubscription();
-                                            holder.cancelTask.executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    try {
+                                        final View row;
+                                        if (convertView == null) {
+                                            LayoutInflater inflater = (SubscriptionListActivity.this).getLayoutInflater();
+                                            row = inflater.inflate(R.layout.subscription_list_item, parent, false);
                                         } else {
-                                            if (subscription.getBooleanProperty("deletable")) {
-                                                cancelButton.setEnabled(false);
-                                                new DeleteSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                            row = convertView;
+                                        }
+                                        final MppSubscription subscription = (MppSubscription) subscriptions.get(position);
+
+                                        ((TextView) row.findViewById(R.id.subscriptionNameList)).setText(subscription.getProperty("name"));
+
+                                        ((TextView) row.findViewById(R.id.subscriptionStatus)).setText(subscription.getProperty("status"));
+                                        Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
+                                        ((TextView) row.findViewById(R.id.expiresIn)).setText(endDate == null ? "Never" : TimeUtils.getPeriod(endDate.getTime()));
+
+                                        long length;
+                                        int maxWidth = parent.getMeasuredWidth(); //todo not correct; we should take the part of the row where the line lies, not the whole row length
+                                        int maxPeriod = 7 * 24 * 60 * 60 * 1000; // 7 days in in millis
+                                        if (endDate == null) {
+                                            length = maxWidth;
+                                        } else {
+                                            long now = System.currentTimeMillis();
+                                            long diff = endDate.getTime() - now;
+                                            if (diff <= 0) {
+                                                length = 0;
+                                            } else if (diff > maxPeriod) { // more than 7 days
+                                                length = maxWidth;
                                             } else {
-                                                //todo this should never happen
-                                                Toast.makeText(SubscriptionListActivity.this, "This demo cannot be canceled nor deleted", Toast.LENGTH_SHORT).show();
+                                                length = diff * maxWidth / maxPeriod;
                                             }
                                         }
+                                        View item = row.findViewById(R.id.subscriptionListItem);
+                                        row.findViewById(R.id.expirationLine).getLayoutParams().width = (int) length;
+                                        final ViewHolder holder = new ViewHolder(subscription, row);
+                                        item.setTag(holder);
+                                        item.setOnTouchListener(gestureListener);
+                                        if (subscription.getBooleanProperty("deleted") != null) {
+                                            item.setEnabled(false);
+                                            item.findViewById(R.id.removedIcon).setVisibility(View.VISIBLE);
+                                        } else {
+                                            item.setEnabled(true);
+                                            item.findViewById(R.id.removedIcon).setVisibility(View.GONE);
+                                        }
+
+                                        View button = row.findViewById(R.id.extendButton);
+                                        button.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
+                                        button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (subscription.getProperty("subscriptionTerm.endDate") == null) {
+                                                    Toast.makeText(SubscriptionListActivity.this, getResources().getString(R.string.extensionRequestMissing), Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    v.setEnabled(false);
+                                                    new ExtendSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                                }
+                                            }
+                                        });
+                                        button = row.findViewById(R.id.shareButton);
+                                        button.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
+                                        button.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(final View v) {
+                                                View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
+                                                shareButtons.setTranslationX(-row.getWidth() * 2 / 3);
+                                                shareButtons.setVisibility(View.VISIBLE);
+
+                                                final EditText editText = (EditText) shareButtons.findViewById(R.id.shareEmail);
+                                                String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
+                                                editText.setText(oldValue);
+                                                editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
+                                                animateViewTo(shareButtons, 0, decelerateInterpolator);
+                                            }
+                                        });
+                                        final Button cancelButton = (Button) row.findViewById(R.id.cancelButton);
+                                        boolean deletable = subscription.getBooleanProperty("deletable");
+                                        boolean cancelable = subscription.getBooleanProperty("cancelable");
+                                        cancelButton.setText(getString(deletable ? R.string.deleteButton : R.string.cancelButton));
+                                        cancelButton.setEnabled(cancelable || deletable);
+
+                                        cancelButton.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.MULTIPLY);
+                                        cancelButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (holder.cancelTask != null) {
+                                                    holder.cancelTask.cancel(true);
+                                                    holder.cancelTask = null;
+                                                    cancelButton.setText(getString(R.string.cancelButton));
+                                                } else {
+                                                    if (subscription.getBooleanProperty("cancelable")) {
+                                                        cancelButton.setText("" + 10);  // set the text now so it's visible in UI immediately
+                                                        holder.cancelTask = new CancelSubscription();
+                                                        holder.cancelTask.executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                                    } else {
+                                                        if (subscription.getBooleanProperty("deletable")) {
+                                                            cancelButton.setEnabled(false);
+                                                            new DeleteSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+                                                        } else {
+                                                            //todo this should never happen
+                                                            Toast.makeText(SubscriptionListActivity.this, "This demo cannot be canceled nor deleted", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        final View sendShareButton = row.findViewById(R.id.sendShareRequestButton);
+                                        sendShareButton.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
+                                        sendShareButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                row.findViewById(R.id.shareButton).setEnabled(false);
+                                                sendShareButton.setEnabled(false);
+                                                final View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
+                                                ObjectAnimator oa = animateViewTo(shareButtons, -row.getWidth() * 2 / 3, decelerateInterpolator);
+                                                oa.addListener(new AnimatorListenerAdapter() {
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation) {
+                                                        shareButtons.setVisibility(View.GONE);
+                                                        sendShareButton.setEnabled(true);  // enable it for next use
+                                                    }
+                                                });
+                                                new ShareSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
+
+                                                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                                editor.putString("shareEmail", ((EditText) row.findViewById(R.id.shareEmail)).getText().toString());
+                                                editor.apply();
+                                            }
+                                        });
+                                        return row;
+                                    } catch (Exception e) {
+                                        showSendErrorDialog(e);
+                                        return null;
                                     }
                                 }
-                            });
-                            final View sendShareButton = row.findViewById(R.id.sendShareRequestButton);
-                            sendShareButton.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
-                            sendShareButton.setOnClickListener(new View.OnClickListener() {
+
+                                //todo hack; we should be re-using views for performance reasons; learnt from http://stackoverflow.com/questions/6921462
                                 @Override
-                                public void onClick(View v) {
-                                    row.findViewById(R.id.shareButton).setEnabled(false);
-                                    sendShareButton.setEnabled(false);
-                                    final View shareButtons = row.findViewById(R.id.subscriptionShareButtons);
-                                    ObjectAnimator oa = animateViewTo(shareButtons, -row.getWidth()*2/3, decelerateInterpolator);
-                                    oa.addListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            shareButtons.setVisibility(View.GONE);
-                                            sendShareButton.setEnabled(true);  // enable it for next use
-                                        }
-                                    });
-                                    new ShareSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
-
-                                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                                    editor.putString("shareEmail", ((EditText) row.findViewById(R.id.shareEmail)).getText().toString());
-                                    editor.apply();
+                                public int getViewTypeCount() {
+                                    return getCount();
                                 }
-                            });
-                            return row;
-                        }
 
-                        //todo hack; we should be re-using views for performance reasons; learnt from http://stackoverflow.com/questions/6921462
-                        @Override
-                        public int getViewTypeCount() {
-                            return getCount();
+                                @Override
+                                public int getItemViewType(int position) {
+                                    return position;
+                                }
+                            };
+                            listview.setAdapter(adapter);
+                            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
+                            progressBar.setVisibility(View.GONE);
+                        } catch (Exception e) {
+                            showSendErrorDialog(e);
                         }
-
-                        @Override
-                        public int getItemViewType(int position) {
-                            return position;
-                        }
-                    };
-                    listview.setAdapter(adapter);
-                    final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
-            M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
-            return true;
+                    }
+                });
+                M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
+                return true;
+            } catch (Exception e) {
+                showSendErrorDialog(e);
+                return null;
+            }
         }
     }
 
@@ -382,22 +400,27 @@ public class SubscriptionListActivity extends StratusActivity {
         private View extendButton;
         @Override
         protected String doInBackground(ViewHolder... params) {
-            Entity subscription = params[0].subscription;
-            extendButton = params[0].topView.findViewById(R.id.extendButton);
-
-            MppRequest req = new MppRequest(null);
-            req.setProperty("action", "MODIFY_SUBSCRIPTION");
-            req.setProperty("subscriptionId", subscription.getProperty("serviceId"));
-            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, subscription.getId());
-            long endDate = subscription.getDateProperty("subscriptionTerm.endDate").getTime();
-            long newEndDate = endDate + DEFAULT_EXTENSION_PERIOD * 24 * 60 * 60 * 1000;  // add 3 more days
-            req.setObjectProperty("endDate", new Date(newEndDate));
-            EntityHandler handler = MppRequestHandler.INSTANCE;
             try {
-                return handler.create(req);
+                Entity subscription = params[0].subscription;
+                extendButton = params[0].topView.findViewById(R.id.extendButton);
+
+                MppRequest req = new MppRequest(null);
+                req.setProperty("action", "MODIFY_SUBSCRIPTION");
+                req.setProperty("subscriptionId", subscription.getProperty("serviceId"));
+                req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                req.setProperty(MppRequestHandler.SERVICE_ID_KEY, subscription.getId());
+                long endDate = subscription.getDateProperty("subscriptionTerm.endDate").getTime();
+                long newEndDate = endDate + DEFAULT_EXTENSION_PERIOD * 24 * 60 * 60 * 1000;  // add 3 more days
+                req.setObjectProperty("endDate", new Date(newEndDate));
+                EntityHandler handler = MppRequestHandler.INSTANCE;
+                try {
+                    return handler.create(req);
+                } catch (Exception e) {
+                    return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                }
             } catch (Exception e) {
-                return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                showSendErrorDialog(e);
+                return null;
             }
         }
 
@@ -413,29 +436,34 @@ public class SubscriptionListActivity extends StratusActivity {
         private View shareButton;
         @Override
         protected String doInBackground(ViewHolder... params) {
-            MppSubscription subscription = params[0].subscription;
-            MppInstance instance = subscription.getInstance();
-            shareButton= params[0].topView.findViewById(R.id.shareButton);
-
-            String serviceId = instance.getShareServiceId();
-            if (serviceId == null) {
-                return "";
-            }
-
-            MppRequest req = new MppRequest(null);
-            req.setProperty("action", instance.getShareActionName());
-            req.setProperty("subscriptionId", subscription.getId());
-            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, serviceId);
-
-            EditText shareEmail = (EditText) params[0].topView.findViewById(R.id.shareEmail);
-            req.setProperty("field_shareEmail", shareEmail.getText().toString().trim());
-
-            EntityHandler handler = MppRequestHandler.INSTANCE;
             try {
-                return handler.create(req);
+                MppSubscription subscription = params[0].subscription;
+                MppInstance instance = subscription.getInstance();
+                shareButton = params[0].topView.findViewById(R.id.shareButton);
+
+                String serviceId = instance.getShareServiceId();
+                if (serviceId == null) {
+                    return "";
+                }
+
+                MppRequest req = new MppRequest(null);
+                req.setProperty("action", instance.getShareActionName());
+                req.setProperty("subscriptionId", subscription.getId());
+                req.setProperty(MppRequestHandler.CATALOG_ID_KEY, subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                req.setProperty(MppRequestHandler.SERVICE_ID_KEY, serviceId);
+
+                EditText shareEmail = (EditText) params[0].topView.findViewById(R.id.shareEmail);
+                req.setProperty("field_shareEmail", shareEmail.getText().toString().trim());
+
+                EntityHandler handler = MppRequestHandler.INSTANCE;
+                try {
+                    return handler.create(req);
+                } catch (Exception e) {
+                    return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                }
             } catch (Exception e) {
-                return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                showSendErrorDialog(e);
+                return null;
             }
         }
 
@@ -467,37 +495,42 @@ public class SubscriptionListActivity extends StratusActivity {
 
         @Override
         protected String doInBackground(ViewHolder... params) {
-            cancelButton = (Button) params[0].topView.findViewById(R.id.cancelButton);
-            holder = params[0];
+            try {
+                cancelButton = (Button) params[0].topView.findViewById(R.id.cancelButton);
+                holder = params[0];
 
-            for (int i = Integer.parseInt(cancelButton.getText().toString()); i >= 0; i--) {
-                setCancelButtonText("" + i, true);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                for (int i = Integer.parseInt(cancelButton.getText().toString()); i >= 0; i--) {
+                    setCancelButtonText("" + i, true);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        taskCanceled();
+                        return null; // onPostExecute will not be executed
+                    }
+                }
+                if (isCancelled()) { // give the last chance to abort the cancellation
                     taskCanceled();
                     return null; // onPostExecute will not be executed
                 }
-            }
-            if (isCancelled()) { // give the last chance to abort the cancellation
-                taskCanceled();
-                return null; // onPostExecute will not be executed
-            }
-            setCancelButtonText(getString(R.string.cancelButton), false);
-            holder.subscription.setObjectProperty("cancelable", false); // keep cancel button even upon UI refresh (till REST API call)
+                setCancelButtonText(getString(R.string.cancelButton), false);
+                holder.subscription.setObjectProperty("cancelable", false); // keep cancel button even upon UI refresh (till REST API call)
 
-            MppRequest req = new MppRequest(null);
-            req.setProperty("action", "CANCEL_SUBSCRIPTION");
-            req.setProperty("subscriptionId", holder.subscription.getId());
-            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, holder.subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, holder.subscription.getId());
+                MppRequest req = new MppRequest(null);
+                req.setProperty("action", "CANCEL_SUBSCRIPTION");
+                req.setProperty("subscriptionId", holder.subscription.getId());
+                req.setProperty(MppRequestHandler.CATALOG_ID_KEY, holder.subscription.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                req.setProperty(MppRequestHandler.SERVICE_ID_KEY, holder.subscription.getId());
 
-            EntityHandler handler = MppRequestHandler.INSTANCE;
-            try {
-                return handler.create(req);
+                EntityHandler handler = MppRequestHandler.INSTANCE;
+                try {
+                    return handler.create(req);
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception when cancelling " + holder.subscription, e);
+                    return null;//todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                }
             } catch (Exception e) {
-                Log.e(TAG, "Exception when cancelling "+holder.subscription, e);
-                return null;//todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
+                showSendErrorDialog(e);
+                return null;
             }
         }
         @Override
@@ -522,14 +555,19 @@ public class SubscriptionListActivity extends StratusActivity {
 
         @Override
         protected String doInBackground(ViewHolder... params) {
-            MppSubscription subscription = params[0].subscription;
-            cancelButton = params[0].topView.findViewById(R.id.cancelButton);
-            holder = params[0];
-
             try {
-                return subscription.delete();
+                MppSubscription subscription = params[0].subscription;
+                cancelButton = params[0].topView.findViewById(R.id.cancelButton);
+                holder = params[0];
+
+                try {
+                    return subscription.delete();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception when deleting "+subscription, e);
+                    return null;
+                }
             } catch (Exception e) {
-                Log.e(TAG, "Exception when deleting "+subscription, e);
+                showSendErrorDialog(e);
                 return null;
             }
         }
