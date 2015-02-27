@@ -1,12 +1,15 @@
 package com.hp.dsg.stratus;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.ViewConfiguration;
 import android.widget.Toast;
 
@@ -112,24 +115,25 @@ public class StratusActivity extends ActionBarActivity {
     public void showSendErrorDialog(final Exception e) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("A critical error has appeared. The application will get closed.\nDo you want to report this error to authors?")
-                .setTitle("Fatal Error")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.criticalError))
+                .setTitle(getString(R.string.errorTitle))
+                .setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("message/rfc822");
                         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
                         i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_mail_subj));
-                        i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e)));
+                        Display display = getWindowManager().getDefaultDisplay();
+                        i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e), Build.MODEL, display.getWidth(), display.getHeight()));
                         try {
                             startActivity(Intent.createChooser(i, getString(R.string.mail_client_title)));
-                        } catch (android.content.ActivityNotFoundException ex) {
+                        } catch (ActivityNotFoundException ex) {
                             Toast.makeText(StratusActivity.this, getString(R.string.no_mail_clients), Toast.LENGTH_LONG).show();
                         }
                         finish();
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();

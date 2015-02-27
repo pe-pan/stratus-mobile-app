@@ -6,10 +6,13 @@
     <string name="app_version">version 0.0.2</string>
     <string name="support_link">For support click <a href="mailto:petr.panuska@hp.com?subject=Support needed for Stratus Mobile App (version 0.0.2)">here</a></string>
     <string name="support_mail_subj">Support needed for Stratus Mobile App (version 0.0.2)</string>
-    <string name="support_mail_body">An exception thrown:\n%1$s</string>
+    <string name="support_mail_body">An exception thrown:\n%1$s\n\nOn device %2$s (%3$dx%4$d pixels)</string>
     <string name="support_mail_to">petr.panuska@hp.com</string>
     <string name="mail_client_title">Send error report</string>
     <string name="no_mail_clients">There are no email clients installed.</string>
+    <string name="criticalError">A critical error has appeared. The application will get closed.\nPlease, report this error to authors to improve application quality in next versions.</string>
+    <string name="errorTitle">Fatal Error</string>
+    <string name="okButton">OK</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_subscriptions">Provisioned Demos</string>
