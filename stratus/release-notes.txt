@@ -1,4 +1,4 @@
-[]
+[28/Feb/2015]
 Version 0.0.3:
 -------------
 New features:
@@ -6,10 +6,14 @@ New features:
   - Share a subscription
   - Cancel a subscription
   - Delete a subscription
+  - Show splash screen
 
 Enhancements:
   - Swipe left in subscription list to open the subscription
   - Swipe right in subscription list to execute an operation on a subscription
+  - Improved performance
+  - Error dialog upon critical error
+  - Keep authentication token; auto-login when it expires
 
 Bug fixes:
   - Power ON/OFF operations (send also the confirmation e-mail)
