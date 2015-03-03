@@ -28,7 +28,7 @@ public class MppOfferingHandler extends CsaEntityHandler {
         String catalogId = entity.getProperty("catalogId");
         String category = entity.getProperty("category.name");
 
-        String json = M_STRATUS.doGet(Mpp.REST_API+"/mpp/mpp-offering/"+offeringId+"?catalogId="+catalogId+"&category="+category, ContentType.JSON_JSON).getResponse();
+        String json = M_STRATUS.doGet(Mpp.REST_API+"/mpp/mpp-offering/"+offeringId+"?catalogId="+catalogId+"&category="+category);
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }

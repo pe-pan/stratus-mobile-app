@@ -25,12 +25,12 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
     public Entity loadDetails(Entity entity) {
         String subscriptionId = entity.getId();
 
-        String json = M_STRATUS.doGet(Mpp.REST_API+"/mpp/mpp-subscription/"+subscriptionId, ContentType.JSON_JSON).getResponse();
+        String json = M_STRATUS.doGet(Mpp.REST_API+"/mpp/mpp-subscription/"+subscriptionId);
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }
 
     public String delete(Entity entity) {
-        return M_STRATUS.doDelete(Mpp.REST_API+"/mpp/mpp-subscription/"+entity.getId()).getResponse();
+        return M_STRATUS.doDelete(Mpp.REST_API+"/mpp/mpp-subscription/"+entity.getId());
     }
 }

@@ -1,7 +1,6 @@
 package com.hp.dsg.stratus;
 
 import com.hp.dsg.rest.AuthenticatedClient;
-import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.stratus.entities.EntityHandler;
 import com.hp.dsg.stratus.entities.MppOffering;
@@ -56,8 +55,8 @@ public class Mpp extends AuthenticatedClient {
                 "}";
         client.setCustomHeader("Authorization", "Basic "+"aWRtVHJhbnNwb3J0VXNlcjppZG1UcmFuc3BvcnRVc2Vy"); // "idmTransportUser:idmTransportUser" in Base64
 
-        HttpResponse response = client.doPost(IDM_REST_URL, json);
-        String token = JsonPath.read(response.getResponse(), "$.token.id");
+        String response = client.doPost(IDM_REST_URL, json);
+        String token = JsonPath.read(response, "$.token.id");
         setAuthenticationHeader(token);
         return token;
     }

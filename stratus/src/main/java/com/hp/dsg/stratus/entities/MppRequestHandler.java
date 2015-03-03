@@ -1,7 +1,6 @@
 package com.hp.dsg.stratus.entities;
 
 import com.hp.dsg.rest.ContentType;
-import com.hp.dsg.rest.HttpResponse;
 import com.hp.dsg.stratus.Mpp;
 import com.jayway.jsonpath.JsonPath;
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
@@ -30,8 +29,8 @@ public class MppRequestHandler extends CsaEntityHandler {
     public String create (Entity entity) {
         String serviceId = entity.removeProperty(SERVICE_ID_KEY);
         String catalogId = entity.removeProperty(CATALOG_ID_KEY);
-        HttpResponse response = M_STRATUS.doPost(Mpp.REST_API + "/mpp/mpp-request/"+serviceId+"?"+CATALOG_ID_KEY+"="+catalogId, entity.toJson(), ContentType.JSON_MULTI);
-        String id = JsonPath.read(response.getResponse(), "$.id");
+        String response = M_STRATUS.doPost(Mpp.REST_API + "/mpp/mpp-request/"+serviceId+"?"+CATALOG_ID_KEY+"="+catalogId, entity.toJson(), ContentType.JSON_MULTI);
+        String id = JsonPath.read(response, "$.id");
         return id;
     }
 }

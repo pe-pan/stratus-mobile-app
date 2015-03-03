@@ -16,10 +16,6 @@ public abstract class AuthenticatedClient  {
         this.client = new RestClient();
     }
 
-    public HttpResponse doGet(String url) {
-        return doGet(url, ContentType.XML_XML);
-    }
-
     public boolean isAuthenticated() {
         return client.headerValue != null;
     }
@@ -39,7 +35,11 @@ public abstract class AuthenticatedClient  {
         this.listener = listener;
     }
 
-    public HttpResponse doGet(String url, ContentType type) {
+    public String doGet(String url) {
+        return doGet(url, ContentType.JSON_JSON);
+    }
+
+    public String doGet(String url, ContentType type) {
         try {
             return client.doGet(url, type);
         } catch (IllegalRestStateException e) {
@@ -51,23 +51,19 @@ public abstract class AuthenticatedClient  {
         }
     }
 
-    public HttpResponse doPut(String url, String data, ContentType type) {
+    public String doPut(String url, String data) {
         try {
-            return client.doPut(url, data, type);
+            return client.doPut(url, data);
         } catch (IllegalRestStateException e) {
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 if (listener != null) listener.onNoAuthentication();
-                return client.doPut(url, data, type);
+                return client.doPut(url, data);
             }
             throw e;
         }
     }
 
-    public HttpResponse doPut(String url, String data) {
-        return doPut(url, data, ContentType.JSON_JSON);
-    }
-
-    public HttpResponse doDelete(String url) {
+    public String doDelete(String url) {
         try {
             return client.doDelete(url);
         } catch (IllegalRestStateException e) {
@@ -79,7 +75,7 @@ public abstract class AuthenticatedClient  {
         }
     }
 
-    public HttpResponse doPost(String url, String data) {
+    public String doPost(String url, String data) {
         try {
             return client.doPost(url, data);
         } catch (IllegalRestStateException e) {
@@ -91,7 +87,7 @@ public abstract class AuthenticatedClient  {
         }
     }
 
-    public HttpResponse doPost(String url, String data, ContentType type) {
+    public String doPost(String url, String data, ContentType type) {
         try {
             return client.doPost(url, data, type);
         } catch (IllegalRestStateException e) {

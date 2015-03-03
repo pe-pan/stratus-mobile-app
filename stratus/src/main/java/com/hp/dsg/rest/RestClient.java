@@ -2,6 +2,7 @@ package com.hp.dsg.rest;
 
 import android.util.Log;
 
+import com.hp.dsg.stratus.BuildConfig;
 import com.hp.dsg.utils.IOUtils;
 
 import java.io.IOException;
@@ -39,10 +40,6 @@ public class RestClient {
         }
     }
 
-//    public void addCookieValue(String cookie, String value) {
-//        cookies.put(cookie, value);
-//    }
-
     private String getCookieList() {
         synchronized (cookies) {
             if (cookies.size() == 0) {
@@ -58,14 +55,6 @@ public class RestClient {
         }
     }
 
-//    public String getCookie(String cookieName) {
-//        return cookies.get(cookieName);
-//    }
-
-    public HttpResponse doRequest(String urlAddress, String formData, Method method, ContentType contentType) {
-        return doRequest(urlAddress, formData, method, contentType, null);
-    }
-
     /**
      * Posts given data to the given address and collects (re-send) cookies.
      * Also handles redirects; only first time it does POST, then it does GET.
@@ -73,13 +62,10 @@ public class RestClient {
      * @param urlAddress where the request is being sent
      * @param formData if null, GET method is used; POST otherwise
      * @param method which method will be used
-     * @param handler if null, the method is synchronous and waits for response. If not null, the method is asynchronous
-     *                and returns immediately. The response should can be processed in this handler.
      * @return response of the request
      */
-    public /*synchronized*/ HttpResponse doRequest(String urlAddress, String formData, Method method, ContentType contentType, AsyncHandler handler) {
+    public String doRequest(String urlAddress, String formData, Method method, ContentType contentType) {
         HttpURLConnection conn = null;
-        String oldLocation = null;  //todo is this correct
         try {
             boolean redirect = false;
             do {
@@ -128,11 +114,8 @@ public class RestClient {
                 if (headerName != null && headerValue != null) {
                     conn.setRequestProperty(headerName, headerValue);
                     Log.d(TAG, "Setting "+headerName+": "+headerValue);
-//                    headerName = null;
                 }
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.22");
-//                Log.d(TAG, "Setting Referer into: "+oldLocation);
-//                conn.setRequestProperty("Referer", oldLocation);      // todo an evil hack; this is because of downloading DevBridge... so they know the URL where DevBridge will be pointing at
+                conn.setRequestProperty("User-Agent", "Stratus Mobile Application/1.0; (c) SDG");
 
                 String cookieList = getCookieList();
                 Log.d(TAG, "Sending cookies: "+cookieList);
@@ -155,12 +138,6 @@ public class RestClient {
                 }
                 Log.d(TAG, "Code: "+conn.getResponseCode()+"; Message: "+conn.getResponseMessage());
 
-                String location = conn.getHeaderField("Location");
-                if (location != null) {
-                    Log.d(TAG, "Location: "+location);
-                    oldLocation = location;
-                }
-
                 if (conn.getResponseCode() == 301 || conn.getResponseCode() == 302) {
                     urlAddress = conn.getHeaderField("Location");
                     Log.d(TAG, "Redirect to: " + urlAddress);
@@ -174,20 +151,11 @@ public class RestClient {
 
             // Get the response
 
-            if (handler == null) {
-                Log.d(TAG, "Receiving:");
-                String response = IOUtils.toString(conn.getInputStream());
-                conn.getInputStream().close();
-                Log.d(TAG, response);
-
-                return  new HttpResponse(response, conn.getResponseCode(), oldLocation);
-            } else {
-                Log.d(TAG, "Handling asynchronously, starting a new thread");
-                Thread thread = new Thread(handler, handler.getClass().getSimpleName());
-                handler.setConnection(conn);
-                thread.start();
-                return new HttpResponse(null, conn.getResponseCode(), null);
-            }
+            Log.d(TAG, "Receiving:");
+            String response = IOUtils.toString(conn.getInputStream());
+            conn.getInputStream().close();
+            Log.d(TAG, response);
+            return response;
         } catch (IOException e) {
             Log.d(TAG, "Exception caught", e);
             String errorStream = null;
@@ -207,7 +175,7 @@ public class RestClient {
             }
             throw new IllegalRestStateException(responseCode, errorStream == null ? e.getMessage() : errorStream, errorStream, e);
         } finally {
-            if (conn != null && handler == null) {  // close the connection only if received the data synchronously
+            if (conn != null) {  // close the connection
                 conn.disconnect();
             }
         }
@@ -220,15 +188,11 @@ public class RestClient {
         this.headerValue = headerValue;
     }
 
-    public void clearCustomHeader() {
-        setCustomHeader(null, null);
-    }
-
     private String serializeParameters(String [][]data) {
         if (data == null) return null;
         StringBuilder returnValue = new StringBuilder();
         for (String[] parameter : data) {
-            assert parameter.length == 2;
+            if (BuildConfig.DEBUG && parameter.length != 2) throw new AssertionError();
             String key = parameter[0];
             String value  = parameter[1];
             if (value == null) {
@@ -246,55 +210,43 @@ public class RestClient {
         return returnValue.substring(1);                // remove the starting '&' character
     }
 
-    public HttpResponse doRequest(String urlAddress, String[][] formData, Method method, ContentType contentType) {
+    public String doRequest(String urlAddress, String[][] formData, Method method, ContentType contentType) {
         return doRequest(urlAddress, serializeParameters(formData), method, contentType);
     }
 
-    public HttpResponse doGet(String url) {
+    public String doGet(String url) {
         return doRequest(url, (String) null, Method.GET, ContentType.XML_XML);
     }
 
-    public HttpResponse doGet(String url, ContentType contentType) {
+    public String doGet(String url, ContentType contentType) {
         return doRequest(url, (String) null, Method.GET, contentType);
     }
 
-    public HttpResponse doGet(String url, AsyncHandler handler) {
-        return doRequest(url, null, Method.GET, ContentType.NONE, handler);
-    }
-
-    public HttpResponse doGet(String url, String[][] data, AsyncHandler handler) {
-        return doRequest(url, serializeParameters(data), Method.GET, ContentType.NONE, handler);
-    }
-
-    public HttpResponse doPost(String url, String data) {
+    public String doPost(String url, String data) {
         return doRequest(url, data, Method.POST, ContentType.JSON_JSON);
     }
 
-    public HttpResponse doPost(String url, String[][] data) {
+    public String doPost(String url, String[][] data) {
         return doRequest(url, serializeParameters(data), Method.POST, ContentType.NONE);
     }
 
-    public HttpResponse doPost(String url, String[][] data, AsyncHandler handler) {
-        return doRequest(url, serializeParameters(data), Method.POST, ContentType.NONE, handler);
-    }
-
-    public HttpResponse doPost(String url, String data, ContentType type) {
+    public String doPost(String url, String data, ContentType type) {
         return doRequest(url, data, Method.POST, type);
     }
 
-    public HttpResponse doPut(String url, String data, ContentType type) {
+    public String doPut(String url, String data, ContentType type) {
         return doRequest(url, data, Method.PUT, type);
     }
 
-    public HttpResponse doPut(String url, String data) {
+    public String doPut(String url, String data) {
         return doRequest(url, data, Method.PUT, ContentType.JSON_JSON);
     }
 
-    public HttpResponse doPut(String url, String[][] data) {
+    public String doPut(String url, String[][] data) {
         return doRequest(url, serializeParameters(data), Method.PUT, ContentType.JSON_JSON);
     }
 
-    public HttpResponse doDelete(String url) {
+    public String doDelete(String url) {
         return doRequest(url, (String) null, Method.DELETE, ContentType.JSON_JSON);
     }
 

@@ -20,7 +20,7 @@ public abstract class CsaEntityHandler extends EntityHandler {
     }
 
     protected String getListJson() {
-        return M_STRATUS.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}").getResponse();
+        return M_STRATUS.doPost(Mpp.REST_API+"/mpp/"+context+"/filter", "{}");
     }
 
     public synchronized List<Entity> list(boolean enforce) {
