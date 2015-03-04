@@ -21,19 +21,18 @@ import java.util.Locale;
 public class Mpp extends AuthenticatedClient {
     private static final String TAG = Mpp.class.getSimpleName();
 
-    public static final String STRATUS_URL = "https://csa4.hpswdemoportal.com";
-    public static final String REST_URL = STRATUS_URL+"/csa";
-    public static final String REST_API = REST_URL +"/api";
-    public static final String REST_URI = REST_URL +"/rest";
+    public static final String STRATUS_HOSTNAME = "https://csa4.hpswdemoportal.com/";
+    public static final String REST_PATHNAME = "csa/api/mpp/";
 
-    public static final String IDM_REST_URL = STRATUS_URL+"/idm-service/v2.0/tokens";
+    public static final String IDM_REST_URL = "idm-service/v2.0/tokens";
     public static final String TENANT_NAME = "CSADemo"; //todo should not be built-in
 
     private String username;
     private String password;
 
-    public static final Mpp M_STRATUS = new Mpp();
-    public Mpp() {
+    public static final Mpp M_STRATUS = new Mpp(STRATUS_HOSTNAME);
+    public Mpp(String hostName) {
+        super(hostName);
     }
 
     public void setUsername(String username) {
@@ -109,7 +108,5 @@ public class Mpp extends AuthenticatedClient {
             req.setProperty(emailAddressId, emailAddress);
         }
         return reqHandler.create(req);
-
     }
-
 }

@@ -12,8 +12,8 @@ public abstract class AuthenticatedClient  {
 
     public abstract String getLoggedUserName();
 
-    protected AuthenticatedClient() {
-        this.client = new RestClient();
+    protected AuthenticatedClient(String hostName) {
+        this.client = new RestClient(hostName);
     }
 
     public boolean isAuthenticated() {

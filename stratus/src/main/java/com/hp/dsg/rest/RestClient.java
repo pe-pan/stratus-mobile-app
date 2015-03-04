@@ -19,6 +19,12 @@ import java.util.Set;
  */
 public class RestClient {
 
+    private final String hostName;
+
+    public RestClient(String hostName) {
+        this.hostName = hostName;
+    }
+
     private static final String TAG = RestClient.class.getName();
 
     private final HashMap<String, String> cookies = new HashMap<>();
@@ -59,22 +65,22 @@ public class RestClient {
      * Posts given data to the given address and collects (re-send) cookies.
      * Also handles redirects; only first time it does POST, then it does GET.
      *
-     * @param urlAddress where the request is being sent
+     * @param pathName where the request is being sent (URL = hostName + pathName); hostName = http(s)://domain.domain.com/; pathName = /context/context/context
      * @param formData if null, GET method is used; POST otherwise
      * @param method which method will be used
      * @return response of the request
      */
-    public String doRequest(String urlAddress, String formData, Method method, ContentType contentType) {
+    public String doRequest(String pathName, String formData, Method method, ContentType contentType) {
         HttpURLConnection conn = null;
         try {
             boolean redirect = false;
             do {
                 if (method == Method.GET && formData != null) {
-                    urlAddress = urlAddress + "?"+formData;
+                    pathName = pathName + "?"+formData;
                     formData = null;
                 }
-                Log.d(TAG, "At: "+urlAddress);
-                URL url = new URL(urlAddress);
+                Log.d(TAG, "At: "+pathName);
+                URL url = new URL(hostName+pathName);
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(formData != null);
                 conn.setDoInput(true);
@@ -139,8 +145,9 @@ public class RestClient {
                 Log.d(TAG, "Code: "+conn.getResponseCode()+"; Message: "+conn.getResponseMessage());
 
                 if (conn.getResponseCode() == 301 || conn.getResponseCode() == 302) {
-                    urlAddress = conn.getHeaderField("Location");
-                    Log.d(TAG, "Redirect to: " + urlAddress);
+                    pathName = conn.getHeaderField("Location");
+                    Log.d(TAG, "Redirect to: " + pathName);
+                    if (pathName.startsWith(hostName)) pathName = pathName.substring(hostName.length());
                     redirect = true;
                     conn.disconnect();
                 } else {
