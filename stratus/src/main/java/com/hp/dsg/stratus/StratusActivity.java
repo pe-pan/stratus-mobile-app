@@ -5,19 +5,28 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.ViewConfiguration;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hp.dsg.rest.AuthenticatedClient;
+import com.hp.dsg.rest.CacheListener;
+import com.hp.dsg.rest.ContentType;
 import com.hp.dsg.rest.IllegalRestStateException;
+import com.hp.dsg.stratus.cache.ImageCacheListener;
+import com.hp.dsg.stratus.entities.Entity;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
@@ -146,5 +155,55 @@ public class StratusActivity extends ActionBarActivity {
                 }).create().show();
             }
         });
+    }
+
+    private CacheListener imageCacheListener;
+    protected CacheListener getImageCacheListener() {
+        if (imageCacheListener == null) {
+            imageCacheListener = new ImageCacheListener(this);
+        }
+        return imageCacheListener;
+    }
+
+    protected void setIcon(ImageView image, Entity subscriptionOrOffering) {
+        String url = subscriptionOrOffering.getProperty("image");
+        if (url == null) {
+            image.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
+            return;
+        }
+        new DownloadImage(image, url).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
+        private ImageView image;
+        private String url;
+
+        private DownloadImage(ImageView image, String url) {
+            this.image = image;
+            this.url = url;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                InputStream stream = M_STRATUS.doGet(url, ContentType.NONE, getImageCacheListener());
+                if (stream == null) return null;
+                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                stream.close();
+                return bitmap;
+            } catch (Exception e) {
+                Log.e(TAG, "Exception when reading image from " + url, e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap == null) {
+                image.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
+            } else {
+                image.setImageBitmap(bitmap);
+            }
+        }
     }
 }

@@ -6,4 +6,5 @@
     <color name="blue">#ff0000ff</color>
     <color name="gray">#ffeeeeee</color>
     <color name="darker_gray">#ff888888</color>
+    <drawable name="no_icon">#ffffffff</drawable>
 </resources>

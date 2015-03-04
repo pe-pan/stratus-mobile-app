@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -264,6 +265,9 @@ public class SubscriptionListActivity extends StratusActivity {
                                             item.setEnabled(true);
                                             item.findViewById(R.id.removedIcon).setVisibility(View.GONE);
                                         }
+
+                                        ImageView image = (ImageView) row.findViewById(R.id.subscriptionIconList);
+                                        setIcon(image, subscription);
 
                                         View button = row.findViewById(R.id.extendButton);
                                         button.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);

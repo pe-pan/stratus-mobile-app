@@ -46,6 +46,10 @@ public class SubscriptionActivity extends StratusActivity {
 
         String json = getIntent().getStringExtra(SUBSCRIPTION_EXTRA_KEY);
         final MppSubscription subscription= new MppSubscription(json);
+
+        ImageView image = (ImageView) findViewById(R.id.subscriptionIcon);
+        setIcon(image, subscription);
+
         new GetSubscriptionDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subscription);
 
         ((TextView) findViewById(R.id.subscriptionName2)).setText(subscription.getProperty("name"));

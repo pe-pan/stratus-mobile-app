@@ -47,9 +47,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
             android:layout_marginRight="@dimen/activity_margin"
             android:contentDescription="@string/defaultSubscriptionIconDesc"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/no_icon" />
 
         <TextView
             android:id="@+id/subscriptionNameList"
