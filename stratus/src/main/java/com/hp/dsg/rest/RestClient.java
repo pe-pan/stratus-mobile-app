@@ -6,6 +6,7 @@ import com.hp.dsg.stratus.BuildConfig;
 import com.hp.dsg.utils.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -70,9 +71,13 @@ public class RestClient {
      * @param method which method will be used
      * @return response of the request
      */
-    public String doRequest(String pathName, String formData, Method method, ContentType contentType) {
+    public InputStream doRequest(String pathName, String formData, Method method, ContentType contentType, CacheListener cacheListener) {
         HttpURLConnection conn = null;
         try {
+            if (cacheListener != null) {
+                InputStream stream = cacheListener.onRequest(pathName, method);
+                if (stream != null) return stream;
+            }
             boolean redirect = false;
             do {
                 if (method == Method.GET && formData != null) {
@@ -159,31 +164,91 @@ public class RestClient {
             // Get the response
 
             Log.d(TAG, "Receiving:");
-            String response = IOUtils.toString(conn.getInputStream());
-            conn.getInputStream().close();
-            Log.d(TAG, response);
-            return response;
+            InputStream response = new ConnectionInputStream(conn);
+
+            if (cacheListener != null) {
+                return cacheListener.onResponse(pathName, response);
+            } else {
+                return response;
+            }
         } catch (IOException e) {
-            Log.d(TAG, "Exception caught", e);
-            String errorStream = null;
-            int responseCode = 0;
-            try {
-                if (conn != null && conn.getErrorStream() != null) {
-                    responseCode = conn.getResponseCode();
-                    Log.d(TAG, "Response Code: "+ responseCode);
-                    errorStream = IOUtils.toString(conn.getErrorStream());
-                    Log.d(TAG, "Error stream: "+ errorStream);
-                }
-            } catch (IOException e1) {
-                Log.d(TAG, "Cannot convert error stream to string");
+            handleIOException(conn, e);
+            return null; // will never get executed
+        }
+    }
+
+    /**
+     * Implementation of an {@link InputStream} coming from an {@link HttpURLConnection} that closes
+     * this connection upon InputStream is closed.
+     */
+    private class ConnectionInputStream extends InputStream {
+        private HttpURLConnection connection;
+        private InputStream inputStream;
+
+        private ConnectionInputStream(HttpURLConnection connection) throws IOException {
+            this.connection = connection;
+            this.inputStream = connection.getInputStream();
+        }
+
+        @Override
+        public int read() throws IOException {
+            return inputStream.read();
+        }
+
+        @Override
+        public void close() throws IOException {
+            connection.disconnect();
+            super.close();
+        }
+
+        public HttpURLConnection getConnection() {
+            return connection;
+        }
+
+        public InputStream getInputStream() {
+            return inputStream;
+        }
+    }
+
+    private void handleIOException(HttpURLConnection conn, IOException e) {
+        Log.d(TAG, "Exception caught", e);
+        String errorStream = null;
+        int responseCode = 0;
+        try {
+            if (conn != null && conn.getErrorStream() != null) {
+                responseCode = conn.getResponseCode();
+                Log.d(TAG, "Response Code: "+ responseCode);
+                errorStream = IOUtils.toString(conn.getErrorStream());
+                Log.d(TAG, "Error stream: "+ errorStream);
             }
-            if (e.getMessage().equals("Received authentication challenge is null")) {
-                responseCode = HttpURLConnection.HTTP_UNAUTHORIZED; // todo hack, FMI, see http://stackoverflow.com/questions/1357372
-            }
-            throw new IllegalRestStateException(responseCode, errorStream == null ? e.getMessage() : errorStream, errorStream, e);
-        } finally {
-            if (conn != null) {  // close the connection
-                conn.disconnect();
+        } catch (IOException e1) {
+            Log.d(TAG, "Cannot convert error stream to string");
+        }
+        if (e.getMessage().equals("Received authentication challenge is null")) {
+            responseCode = HttpURLConnection.HTTP_UNAUTHORIZED; // todo hack, FMI, see http://stackoverflow.com/questions/1357372
+        }
+        if (conn != null) {
+            conn.disconnect();
+        }
+        throw new IllegalRestStateException(responseCode, errorStream == null ? e.getMessage() : errorStream, errorStream, e);
+    }
+
+    public String doRequest(String urlAddress, String formData, Method method, ContentType contentType) {
+        InputStream response = null;
+        try {
+            response = doRequest(urlAddress, formData, method, contentType, null);
+            Log.d(TAG, "Receiving:");
+            String responseString = IOUtils.toString(response);
+            response.close();
+            Log.d(TAG, responseString);
+            return responseString;
+        } catch (IOException e) {
+            if (response instanceof ConnectionInputStream) {
+                handleIOException(((ConnectionInputStream) response).getConnection(), e);
+                return null; // will never get executed
+            } else {
+                Log.e(TAG, "Exception when doing "+method.toString()+" at "+urlAddress, e);
+                throw new IllegalStateException("Exception when doing "+method.toString()+" at "+urlAddress, e);
             }
         }
     }
@@ -227,6 +292,10 @@ public class RestClient {
 
     public String doGet(String url, ContentType contentType) {
         return doRequest(url, (String) null, Method.GET, contentType);
+    }
+
+    public InputStream doGet(String pathName, ContentType contentType, CacheListener cacheListener) {
+        return doRequest(pathName, null, Method.GET, contentType, cacheListener);
     }
 
     public String doPost(String url, String data) {

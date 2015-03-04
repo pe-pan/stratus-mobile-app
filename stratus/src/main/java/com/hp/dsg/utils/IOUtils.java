@@ -22,11 +22,16 @@ public class IOUtils {
     public static String toString(InputStream inputStream)
             throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[BUFFER_LEN];
-        int length = 0;
-        while ((length = inputStream.read(buffer)) != -1) {
-            baos.write(buffer, 0, length);
-        }
+        copy(inputStream, baos);
         return new String(baos.toByteArray());
+    }
+
+    public static void copy(InputStream inputStream, OutputStream outputStream)
+            throws IOException {
+        byte[] buffer = new byte[BUFFER_LEN];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, length);
+        }
     }
 }

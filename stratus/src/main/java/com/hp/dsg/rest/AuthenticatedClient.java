@@ -1,5 +1,6 @@
 package com.hp.dsg.rest;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 /**
@@ -46,6 +47,18 @@ public abstract class AuthenticatedClient  {
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doGet(url, type);
+            }
+            throw e;
+        }
+    }
+
+    public InputStream doGet(String pathName, ContentType type, CacheListener cacheListener) {
+        try {
+            return client.doGet(pathName, type, cacheListener);
+        } catch (IllegalRestStateException e) {
+            if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                if (listener != null) listener.onNoAuthentication();
+                return client.doGet(pathName, type, cacheListener);
             }
             throw e;
         }

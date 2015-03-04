@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,9 @@ public class OfferingActivity extends StratusActivity {
 
             String json = getIntent().getStringExtra(OFFERING_EXTRA_KEY);
             final MppOffering offering = new MppOffering(json);
+
+            ImageView image = (ImageView) findViewById(R.id.offeringIcon);
+            setIcon(image, offering);
 
             int ids[] = {R.id.offeringName, R.id.offeringDescription, R.id.offeringCatalog, R.id.subscriptionName, R.id.offeringUpdateOn};
             String properties[] = {"displayName", "description", "catalogName", "displayName", "publishedDate"};
