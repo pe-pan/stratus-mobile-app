@@ -56,7 +56,6 @@ public class OfferingListActivity extends StratusActivity {
             }
             case R.id.subscriptions : {
                 startActivity(new Intent(this, SubscriptionListActivity.class));
-                finish();
                 return true;
             }
             case R.id.about : {
