@@ -54,44 +54,43 @@ public class OfferingListActivity extends StratusActivity {
         } else return super.onOptionsItemSelected(item);
     }
 
-    private class GetOfferings extends AsyncTask<Boolean, Void, Boolean> {
+    private class GetOfferings extends AsyncTask<Boolean, Void, List<Entity>> {
 
         @Override
-        protected Boolean doInBackground(Boolean... params) {
+        protected List<Entity> doInBackground(Boolean... params) {
             try {
                 final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
-                final ListView listview = (ListView) findViewById(R.id.offeringList);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final ArrayAdapter adapter = new ArrayAdapter<>(OfferingListActivity.this,
-                                android.R.layout.simple_list_item_1, offerings);
-                        listview.setAdapter(adapter);
-                        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
-                        progressBar.setVisibility(View.GONE);
-
-                        EditText searchBox = (EditText) findViewById(R.id.searchBox);
-                        searchBox.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                adapter.getFilter().filter(s);
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {
-                            }
-                        });
-                    }
-                });
-                return true;
+                return offerings;
             } catch (Exception e) {
                 showSendErrorDialog(e);
-                return false;
+                return null;
             }
+        }
+
+        @Override
+        protected void onPostExecute(List<Entity> offerings) {
+            final ListView listview = (ListView) findViewById(R.id.offeringList);
+            final ArrayAdapter adapter = new ArrayAdapter<>(OfferingListActivity.this,
+                    android.R.layout.simple_list_item_1, offerings);
+            listview.setAdapter(adapter);
+            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
+            progressBar.setVisibility(View.GONE);
+
+            EditText searchBox = (EditText) findViewById(R.id.searchBox);
+            searchBox.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    adapter.getFilter().filter(s);
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
         }
     }
 }
