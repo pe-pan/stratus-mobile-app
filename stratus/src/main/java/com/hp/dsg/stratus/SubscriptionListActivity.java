@@ -346,7 +346,6 @@ public class SubscriptionListActivity extends StratusActivity {
                                     }
                                 }
 
-/*
                                 //todo hack; we should be re-using views for performance reasons; learnt from http://stackoverflow.com/questions/6921462
                                 @Override
                                 public int getViewTypeCount() {
@@ -357,7 +356,6 @@ public class SubscriptionListActivity extends StratusActivity {
                                 public int getItemViewType(int position) {
                                     return position;
                                 }
-*/
                             };
                             listview.setAdapter(adapter);
                             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
