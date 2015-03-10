@@ -102,17 +102,6 @@ public class OfferingActivity extends StratusActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            }
-            default : return super.onOptionsItemSelected(item);
-        }
-    }
-
     public class ServiceRequestTask extends AsyncTask<Void, Void, String> {
 
         private final MppOffering offering;

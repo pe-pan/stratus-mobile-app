@@ -3,7 +3,6 @@ package com.hp.dsg.stratus;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -49,21 +48,10 @@ public class OfferingListActivity extends StratusActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case  R.id.offerings : {
-                new GetOfferings().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh;
-                return true;
-            }
-            case R.id.subscriptions : {
-                startActivity(new Intent(this, SubscriptionListActivity.class));
-                return true;
-            }
-            case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            }
-            default : return super.onOptionsItemSelected(item);
-        }
+        if (item.getItemId() == R.id.offerings) {
+            new GetOfferings().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh;
+            return true;
+        } else return super.onOptionsItemSelected(item);
     }
 
     private class GetOfferings extends AsyncTask<Boolean, Void, Boolean> {

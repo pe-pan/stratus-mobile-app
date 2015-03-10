@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -54,6 +55,25 @@ public class StratusActivity extends ActionBarActivity {
         restoreAuthenticationToken();
         registerAuthenticationListener();
         enableStatusBar();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case  R.id.offerings : {
+                startActivity(new Intent(this, OfferingListActivity.class));
+                return true;
+            }
+            case R.id.subscriptions : {
+                startActivity(new Intent(this, SubscriptionListActivity.class));
+                return true;
+            }
+            case R.id.about : {
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            }
+            default : return super.onOptionsItemSelected(item);
+        }
     }
 
     private void restoreAuthenticationToken() {

@@ -68,22 +68,10 @@ public class SubscriptionListActivity extends StratusActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case  R.id.offerings : {
-                startActivity(new Intent(this, OfferingListActivity.class));
-                return true;
-            }
-            case R.id.subscriptions : {
-                new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh subscriptions
-                return true;
-            }
-            case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            }
-            default : return super.onOptionsItemSelected(item);
-
-        }
+        if (item.getItemId() == R.id.subscriptions) {
+            new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true); //refresh subscriptions
+            return true;
+        } else return super.onOptionsItemSelected(item);
     }
 
     private float difference = 0;
@@ -358,6 +346,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                     }
                                 }
 
+/*
                                 //todo hack; we should be re-using views for performance reasons; learnt from http://stackoverflow.com/questions/6921462
                                 @Override
                                 public int getViewTypeCount() {
@@ -368,6 +357,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                 public int getItemViewType(int position) {
                                     return position;
                                 }
+*/
                             };
                             listview.setAdapter(adapter);
                             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);

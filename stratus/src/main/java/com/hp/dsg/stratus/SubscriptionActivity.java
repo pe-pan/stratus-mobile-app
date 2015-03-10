@@ -64,17 +64,6 @@ public class SubscriptionActivity extends StratusActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            }
-            default : return super.onOptionsItemSelected(item);
-        }
-    }
-
     private class GetSubscriptionDetails extends AsyncTask<MppSubscription, Void, Server[]> {
         private MppInstance instance;
         private ImageView expandTriangle;

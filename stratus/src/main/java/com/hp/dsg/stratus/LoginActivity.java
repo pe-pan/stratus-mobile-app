@@ -88,17 +88,6 @@ public class LoginActivity extends StratusActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            }
-            default : return super.onOptionsItemSelected(item);
-        }
-    }
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
