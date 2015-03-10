@@ -17,8 +17,8 @@ import java.net.URLEncoder;
 /**
  * Created by panuska on 2.3.2015.
  */
-public class Cache {
-    private static final String TAG = Cache.class.getSimpleName();
+public class FileCache {
+    private static final String TAG = FileCache.class.getSimpleName();
 
     private static String mapUrlToFileName(String url) {
         return URLEncoder.encode(url);

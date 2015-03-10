@@ -19,12 +19,12 @@ public class ImageCacheListener implements CacheListener {
 
     @Override
     public InputStream onRequest(String pathName, Method method) {
-        return Cache.getFileInputStream(context, pathName);
+        return FileCache.getFileInputStream(context, pathName);
     }
 
     @Override
     public InputStream onResponse(String pathName, InputStream inner) {
-        Cache.writeFileInputStream(context, pathName, inner);  // first write the file down
-        return Cache.getFileInputStream(context, pathName);  // then returns the file content
+        FileCache.writeFileInputStream(context, pathName, inner);  // first write the file down
+        return FileCache.getFileInputStream(context, pathName);  // then returns the file content
     }
 }

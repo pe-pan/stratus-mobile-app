@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import com.hp.dsg.rest.CacheListener;
 import com.hp.dsg.rest.ContentType;
 import com.hp.dsg.rest.IllegalRestStateException;
 import com.hp.dsg.stratus.cache.ImageCacheListener;
+import com.hp.dsg.stratus.cache.MemoryCache;
 import com.hp.dsg.stratus.entities.Entity;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -185,21 +188,26 @@ public class StratusActivity extends ActionBarActivity {
         return imageCacheListener;
     }
 
-    protected void setIcon(ImageView image, Entity subscriptionOrOffering) {
+    protected void setIcon(ImageView view, Entity subscriptionOrOffering) {
         String url = subscriptionOrOffering.getProperty("image");
         if (url == null) {
-            image.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
+            view.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
             return;
         }
-        new DownloadImage(image, url).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Drawable image = MemoryCache.getImage(url);
+        if (image == null) {
+            new DownloadImage(view, url).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            view.setImageDrawable(image);
+        }
     }
 
     private class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
-        private ImageView image;
+        private ImageView view;
         private String url;
 
-        private DownloadImage(ImageView image, String url) {
-            this.image = image;
+        private DownloadImage(ImageView view, String url) {
+            this.view = view;
             this.url = url;
         }
 
@@ -220,9 +228,10 @@ public class StratusActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap == null) {
-                image.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
+                view.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));
             } else {
-                image.setImageBitmap(bitmap);
+                view.setImageBitmap(bitmap);
+                MemoryCache.putImage(url, new BitmapDrawable(view.getResources(), bitmap));
             }
         }
     }
