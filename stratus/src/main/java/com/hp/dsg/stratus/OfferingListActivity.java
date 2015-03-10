@@ -5,16 +5,24 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.hp.dsg.stratus.entities.Entity;
+import com.hp.dsg.utils.StringUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
@@ -68,10 +76,75 @@ public class OfferingListActivity extends StratusActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Entity> offerings) {
+        protected void onPostExecute(final List<Entity> offerings) {
             final ListView listview = (ListView) findViewById(R.id.offeringList);
-            final ArrayAdapter adapter = new ArrayAdapter<>(OfferingListActivity.this,
-                    android.R.layout.simple_list_item_1, offerings);
+            final ArrayAdapter adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
+                    android.R.layout.simple_list_item_1, offerings) {
+                private List<Entity> values = offerings;
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    final View row;
+                    if (convertView == null) {
+                        LayoutInflater inflater = (OfferingListActivity.this).getLayoutInflater();
+                        row = inflater.inflate(R.layout.offering_list_item, parent, false);
+                    } else {
+                        row = convertView;
+                    }
+                    final Entity offering = values.get(position);
+                    ((TextView) row.findViewById(R.id.offeringNameList)).setText(offering.getProperty("displayName"));
+
+                    ImageView image = (ImageView) row.findViewById(R.id.offeringIconList);
+                    setIcon(image, offering);
+
+                    return row;
+                }
+
+                private Filter filter = new Filter() {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint) {
+                        FilterResults results = new FilterResults();
+                        if (constraint == null || constraint.length() == 0) {
+                            results.values = offerings;        // return the original (not filtered) list
+                            results.count = offerings.size();
+                        } else {
+                            List<Entity> filteredOfferings = new ArrayList<>();
+                            String token = constraint.toString().toLowerCase();
+                            for (Entity offering : offerings) { // search the original (not filtered) list
+                                if (StringUtils.emptifyNullString(offering.getProperty("displayName")).toLowerCase().contains(token) ||
+                                        StringUtils.emptifyNullString(offering.getProperty("description")).toLowerCase().contains(token) ||
+                                        StringUtils.emptifyNullString(offering.getProperty("category.displayName")).toLowerCase().contains(token)) {
+                                    filteredOfferings.add(offering);
+                                }
+                            }
+                            results.values = filteredOfferings;
+                            results.count = filteredOfferings.size();
+                        }
+                        return results;
+                    }
+
+                    @Override
+                    protected void publishResults(CharSequence constraint, FilterResults results) {
+                        values = (List<Entity>) results.values;
+                        notifyDataSetChanged();
+                    }
+                };
+
+                @Override
+                public Filter getFilter() {
+                    return filter;
+                }
+
+                @Override
+                public int getCount() {
+                    return values.size();
+                }
+
+                @Override
+                public Entity getItem(int position) {
+                    return values.get(position);
+                }
+            };
             listview.setAdapter(adapter);
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
             progressBar.setVisibility(View.GONE);
@@ -80,11 +153,11 @@ public class OfferingListActivity extends StratusActivity {
             searchBox.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    adapter.getFilter().filter(s);
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    adapter.getFilter().filter(s);
                 }
 
                 @Override
