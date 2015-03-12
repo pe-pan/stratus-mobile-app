@@ -1,7 +1,7 @@
 package com.hp.dsg.stratus;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -10,10 +10,10 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -104,19 +104,12 @@ public class LoginActivity extends StratusActivity {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
+        showProgress(true);
+        M_STRATUS.setUsername(email);
+        M_STRATUS.setPassword(password);
 
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
-            showProgress(true);
-            M_STRATUS.setUsername(email);
-            M_STRATUS.setPassword(password);
-
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
+        mAuthTask = new UserLoginTask(email, password);
+        mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     /**
