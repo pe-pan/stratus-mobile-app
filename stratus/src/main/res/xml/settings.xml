@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="load_images"
+        android:summaryOff="@string/noImagesShown"
+        android:summaryOn="@string/imagesShown"
+        android:title="@string/loadImages" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="cache_files"
+        android:summaryOff="@string/noFilesStored"
+        android:summaryOn="@string/storeFiles"
+        android:title="@string/cacheFiles" />
+    <Preference
+        android:key="clear_cache"
+        android:summary="@string/clearCacheSummary"
+        android:title="@string/clearCacheNow" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="keep_password"
+        android:summaryOff="@string/askForCredentials"
+        android:summaryOn="@string/doNotAskForCredentials"
+        android:title="@string/keepPassword" />
+    <Preference
+        android:key="logout_now"
+        android:summary="@string/removeAuthDetails"
+        android:title="@string/logoutNow" />
+</PreferenceScreen>

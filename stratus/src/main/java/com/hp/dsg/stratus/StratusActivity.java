@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.IllegalRestStateException;
 import com.hp.dsg.stratus.entities.Entity;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -64,6 +67,10 @@ public class StratusActivity extends ActionBarActivity {
             }
             case R.id.about : {
                 startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            }
+            case R.id.settings: {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             }
             default : return super.onOptionsItemSelected(item);
@@ -171,7 +178,24 @@ public class StratusActivity extends ActionBarActivity {
         });
     }
 
-    protected void setIcon(ImageView view, Entity subscriptionOrOffering) {
-        Picasso.with(this).load(Mpp.STRATUS_HOSTNAME + subscriptionOrOffering.getProperty("image")).into(view);
+    /**
+     * Returns true if settings is not found (if setting was never persisted [preference screen was never open], will return true).
+     */
+    public boolean isEnabledPreference(String key) {
+        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true); //this default value must correspond to default value in settings.xml
     }
+
+    protected void setIcon(ImageView view, Entity subscriptionOrOffering) {
+        if (isEnabledPreference(SettingsActivity.KEY_PREF_LOAD_IMAGES)) {
+            if (isEnabledPreference(SettingsActivity.KEY_PREF_CACHE_FILES)) {
+                Picasso.with(this).load(Mpp.STRATUS_HOSTNAME + subscriptionOrOffering.getProperty("image")).into(view);
+            } else {
+                Picasso.with(this).load(Mpp.STRATUS_HOSTNAME + subscriptionOrOffering.getProperty("image")).
+                        networkPolicy(NetworkPolicy.NO_STORE).
+                        memoryPolicy(MemoryPolicy.NO_STORE).
+                        into(view);
+            }
+        }
+    }
+
 }

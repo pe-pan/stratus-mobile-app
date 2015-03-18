@@ -3,4 +3,5 @@
     <item android:id="@+id/offerings" android:title="@string/title_activity_offerings"/>
     <item android:id="@+id/subscriptions" android:title="@string/title_activity_subscriptions"/>
     <item android:id="@+id/about" android:title="@string/title_activity_about"/>
+    <item android:id="@+id/settings" android:title="@string/settings"/>
 </menu>

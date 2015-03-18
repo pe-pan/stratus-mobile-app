@@ -156,7 +156,9 @@ public class LoginActivity extends StratusActivity {
                 SharedPreferences credentials = getSharedPreferences(StratusActivity.AUTHENTICATION_FILE, MODE_PRIVATE);
                 SharedPreferences.Editor editor = credentials.edit();
                 editor.putString(StratusActivity.USERNAME_PKEY, username);
-                editor.putString(StratusActivity.PASSWORD_PKEY, password);
+                if (isEnabledPreference(SettingsActivity.KEY_PREF_KEEP_PASSWORD)) {
+                    editor.putString(StratusActivity.PASSWORD_PKEY, password);
+                }
                 editor.apply();
                 synchronized (M_STRATUS) {
                     M_STRATUS.notifyAll();

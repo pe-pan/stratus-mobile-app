@@ -43,6 +43,10 @@ public class Mpp extends AuthenticatedClient {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public String authenticate() {
         String json = "{\n" +

@@ -66,4 +66,18 @@
     <string name="cancelButton">Cancel</string>
     <string name="deleteButton">Delete</string>
 
+    <string name="loadImages">Load images</string>
+    <string name="noImagesShown">No images shown</string>
+    <string name="imagesShown">Images will be shown</string>
+    <string name="cacheFiles">Cache files</string>
+    <string name="noFilesStored">No files will be stored in device RAM</string>
+    <string name="storeFiles">Temporarily store images and other files</string>
+    <string name="clearCacheNow">Clear cache now</string>
+    <string name="clearCacheSummary">Frees %1$dkB of RAM and %2$dkB of disk cache</string>
+    <string name="keepPassword">Remember password</string>
+    <string name="askForCredentials">Ask always for credentials</string>
+    <string name="doNotAskForCredentials">Do not ask for credentials</string>
+    <string name="logoutNow">Logout now</string>
+    <string name="removeAuthDetails">Removes all authentication details (will ask for password next time)</string>
+    <string name="settings">Settings</string>
 </resources>
