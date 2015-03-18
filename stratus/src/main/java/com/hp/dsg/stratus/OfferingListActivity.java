@@ -75,6 +75,11 @@ public class OfferingListActivity extends StratusActivity {
             }
         }
 
+        private class ViewHolder {
+            TextView name;
+            ImageView icon;
+        }
+
         @Override
         protected void onPostExecute(final List<Entity> offerings) {
             final ListView listview = (ListView) findViewById(R.id.offeringList);
@@ -85,18 +90,22 @@ public class OfferingListActivity extends StratusActivity {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     final View row;
+                    ViewHolder holder;
                     if (convertView == null) {
                         LayoutInflater inflater = (OfferingListActivity.this).getLayoutInflater();
                         row = inflater.inflate(R.layout.offering_list_item, parent, false);
+                        holder = new ViewHolder();
+                        holder.name = (TextView) row.findViewById(R.id.offeringNameList);
+                        holder.icon = (ImageView) row.findViewById(R.id.offeringIconList);
+                        row.setTag(holder);
                     } else {
                         row = convertView;
+                        holder = (ViewHolder) row.getTag();
                     }
                     final Entity offering = values.get(position);
-                    ((TextView) row.findViewById(R.id.offeringNameList)).setText(offering.getProperty("displayName"));
 
-                    ImageView image = (ImageView) row.findViewById(R.id.offeringIconList);
-                    setIcon(image, offering);
-
+                    holder.name.setText(offering.getProperty("displayName"));
+                    setIcon(holder.icon, offering);
                     return row;
                 }
 
