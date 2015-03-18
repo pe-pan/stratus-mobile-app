@@ -1,8 +1,6 @@
 package com.hp.dsg.stratus;
 
 import android.animation.ObjectAnimator;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -60,7 +58,7 @@ public class SubscriptionActivity extends StratusActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_about, menu);
+        getMenuInflater().inflate(R.menu.menu_full, menu);
         return true;
     }
 
