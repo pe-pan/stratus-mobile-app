@@ -581,4 +581,13 @@ public class SubscriptionListActivity extends StratusActivity {
             cancelButton.setEnabled(true);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (animatedView != null) {
+            onSwipeCancel(animatedView);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
