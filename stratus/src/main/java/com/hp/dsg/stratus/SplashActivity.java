@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
@@ -14,6 +17,10 @@ public class SplashActivity extends StratusActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_splash);
+
+        ImageView splashScreen = (ImageView) findViewById(R.id.splashscreen);
+        Animation a = AnimationUtils.loadAnimation(SplashActivity.this, R.anim.rotation_splash);
+        splashScreen.startAnimation(a);
 
         new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
