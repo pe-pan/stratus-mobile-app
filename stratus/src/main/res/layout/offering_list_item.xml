@@ -3,7 +3,7 @@
     android:id="@+id/offeringTopListItem"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="@color/gray">
+    android:background="@drawable/main_button">
 
     <ImageView
         android:id="@+id/offeringIconList"
