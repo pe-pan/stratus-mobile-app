@@ -24,7 +24,7 @@
                 android:scaleType="fitCenter"
                 android:clickable="false"
                 android:background="@drawable/main_button"
-                android:src="@drawable/joystick_256" />
+                android:src="@drawable/joystick" />
 
             <TextView
                 android:onClick="subscriptionsClicked"
@@ -98,7 +98,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/main_button"
                 android:scaleType="fitCenter"
-                android:src="@drawable/info_256" />
+                android:src="@drawable/info" />
 
             <TextView
                 android:onClick="aboutClicked"
