@@ -48,7 +48,7 @@ public class SplashActivity extends StratusActivity {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Intent mainIntent = new Intent(SplashActivity.this, SubscriptionListActivity.class);
+                Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                 SplashActivity.this.startActivity(mainIntent);
                 finish();
             } else {

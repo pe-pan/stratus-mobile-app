@@ -4,6 +4,7 @@
     <color name="yellow">#ffffcc00</color>
     <color name="red">#ffff0000</color>
     <color name="blue">#ff0000ff</color>
+    <color name="light_blue">#ffb0e0e6</color>
     <color name="gray">#ffeeeeee</color>
     <color name="darker_gray">#ff888888</color>
     <drawable name="no_icon">#ffffffff</drawable>

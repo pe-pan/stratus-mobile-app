@@ -29,6 +29,10 @@
             android:label="@string/title_activity_subscriptions"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
             android:name=".SubscriptionActivity"
             android:label="Provisioned Demo Details"
             android:windowSoftInputMode="stateHidden" />
