@@ -27,6 +27,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.lang.reflect.Field;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 /**
  * Created by panuska on 24.2.2015.
@@ -148,32 +150,44 @@ public class StratusActivity extends ActionBarActivity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(StratusActivity.this);
 
-                builder.setMessage(getString(R.string.criticalError))
-                        .setTitle(getString(R.string.errorTitle))
-                        .setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(Intent.ACTION_SEND);
-                                i.setType("message/rfc822");
-                                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
-                                i.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.support_mail_subj), getString(R.string.app_version)));
-                                Display display = getWindowManager().getDefaultDisplay();
-                                i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e), Build.VERSION.SDK_INT, Build.MODEL, display.getWidth(), display.getHeight()));
-                                try {
-                                    startActivity(Intent.createChooser(i, getString(R.string.mail_client_title)));
-                                } catch (ActivityNotFoundException ex) {
-                                    Toast.makeText(StratusActivity.this, getString(R.string.no_mail_clients), Toast.LENGTH_LONG).show();
+                if (e.getCause() instanceof SSLHandshakeException) { // SSLHandshakeException thrown if Stratus service not available
+                    builder.setMessage(getString(R.string.noStratus))
+                            .setTitle(getString(R.string.systemMaintenance))
+                            .setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                    System.exit(0);
                                 }
-                                finish();
-                                System.exit(0);
-                            }
-                        }).setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        System.exit(0);
-                    }
-                }).create().show();
+                            }).create().show();
+                } else {
+                    builder.setMessage(getString(R.string.criticalError))
+                            .setTitle(getString(R.string.errorTitle))
+                            .setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(Intent.ACTION_SEND);
+                                    i.setType("message/rfc822");
+                                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
+                                    i.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.support_mail_subj), getString(R.string.app_version)));
+                                    Display display = getWindowManager().getDefaultDisplay();
+                                    i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e), Build.VERSION.SDK_INT, Build.MODEL, display.getWidth(), display.getHeight()));
+                                    try {
+                                        startActivity(Intent.createChooser(i, getString(R.string.mail_client_title)));
+                                    } catch (ActivityNotFoundException ex) {
+                                        Toast.makeText(StratusActivity.this, getString(R.string.no_mail_clients), Toast.LENGTH_LONG).show();
+                                    }
+                                    finish();
+                                    System.exit(0);
+                                }
+                            }).setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                            System.exit(0);
+                        }
+                    }).create().show();
+                }
             }
         });
     }
