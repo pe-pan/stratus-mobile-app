@@ -14,4 +14,7 @@ public class StringUtils {
         return s == null ? null : s.toString();
     }
 
+    public static String htmlEncode(String s) {
+        return s.replace(" ", "&#160;");
+    }
 }

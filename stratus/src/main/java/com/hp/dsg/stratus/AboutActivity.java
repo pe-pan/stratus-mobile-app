@@ -3,13 +3,19 @@ package com.hp.dsg.stratus;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hp.dsg.utils.StringUtils;
+
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -29,6 +35,8 @@ public class AboutActivity extends Activity {
         homeLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView supportLink = (TextView) findViewById(R.id.supportLink);
+        Display display = getWindowManager().getDefaultDisplay();
+        supportLink.setText(Html.fromHtml(String.format(getString(R.string.support_link), StringUtils.htmlEncode(getString(R.string.app_version)), Build.VERSION.SDK_INT, Build.MODEL, display.getWidth(), display.getHeight(), StringUtils.htmlEncode(new Date().toString()))));
         supportLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         Button okButton = (Button) findViewById(R.id.ok);
