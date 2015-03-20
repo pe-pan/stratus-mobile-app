@@ -66,13 +66,15 @@ public class SubscriptionActivity extends StratusActivity {
         private MppInstance instance;
         private ImageView expandTriangle;
 
+        private GetSubscriptionDetails() {
+            expandTriangle = (ImageView) findViewById(R.id.expandComponentProperties);
+            RotateAnimation a = (RotateAnimation) AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation);
+            expandTriangle.startAnimation(a);
+        }
+
         @Override
         protected Server[] doInBackground(final MppSubscription... params) {
             try {
-                expandTriangle = (ImageView) findViewById(R.id.expandComponentProperties);
-                RotateAnimation a = (RotateAnimation) AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.rotation);
-                expandTriangle.startAnimation(a);
-
                 instance = params[0].getInstance();
                 return instance.getServers();
             } catch (Exception e) {
