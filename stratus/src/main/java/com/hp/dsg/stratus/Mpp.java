@@ -103,13 +103,13 @@ public class Mpp extends AuthenticatedClient {
         if (!"EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
             String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");
             String oppDetailsId = offering.getProperty("field_OPPDETAILS");
-            req.setObjectProperty(checkBoxId, true);
-            req.setProperty(oppDetailsId, oppId);
+            req.setObjectProperty("field_"+checkBoxId, true);
+            req.setProperty("field_"+oppDetailsId, oppId);
         } else {
             String checkBoxId = offering.getProperty("field_E3332EC1_DFF5_3D5D_34A6_6F767683E54A");
             String emailAddressId = offering.getProperty("field_EmailAddress");
-            req.setObjectProperty(checkBoxId, true);
-            req.setProperty(emailAddressId, emailAddress);
+            req.setObjectProperty("field_"+checkBoxId, true);
+            req.setProperty("field_"+emailAddressId, emailAddress);
         }
         return reqHandler.create(req);
     }
