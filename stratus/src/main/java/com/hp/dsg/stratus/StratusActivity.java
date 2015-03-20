@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -171,7 +172,7 @@ public class StratusActivity extends ActionBarActivity {
                                     i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
                                     i.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.support_mail_subj), getString(R.string.app_version)));
                                     Display display = getWindowManager().getDefaultDisplay();
-                                    i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e), Build.VERSION.SDK_INT, Build.MODEL, display.getWidth(), display.getHeight()));
+                                    i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e), Build.VERSION.SDK_INT, Build.MODEL, display.getWidth(), display.getHeight(), new Date().toString()));
                                     try {
                                         startActivity(Intent.createChooser(i, getString(R.string.mail_client_title)));
                                     } catch (ActivityNotFoundException ex) {
