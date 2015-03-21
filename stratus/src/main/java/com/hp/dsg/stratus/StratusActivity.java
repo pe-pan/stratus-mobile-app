@@ -211,6 +211,8 @@ public class StratusActivity extends ActionBarActivity {
                         memoryPolicy(MemoryPolicy.NO_STORE).
                         into(view);
             }
+        } else {
+            view.setImageDrawable(getResources().getDrawable(R.drawable.no_icon));  // if someone switches off pictures when already loaded
         }
     }
 
