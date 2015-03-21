@@ -146,7 +146,7 @@ public class OfferingListActivity extends StratusActivity {
 
                 @Override
                 public int getCount() {
-                    return values.size();
+                    return values != null ? values.size() : 0; // in case the async task fails, values might be null
                 }
 
                 @Override
