@@ -1,18 +1,20 @@
 package com.hp.dsg.stratus;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.view.animation.Transformation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.support.v7.widget.PopupMenu;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,7 +157,7 @@ public class SubscriptionActivity extends StratusActivity {
 
                     LinearLayout properties = (LinearLayout) findViewById(R.id.subscriptionProperties);
                     for (final Server server : servers) {
-                        View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
+                        final View row = View.inflate(SubscriptionActivity.this, R.layout.subscription_property_list_item, null);
                         for (ServerProperty property : server.properties) {
 
                             switch (property.name) {
@@ -178,54 +180,78 @@ public class SubscriptionActivity extends StratusActivity {
                                     propertyList.addView(pair);
                             }
                         }
-                        row.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(final View v) {
-                                try {
-                                    if (server.serviceSubscriptionId == null) {
-                                        Toast.makeText(SubscriptionActivity.this, getString(R.string.noOpsDefined), Toast.LENGTH_LONG).show();
-                                    } else {
-                                        PopupMenu menu = new PopupMenu(SubscriptionActivity.this, v);
-                                        for (int i = 0; i < server.actions.length; i++) {
-                                            ServiceAction action = server.actions[i];
-                                            menu.getMenu().add(Menu.NONE, i, Menu.NONE, action.displayName);
+                        final View operations = row.findViewById(R.id.serverOperations);
+                        final LinearLayout operationList = (LinearLayout) operations.findViewById(R.id.serviceOperations);
+                        if (server.serviceSubscriptionId != null) {
+                            operationList.findViewById(R.id.noOperationImage).setVisibility(View.GONE);
+                            for (int i = 0; i < server.actions.length; i++) {
+                                ServiceAction action = server.actions[i];
+                                Button button = (Button)Button.inflate(SubscriptionActivity.this, R.layout.subscription_service_operation_button, null);
+                                button.setText(action.displayName);
+                                button.setTag(server.actions[i]);
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        try {
+                                            ServiceAction action = (ServiceAction) v.getTag();
+                                            MppRequest req = new MppRequest(null);
+                                            req.setProperty("action", action.name);
+                                            if (action.emailProperty != null) {
+                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                            }
+                                            req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
+                                            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                                            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
+                                            new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                        } catch (Exception e) {
+                                            showSendErrorDialog(e);
                                         }
-                                        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                            @Override
-                                            public boolean onMenuItemClick(MenuItem item) {
-                                                try {
-                                                    ServiceAction action = server.actions[item.getItemId()];
-                                                    MppRequest req = new MppRequest(null);
-                                                    req.setProperty("action", action.name);
-                                                    if (action.emailProperty != null) {
-                                                        req.setProperty("field_EMAIL_CONF", action.emailProperty);
-                                                    }
-                                                    req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
-                                                    req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-                                                    req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
-                                                    new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
-                                                    return true;
-                                                } catch (Exception e) {
-                                                    showSendErrorDialog(e);
-                                                    return false;
-                                                }
-                                            }
-                                        });
-                                        final int color = v.getDrawingCacheBackgroundColor();
-                                        menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                                            @Override
-                                            public void onDismiss(PopupMenu popupMenu) {
-                                                v.setBackgroundColor(color);
-                                            }
-                                        });
-                                        v.setBackgroundColor(getResources().getColor(R.color.darker_gray));
-                                        menu.show();
                                     }
-                                    return true;
-                                } catch (Exception e) {
-                                    showSendErrorDialog(e);
-                                    return false;
+                                });
+                                operationList.addView(button);
+                            }
+                        }
+                        final View verticalLine = row.findViewById(R.id.expandServerOperations);
+                        final ViewTreeObserver observer = verticalLine.getViewTreeObserver();
+                        if (observer.isAlive()) {
+                            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    int shift = operations.getWidth() - verticalLine.getWidth();
+                                    row.findViewById(R.id.serverOperations).setTranslationX(shift);
                                 }
+                            });
+                        }
+                        final Animation blinking = AnimationUtils.loadAnimation(SubscriptionActivity.this, R.anim.blinking);
+                        verticalLine.startAnimation(blinking);
+                        verticalLine.setOnClickListener(new View.OnClickListener() {
+                            boolean operationsVisible = false;
+                            private float shift;
+
+                            @Override
+                            public void onClick(View v) {
+                                ObjectAnimator oa;
+                                if (!operationsVisible) {
+                                    shift = operations.getTranslationX(); // initialize shift
+                                    oa = ObjectAnimator.ofFloat(operations, "translationX", 0f);
+                                    verticalLine.setAnimation(null);
+                                } else {
+                                    oa = ObjectAnimator.ofFloat(operations, "translationX", shift);
+                                    verticalLine.startAnimation(blinking);
+                                }
+                                oa.setDuration(600);
+                                oa.start();
+                                oa.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        View triangleLeft = verticalLine.findViewById(R.id.expandServerOperationsTriangle);
+                                        float rotation = triangleLeft.getRotation();
+                                        ObjectAnimator oa2;
+                                        oa2 = ObjectAnimator.ofFloat(triangleLeft, "rotation", (rotation + 180) % 360);
+                                        oa2.start();
+                                    }
+                                });
+                                operationsVisible = !operationsVisible;
                             }
                         });
                         properties.addView(row);
