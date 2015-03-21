@@ -89,7 +89,7 @@ public class OfferingActivity extends StratusActivity {
                     finish();
                 }
             });
-        } catch (Exception e) {
+        } catch (Throwable e) {
             showSendErrorDialog(e);
         }
     }

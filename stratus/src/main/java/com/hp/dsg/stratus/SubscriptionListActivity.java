@@ -193,7 +193,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                 }
                             }
                             return false;
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             showSendErrorDialog(e);
                             return false;
                         }
@@ -340,7 +340,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                             }
                                         });
                                         return row;
-                                    } catch (Exception e) {
+                                    } catch (Throwable e) {
                                         showSendErrorDialog(e);
                                         return null;
                                     }
@@ -360,14 +360,14 @@ public class SubscriptionListActivity extends StratusActivity {
                             listview.setAdapter(adapter);
                             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
                             progressBar.setVisibility(View.GONE);
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             showSendErrorDialog(e);
                         }
                     }
                 });
                 M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
                 return true;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }
@@ -409,7 +409,7 @@ public class SubscriptionListActivity extends StratusActivity {
                 } catch (Exception e) {
                     return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }
@@ -452,7 +452,7 @@ public class SubscriptionListActivity extends StratusActivity {
                 } catch (Exception e) {
                     return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }
@@ -519,7 +519,7 @@ public class SubscriptionListActivity extends StratusActivity {
                     Log.e(TAG, "Exception when cancelling " + holder.subscription, e);
                     return null;//todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }
@@ -557,7 +557,7 @@ public class SubscriptionListActivity extends StratusActivity {
                     Log.e(TAG, "Exception when deleting "+subscription, e);
                     return null;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }

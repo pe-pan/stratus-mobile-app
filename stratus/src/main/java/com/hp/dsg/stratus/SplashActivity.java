@@ -32,13 +32,13 @@ public class SplashActivity extends StratusActivity {
 
     private class GetSubscriptions extends AsyncTask<Boolean, Void, Boolean> {
 
-        private Exception e;
+        private Throwable e;
         @Override
         protected Boolean doInBackground(Boolean... params) {
             try {
                 M_STRATUS.getSubscriptions(params[0]);  // just to cache the subscriptions while splash screen is being shown
                 return true;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 Log.d(TAG, "Exception when getting subscriptions", e);
                 this.e = e;
                 return false;

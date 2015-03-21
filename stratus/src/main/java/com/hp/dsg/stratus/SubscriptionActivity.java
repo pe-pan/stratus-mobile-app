@@ -79,7 +79,7 @@ public class SubscriptionActivity extends StratusActivity {
             try {
                 instance = params[0].getInstance();
                 return instance.getServers();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }
@@ -203,7 +203,7 @@ public class SubscriptionActivity extends StratusActivity {
                                             req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
                                             req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
                                             new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
-                                        } catch (Exception e) {
+                                        } catch (Throwable e) {
                                             showSendErrorDialog(e);
                                         }
                                     }
@@ -257,7 +257,7 @@ public class SubscriptionActivity extends StratusActivity {
                         properties.addView(row);
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
             }
         }

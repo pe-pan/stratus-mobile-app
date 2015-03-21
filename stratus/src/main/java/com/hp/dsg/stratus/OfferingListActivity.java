@@ -69,7 +69,7 @@ public class OfferingListActivity extends StratusActivity {
             try {
                 final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
                 return offerings;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 showSendErrorDialog(e);
                 return null;
             }

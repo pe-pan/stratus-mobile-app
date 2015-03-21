@@ -145,7 +145,7 @@ public class StratusActivity extends ActionBarActivity {
         }
 
     }
-    public void showSendErrorDialog(final Exception e) {
+    public void showSendErrorDialog(final Throwable e) {
         Log.e(TAG, "Exception thrown", e);
         runOnUiThread(new Runnable() {
             @Override
