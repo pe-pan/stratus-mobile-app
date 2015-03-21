@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -270,6 +271,7 @@ public class SubscriptionActivity extends StratusActivity {
             try {
                 return reqHandler.create(params[0]);
             } catch (Exception e) {
+                Log.e(TAG, "Exception when executing service action " + params[0], e);
                 return null;  //todo upon IllegalRestStateException, check the error stream, it may contain the reason of the failure
             }
         }
