@@ -15,6 +15,7 @@
         android:layout_marginRight="@dimen/activity_margin"
         android:adjustViewBounds="true"
         android:contentDescription="@string/defaultSubscriptionIconDesc"
+        android:maxWidth="100dp"
         android:src="@drawable/no_icon" />
 
     <TextView
