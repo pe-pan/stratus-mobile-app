@@ -227,7 +227,9 @@ public class SubscriptionListActivity extends StratusActivity {
                                         long length;
                                         int maxWidth = parent.getMeasuredWidth(); //todo not correct; we should take the part of the row where the line lies, not the whole row length
                                         int maxPeriod = 7 * 24 * 60 * 60 * 1000; // 7 days in in millis
-                                        if (endDate == null) {
+                                        if (!"ACTIVE".equals(subscription.getProperty("status"))) { // if not active
+                                            length = 0;
+                                        } else if (endDate == null) {                               // if no end date
                                             length = maxWidth;
                                         } else {
                                             long now = System.currentTimeMillis();
