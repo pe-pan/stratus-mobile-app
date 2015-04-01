@@ -19,8 +19,16 @@ public abstract class CsaEntityHandler extends EntityHandler {
 
     }
 
+    static final String NO_FILTER = "{}";
+
+    private String filter = NO_FILTER;
+
     protected String getListJson() {
-        return M_STRATUS.doPost(Mpp.REST_PATHNAME +context+"/filter", "{}");
+        return M_STRATUS.doPost(Mpp.REST_PATHNAME +context+"/filter", filter);
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter == null ? NO_FILTER : filter;
     }
 
     public synchronized List<Entity> list(boolean enforce) {

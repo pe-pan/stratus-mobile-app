@@ -156,7 +156,7 @@ public class SubscriptionListActivity extends StratusActivity {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             try {
-                final List<Entity> subscriptions = M_STRATUS.getSubscriptions(params[0]);
+                final List<Entity> subscriptions = getSubscriptions(params[0]);
                 final View.OnTouchListener gestureListener = new View.OnTouchListener() {
                     public boolean onTouch(final View v, MotionEvent event) {
                         try {

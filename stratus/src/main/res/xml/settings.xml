@@ -2,6 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
         android:defaultValue="true"
+        android:key="filter_active_subs"
+        android:summaryOff="@string/showAllSubscriptions"
+        android:summaryOn="@string/showActiveSubscriptions"
+        android:title="@string/filterSubscriptions" />
+    <SwitchPreference
+        android:defaultValue="true"
         android:key="load_images"
         android:summaryOff="@string/noImagesShown"
         android:summaryOn="@string/imagesShown"

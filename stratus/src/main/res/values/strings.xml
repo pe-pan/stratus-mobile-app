@@ -68,6 +68,9 @@
     <string name="cancelButton">Cancel</string>
     <string name="deleteButton">Delete</string>
 
+    <string name="showAllSubscriptions">Show active and inactive subscriptions</string>
+    <string name="showActiveSubscriptions">Show active subscriptions only</string>
+    <string name="filterSubscriptions">Filter subscriptions</string>
     <string name="loadImages">Load images</string>
     <string name="noImagesShown">No images shown</string>
     <string name="imagesShown">Images will be shown</string>

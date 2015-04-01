@@ -13,6 +13,8 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
         this.context = "mpp-subscription";
     }
 
+    public static final String ACTIVE_ONLY_FILTER = "{\"status\":\"ACTIVE\"}";
+
     public static final MppSubscriptionHandler INSTANCE = new MppSubscriptionHandler();
 
     @Override

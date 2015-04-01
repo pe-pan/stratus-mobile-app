@@ -16,6 +16,7 @@ import com.squareup.picasso.PicassoTools;
 public class SettingsActivity extends PreferenceActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
+    public static final String KEY_PREF_FILTER_ACTIVE = "filter_active_subs";
     public static final String KEY_PREF_LOAD_IMAGES = "load_images";
     public static final String KEY_PREF_CACHE_FILES = "cache_files";
     public static final String KEY_PREF_CLEAR_CACHE = "clear_cache";

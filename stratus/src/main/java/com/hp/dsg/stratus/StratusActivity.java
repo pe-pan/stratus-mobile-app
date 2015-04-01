@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.IllegalRestStateException;
 import com.hp.dsg.stratus.entities.Entity;
+import com.hp.dsg.stratus.entities.MppSubscriptionHandler;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -27,6 +28,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.List;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -216,4 +218,9 @@ public class StratusActivity extends ActionBarActivity {
         }
     }
 
+    protected List<Entity> getSubscriptions(boolean enforce) {
+        String filter = isEnabledPreference(SettingsActivity.KEY_PREF_FILTER_ACTIVE) ? MppSubscriptionHandler.ACTIVE_ONLY_FILTER : null;
+        MppSubscriptionHandler.INSTANCE.setFilter(filter);
+        return M_STRATUS.getSubscriptions(enforce);
+    }
 }
