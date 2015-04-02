@@ -34,7 +34,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".SubscriptionActivity"
-            android:label="Provisioned Demo Details"
+            android:label="@string/title_activity_offering"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".OfferingListActivity"
@@ -49,6 +49,6 @@
             android:label="@string/title_activity_about" />
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings" />
+            android:label="@string/settings" />
     </application>
 </manifest>

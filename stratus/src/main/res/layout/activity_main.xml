@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="bottom|center_horizontal"
-                android:text="Demos"
+                android:text="@string/title_activity_subscriptions"
                 android:textSize="30sp" />
         </RelativeLayout>
 
@@ -46,15 +46,14 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/main_button"
                 android:scaleType="fitCenter"
-                android:src="@drawable/book"
-                android:text="Catalog" />
+                android:src="@drawable/book" />
 
             <TextView
                 android:onClick="offeringsClicked"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="bottom|center_horizontal"
-                android:text="Catalog"
+                android:text="@string/title_activity_offerings"
                 android:textSize="30sp" />
         </RelativeLayout>
     </LinearLayout>
