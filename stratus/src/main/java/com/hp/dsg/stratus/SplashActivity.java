@@ -36,7 +36,7 @@ public class SplashActivity extends StratusActivity {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             try {
-                M_STRATUS.getSubscriptions(params[0]);  // just to cache the subscriptions while splash screen is being shown
+                getSubscriptions(params[0]);  // just to cache the subscriptions while splash screen is being shown
                 return true;
             } catch (Throwable e) {
                 Log.d(TAG, "Exception when getting subscriptions", e);
