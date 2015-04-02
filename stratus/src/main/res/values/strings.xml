@@ -87,4 +87,7 @@
     <string name="settings">Settings</string>
     <string name="sureToExit">Are you sure you want to exit the app?</string>
     <string name="exitConfirmation">Exit Confirmation</string>
+    <string name="noHintsShown">No hints will be shown</string>
+    <string name="hintsShown">Help user to learn UI tricks</string>
+    <string name="showHints">Show hints</string>
 </resources>

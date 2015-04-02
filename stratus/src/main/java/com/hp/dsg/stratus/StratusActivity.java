@@ -203,6 +203,12 @@ public class StratusActivity extends ActionBarActivity {
         return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true); //this default value must correspond to default value in settings.xml
     }
 
+    public void enablePreference(String key, boolean value) {
+        SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        e.putBoolean(key, value);
+        e.apply();
+    }
+
     protected void setIcon(ImageView view, Entity subscriptionOrOffering) {
         if (isEnabledPreference(SettingsActivity.KEY_PREF_LOAD_IMAGES)) {
             if (isEnabledPreference(SettingsActivity.KEY_PREF_CACHE_FILES)) {

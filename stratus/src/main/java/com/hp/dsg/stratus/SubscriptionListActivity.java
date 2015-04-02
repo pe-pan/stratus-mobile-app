@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,6 +58,19 @@ public class SubscriptionListActivity extends StratusActivity {
         setContentView(R.layout.activity_subscription_list);
         listview = (ListView) findViewById(R.id.subscriptionList);
 
+        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                SubscriptionListActivity.this.scrollState = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+        enableHints(isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS));
+
         new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
 
@@ -64,6 +78,65 @@ public class SubscriptionListActivity extends StratusActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_subscription, menu);
         return true;
+    }
+
+    private static int swipesLeft;
+    private static int swipesRight;
+    private long startDelay = 0;
+    private int scrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+
+    public static void enableHints(boolean enable) {
+        if (enable) {
+            swipesLeft = 2;
+            swipesRight = 2;
+        } else {
+            swipesLeft = 0;
+            swipesRight = 0;
+        }
+    }
+
+    private void decreaseSwipesLeft() {
+        Log.d(TAG, "Swipes left / right: "+swipesLeft+"/"+swipesRight);
+        switch (swipesLeft) {
+            case 0 :
+                return;
+            case 1 :
+                if (swipesRight <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS)) {
+                    enablePreference(SettingsActivity.KEY_PREF_SHOW_HINTS, false);
+                }
+            default: swipesLeft--;
+        }
+    }
+
+    private void decreaseSwipesRight() {
+        Log.d(TAG, "Swipes left / right: "+swipesLeft+"/"+swipesRight);
+        switch (swipesRight) {
+            case 0 :
+                return;
+            case 1 :
+                if (swipesLeft <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS)) {
+                    enablePreference(SettingsActivity.KEY_PREF_SHOW_HINTS, false);
+                }
+            default: swipesRight--;
+        }
+    }
+
+    private void setHintAnimation(View item, boolean delay) {
+        if (swipesLeft <= 0 && swipesRight <= 0)  // no hint shown
+            return;
+
+        if (!delay) {
+            startDelay = 0;
+        } else {
+            startDelay += (200);
+        }
+        Log.d(TAG, "Delaying animation by "+startDelay);
+        if (swipesRight <= swipesLeft) {
+            onSwipeLeftStart(item, -200);
+        } else {
+            onSwipeRightStart(item, 200);
+        }
+        animateViewTo(item, 0, bounceInterpolator, startDelay);
     }
 
     @Override
@@ -85,9 +158,14 @@ public class SubscriptionListActivity extends StratusActivity {
     private static final TimeInterpolator decelerateInterpolator = new DecelerateInterpolator();
 
     private ObjectAnimator animateViewTo(View v, int where, TimeInterpolator interpolator) {
+        return animateViewTo(v, where, interpolator, 0);
+    }
+
+    private ObjectAnimator animateViewTo(View v, int where, TimeInterpolator interpolator, long startDelay) {
         ObjectAnimator oa = ObjectAnimator.ofFloat(v, "translationX", where);
         oa.setDuration(600);
         oa.setInterpolator(interpolator);
+        oa.setStartDelay(startDelay);
         oa.start();
         return oa;
     }
@@ -102,14 +180,14 @@ public class SubscriptionListActivity extends StratusActivity {
         return animateViewTo(v, 0, bounceInterpolator);
     }
 
-    private void onSwipeRightStart(final View v) {
+    private void onSwipeRightStart(final View v, float difference) {
         v.setTranslationX(difference);
         ((View)v.getParent()).findViewById(R.id.subscriptionButtons).setVisibility(View.VISIBLE);
         ((View)v.getParent()).findViewById(R.id.subscriptionParameters).setVisibility(View.GONE);
         ((View)v.getParent()).findViewById(R.id.subscriptionShareButtons).setVisibility(View.GONE);
     }
 
-    private void onSwipeLeftStart(final View v) {
+    private void onSwipeLeftStart(final View v, float difference) {
         v.setTranslationX(difference);
         ((View)v.getParent()).findViewById(R.id.subscriptionButtons).setVisibility(View.GONE);
         ((View)v.getParent()).findViewById(R.id.subscriptionShareButtons).setVisibility(View.GONE);
@@ -117,11 +195,13 @@ public class SubscriptionListActivity extends StratusActivity {
     }
 
     private void onSwipeRightFinish(final View v) {
+        decreaseSwipesRight();
         animateViewTo(v, v.getWidth(), decelerateInterpolator);
         animatedView = v;
     }
 
     private void onSwipeLeftFinish(final View v) {
+        decreaseSwipesLeft();
         ObjectAnimator oa = animateViewTo(v, -v.getWidth(), decelerateInterpolator);
         animatedView = v;
         Entity subscription = ((ViewHolder) v.getTag()).subscription;
@@ -156,6 +236,7 @@ public class SubscriptionListActivity extends StratusActivity {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             try {
+                startDelay = 0;  // when running subscription list refresh and there was already some delay set, this needs to be reset
                 final List<Entity> subscriptions = getSubscriptions(params[0]);
                 final View.OnTouchListener gestureListener = new View.OnTouchListener() {
                     public boolean onTouch(final View v, MotionEvent event) {
@@ -175,12 +256,12 @@ public class SubscriptionListActivity extends StratusActivity {
                                         currentX = event.getRawX();
                                         difference = currentX - initialX;
                                         if (difference > CLICK)
-                                            onSwipeRightStart(v);
+                                            onSwipeRightStart(v, difference);
                                         if (difference > v.getWidth() / 4) {
                                             onSwipeRightFinish(v);
                                         }
                                         if (difference < -CLICK)
-                                            onSwipeLeftStart(v);
+                                            onSwipeLeftStart(v, difference);
                                         if (difference < -v.getWidth() / 4)
                                             onSwipeLeftFinish(v);
 
@@ -253,6 +334,11 @@ public class SubscriptionListActivity extends StratusActivity {
                                         } else {
                                             item.setEnabled(true);
                                             item.findViewById(R.id.removedIcon).setVisibility(View.GONE);
+                                        }
+                                        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) { // first render
+                                            setHintAnimation(item, true); //delay the hints on the first render
+                                        } else { // scrolling
+                                            setHintAnimation(item, false);
                                         }
 
                                         ImageView image = (ImageView) row.findViewById(R.id.subscriptionIconList);

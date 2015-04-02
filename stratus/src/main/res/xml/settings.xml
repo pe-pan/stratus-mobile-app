@@ -32,4 +32,10 @@
         android:key="logout_now"
         android:summary="@string/removeAuthDetails"
         android:title="@string/logoutNow" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="show_hints"
+        android:summaryOff="@string/noHintsShown"
+        android:summaryOn="@string/hintsShown"
+        android:title="@string/showHints" />
 </PreferenceScreen>
