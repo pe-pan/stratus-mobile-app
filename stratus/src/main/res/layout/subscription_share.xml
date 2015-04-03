@@ -14,6 +14,7 @@
         android:text="@string/defaultShareEmail"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:selectAllOnFocus="true"
+        android:textStyle="italic"
         android:inputType="textEmailAddress" />
 
     <Button
