@@ -9,6 +9,7 @@ import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -45,6 +46,7 @@ public class MppInstance extends CsaEntity {
                 ServerProperty sp = new ServerProperty((JSONObject) properties.get(i));
                 sps[i] = sp;
             }
+            Arrays.sort(sps);
             String serviceSubscriptionId;
             ServiceAction[] sas ;
             try {
@@ -55,6 +57,7 @@ public class MppInstance extends CsaEntity {
                     ServiceAction sa = new ServiceAction((JSONObject) actions.get(i));
                     sas[i] = sa;
                 }
+                Arrays.sort(sas);
             } catch (Exception e) {
                 serviceSubscriptionId = null;
                 sas = null;
@@ -63,6 +66,7 @@ public class MppInstance extends CsaEntity {
             Server server = new Server(sps, serviceSubscriptionId, sas);
             servers[j] = server;
         }
+        Arrays.sort(servers);
         cachedServers = servers;
         return servers;
     }

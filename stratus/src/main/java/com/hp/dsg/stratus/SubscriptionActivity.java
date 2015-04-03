@@ -162,10 +162,10 @@ public class SubscriptionActivity extends StratusActivity {
                         for (ServerProperty property : server.properties) {
 
                             switch (property.name) {
-                                case "DEMONAME":
+                                case ServerProperty.DEMO_NAME:
                                     ((TextView) row.findViewById(R.id.demoNameValue)).setText((String) property.value);
                                     break;
-                                case "ACTIVATED":
+                                case ServerProperty.ACTIVATED:
                                     ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean) property.value ? "ACTIVE" : "HALT");
                                     break;
                                 default:

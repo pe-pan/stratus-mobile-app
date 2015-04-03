@@ -8,14 +8,14 @@ import net.minidev.json.JSONObject;
 /**
  * Created by panuska on 30.1.2015.
  */
-public class ServiceAction {
+public class ServiceAction implements Comparable<ServiceAction> {
     public final String name;
     public final String displayName;
     public final String emailProperty;
 
     protected ServiceAction(JSONObject action) {
         this.name = (String)action.get("name");
-        this.displayName = (String)action.get("displayName");
+        this.displayName = ((String)action.get("displayName")).trim();
         this.emailProperty = evaluateEmailProperty(action);
     }
 
@@ -30,5 +30,10 @@ public class ServiceAction {
             }
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(ServiceAction another) {
+        return this.displayName.compareTo(another.displayName);
     }
 }

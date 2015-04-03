@@ -10,15 +10,18 @@ import java.util.Map;
 /**
  * Created by panuska on 30.1.2015.
  */
-public class ServerProperty {
+public class ServerProperty implements Comparable<ServerProperty> {
     public final String name;
     public final String displayName;
     public final Object value;
 
+    public static final String DEMO_NAME = "DEMONAME";
+    public static final String ACTIVATED = "ACTIVATED";
+
     protected ServerProperty(JSONObject property) {
         this.name = (String)property.get("name");
         String newDisplayName = dictionary.get(name);
-        String displayName = (String)property.get("displayName");
+        String displayName = ((String)property.get("displayName")).trim();
         this.displayName = newDisplayName != null ? newDisplayName : displayName;
         this.value = ((JSONArray)property.get("value")).get(0);
     }
@@ -31,5 +34,10 @@ public class ServerProperty {
         dictionary.put("PublicIPAddress", "Public IP");
         dictionary.put("VNC Console URL", "VNC");
 
+    }
+
+    @Override
+    public int compareTo(ServerProperty another) {
+        return this.displayName.compareTo(another.displayName);
     }
 }
