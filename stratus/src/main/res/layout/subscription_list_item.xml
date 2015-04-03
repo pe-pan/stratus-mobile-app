@@ -71,6 +71,17 @@
             android:src="@drawable/removed"
             android:visibility="gone"/>
         <ImageView
+            android:id="@+id/grayLine"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/quater_margin"
+            android:layout_marginLeft="@dimen/activity_margin"
+            android:layout_marginRight="@dimen/activity_margin"
+            android:background="@drawable/grey_rectangle" />
+
+        <ImageView
+            android:id="@+id/redLine"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

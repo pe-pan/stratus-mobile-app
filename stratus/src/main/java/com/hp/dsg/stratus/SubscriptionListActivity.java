@@ -305,11 +305,15 @@ public class SubscriptionListActivity extends StratusActivity {
                                         Date endDate = subscription.getDateProperty("subscriptionTerm.endDate");
                                         ((TextView) row.findViewById(R.id.expiresIn)).setText(endDate == null ? "Never" : TimeUtils.getPeriod(endDate.getTime()));
 
+                                        View item = row.findViewById(R.id.subscriptionListItem);
+                                        ImageView expirationLine = (ImageView) item.findViewById(R.id.expirationLine);
+                                        ImageView redLine = (ImageView) item.findViewById(R.id.redLine);
                                         long length;
                                         int maxWidth = parent.getMeasuredWidth(); //todo not correct; we should take the part of the row where the line lies, not the whole row length
                                         int maxPeriod = 7 * 24 * 60 * 60 * 1000; // 7 days in in millis
                                         if (!"ACTIVE".equals(subscription.getProperty("status"))) { // if not active
                                             length = 0;
+                                            redLine.getLayoutParams().width = 0;  // hiding red line will reveal grey line
                                         } else if (endDate == null) {                               // if no end date
                                             length = maxWidth;
                                         } else {
@@ -323,8 +327,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                                 length = diff * maxWidth / maxPeriod;
                                             }
                                         }
-                                        View item = row.findViewById(R.id.subscriptionListItem);
-                                        row.findViewById(R.id.expirationLine).getLayoutParams().width = (int) length;
+                                        expirationLine.getLayoutParams().width = (int) length;
                                         final ViewHolder holder = new ViewHolder(subscription, row);
                                         item.setTag(holder);
                                         item.setOnTouchListener(gestureListener);
