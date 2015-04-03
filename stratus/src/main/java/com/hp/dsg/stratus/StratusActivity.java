@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -49,6 +50,7 @@ public class StratusActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         restoreAuthenticationToken();
         registerAuthenticationListener();
+        calculateDisplaySize();
     }
 
     @Override
@@ -228,5 +230,27 @@ public class StratusActivity extends ActionBarActivity {
         String filter = isEnabledPreference(SettingsActivity.KEY_PREF_FILTER_ACTIVE) ? MppSubscriptionHandler.ACTIVE_ONLY_FILTER : null;
         MppSubscriptionHandler.INSTANCE.setFilter(filter);
         return M_STRATUS.getSubscriptions(enforce);
+    }
+
+    private static int displayWidth, displayHeight;
+
+    private void calculateDisplaySize() {
+        Display display = getWindowManager().getDefaultDisplay();
+        displayWidth = display.getWidth();
+        displayHeight = display.getHeight();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        calculateDisplaySize();
+    }
+
+    public static int getDisplayWidth() {
+        return displayWidth;
+    }
+
+    public static int getDisplayHeight() {
+        return displayHeight;
     }
 }

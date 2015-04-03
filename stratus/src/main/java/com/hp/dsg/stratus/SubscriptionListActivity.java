@@ -132,9 +132,9 @@ public class SubscriptionListActivity extends StratusActivity {
         }
         Log.d(TAG, "Delaying animation by "+startDelay);
         if (swipesRight <= swipesLeft) {
-            onSwipeLeftStart(item, -200);
+            onSwipeLeftStart(item, - getDisplayWidth() / 4);
         } else {
-            onSwipeRightStart(item, 200);
+            onSwipeRightStart(item, getDisplayWidth() / 4);
         }
         animateViewTo(item, 0, bounceInterpolator, startDelay);
     }
