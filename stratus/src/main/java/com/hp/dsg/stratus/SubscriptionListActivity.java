@@ -69,7 +69,6 @@ public class SubscriptionListActivity extends StratusActivity {
 
             }
         });
-        enableHints(isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS));
 
         new GetSubscriptions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
@@ -101,8 +100,8 @@ public class SubscriptionListActivity extends StratusActivity {
             case 0 :
                 return;
             case 1 :
-                if (swipesRight <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS)) {
-                    enablePreference(SettingsActivity.KEY_PREF_SHOW_HINTS, false);
+                if (swipesRight <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_SWIPE_HINTS)) {
+                    enablePreference(SettingsActivity.KEY_PREF_SHOW_SWIPE_HINTS, false);
                 }
             default: swipesLeft--;
         }
@@ -114,8 +113,8 @@ public class SubscriptionListActivity extends StratusActivity {
             case 0 :
                 return;
             case 1 :
-                if (swipesLeft <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_HINTS)) {
-                    enablePreference(SettingsActivity.KEY_PREF_SHOW_HINTS, false);
+                if (swipesLeft <= 0 && isEnabledPreference(SettingsActivity.KEY_PREF_SHOW_SWIPE_HINTS)) {
+                    enablePreference(SettingsActivity.KEY_PREF_SHOW_SWIPE_HINTS, false);
                 }
             default: swipesRight--;
         }

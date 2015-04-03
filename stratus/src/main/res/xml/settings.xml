@@ -34,7 +34,7 @@
         android:title="@string/logoutNow" />
     <SwitchPreference
         android:defaultValue="true"
-        android:key="show_hints"
+        android:key="show_swipe_hints"
         android:summaryOff="@string/noHintsShown"
         android:summaryOn="@string/hintsShown"
         android:title="@string/showHints" />

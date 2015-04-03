@@ -22,7 +22,7 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_PREF_CLEAR_CACHE = "clear_cache";
     public static final String KEY_PREF_KEEP_PASSWORD = "keep_password";
     public static final String KEY_PREF_LOGOUT_NOW = "logout_now";
-    public static final String KEY_PREF_SHOW_HINTS = "show_hints";
+    public static final String KEY_PREF_SHOW_SWIPE_HINTS = "show_swipe_hints";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class SettingsActivity extends PreferenceActivity {
                 }
             });
 
-            Preference showHints = findPreference(KEY_PREF_SHOW_HINTS);
+            Preference showHints = findPreference(KEY_PREF_SHOW_SWIPE_HINTS);
             showHints.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object enable) {
