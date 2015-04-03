@@ -87,8 +87,8 @@ public class SubscriptionListActivity extends StratusActivity {
 
     public static void enableHints(boolean enable) {
         if (enable) {
-            swipesLeft = 2;
-            swipesRight = 2;
+            swipesLeft = 1;
+            swipesRight = 1;
         } else {
             swipesLeft = 0;
             swipesRight = 0;
