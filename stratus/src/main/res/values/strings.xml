@@ -90,4 +90,6 @@
     <string name="noHintsShown">No hints will be shown</string>
     <string name="hintsShown">Help user to learn UI tricks</string>
     <string name="showHints">Show hints</string>
+    <string name="demos">demos</string>
+    <string name="demo">demo</string>
 </resources>

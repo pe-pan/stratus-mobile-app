@@ -80,8 +80,13 @@ public class OfferingListActivity extends StratusActivity {
             ImageView icon;
         }
 
+        private void updateTitle(int demos) {
+            setTitle(getString(R.string.title_activity_offerings)+" ("+demos+" "+(demos == 1 ? getString(R.string.demo) : getString(R.string.demos))+")");
+        }
+
         @Override
         protected void onPostExecute(final List<Entity> offerings) {
+            updateTitle(offerings.size());
             final ListView listview = (ListView) findViewById(R.id.offeringList);
             final ArrayAdapter adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
                     android.R.layout.simple_list_item_1, offerings) {
@@ -135,6 +140,7 @@ public class OfferingListActivity extends StratusActivity {
                     @Override
                     protected void publishResults(CharSequence constraint, FilterResults results) {
                         values = (List<Entity>) results.values;
+                        updateTitle(values.size());
                         notifyDataSetChanged();
                     }
                 };
