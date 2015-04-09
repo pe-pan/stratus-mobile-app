@@ -58,8 +58,8 @@
 
             <ImageView
                 android:id="@+id/expandServerOperationsTriangle"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/triangle_size"
+                android:layout_height="@dimen/triangle_size"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="@drawable/main_button"
