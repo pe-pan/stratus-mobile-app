@@ -28,7 +28,10 @@ import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
@@ -173,6 +176,29 @@ public class OfferingListActivity extends StratusActivity {
             try {
                 categories = getCategories(params[0]);
                 final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
+                Map<String, Integer> quantities = new HashMap<>(categories.size()*2);
+                for (Entity offering : offerings) {        // calculate quantities
+                    String categoryName = offering.getProperty("category.name");
+                    if (categoryName != null) { // filter out "All Categories" option
+                        Integer quantity = quantities.get(categoryName);
+                        if (quantity == null) {
+                            quantities.put(categoryName, 1);          // first time
+                        } else {
+                            quantities.put(categoryName, quantity+1); // increase the stored quantity
+                        }
+                    }
+                }
+                for (Iterator<Entity> iterator = categories.iterator(); iterator.hasNext();) { // update displayName properties and remove empty ones
+                    Entity category = iterator.next();
+                    String categoryName = category.getProperty("name");
+                    Integer quantity = categoryName == null ? (Integer)offerings.size() : quantities.get(categoryName); // for "all categories" put number of offerings
+                    if (quantity == null) {
+                        iterator.remove();
+                    } else {
+                        String displayName = category.getProperty("displayName");
+                        category.setProperty("displayName", displayName+" ("+quantity+")");
+                    }
+                }
                 return offerings;
             } catch (Throwable e) {
                 showSendErrorDialog(e);
