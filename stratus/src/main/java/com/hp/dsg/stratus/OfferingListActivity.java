@@ -28,21 +28,20 @@ import com.hp.dsg.stratus.entities.Entity;
 import com.hp.dsg.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 public class OfferingListActivity extends StratusActivity {
     private static final String TAG = OfferingListActivity.class.getSimpleName();
 
-    Spinner categoryFilter;
+    private Spinner categoryFilter;
+    private ArrayAdapter categoryAdapter;
+
     private float expandCategoryLineShift;
 
     private ArrayAdapter adapter;
-    private List<Entity> categories;
+    private static List<Entity> categories;
 
     private Entity selectedCategory;
     private CharSequence typedText;
@@ -136,7 +135,7 @@ public class OfferingListActivity extends StratusActivity {
         });
 
         categories = getCategories(false); //retrieve cached categories
-        final ArrayAdapter categoryAdapter = new ArrayAdapter<>(OfferingListActivity.this, android.R.layout.simple_spinner_item, categories);
+        categoryAdapter = new ArrayAdapter<>(OfferingListActivity.this, android.R.layout.simple_spinner_item, categories);
         categoryFilter.setAdapter(categoryAdapter);
         categoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -169,40 +168,21 @@ public class OfferingListActivity extends StratusActivity {
         } else return super.onOptionsItemSelected(item);
     }
 
+    private static Object syncLock = new Object();
     private class GetOfferings extends AsyncTask<Boolean, Void, List<Entity>> {
 
         @Override
-        protected List<Entity> doInBackground(Boolean... params) {
-            try {
-                categories = getCategories(params[0]);
-                final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
-                Map<String, Integer> quantities = new HashMap<>(categories.size()*2);
-                for (Entity offering : offerings) {        // calculate quantities
-                    String categoryName = offering.getProperty("category.name");
-                    if (categoryName != null) { // filter out "All Categories" option
-                        Integer quantity = quantities.get(categoryName);
-                        if (quantity == null) {
-                            quantities.put(categoryName, 1);          // first time
-                        } else {
-                            quantities.put(categoryName, quantity+1); // increase the stored quantity
-                        }
-                    }
+        protected synchronized List<Entity> doInBackground(Boolean... params) {
+            synchronized (syncLock) {
+                try {
+                    categories = getCategories(params[0]);
+                    final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
+                    initCategories(offerings);
+                    return offerings;
+                } catch (Throwable e) {
+                    showSendErrorDialog(e);
+                    return null;
                 }
-                for (Iterator<Entity> iterator = categories.iterator(); iterator.hasNext();) { // update displayName properties and remove empty ones
-                    Entity category = iterator.next();
-                    String categoryName = category.getProperty("name");
-                    Integer quantity = categoryName == null ? (Integer)offerings.size() : quantities.get(categoryName); // for "all categories" put number of offerings
-                    if (quantity == null) {
-                        iterator.remove();
-                    } else {
-                        String displayName = category.getProperty("displayName");
-                        category.setProperty("displayName", displayName+" ("+quantity+")");
-                    }
-                }
-                return offerings;
-            } catch (Throwable e) {
-                showSendErrorDialog(e);
-                return null;
             }
         }
 
@@ -296,6 +276,7 @@ public class OfferingListActivity extends StratusActivity {
             };
             listview.setAdapter(adapter);
             adapter.getFilter().filter(typedText);  // filter the results; what if some typed something in the meantime
+            if (categoryAdapter != null) categoryAdapter.notifyDataSetChanged();
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
             progressBar.setVisibility(View.GONE);
         }

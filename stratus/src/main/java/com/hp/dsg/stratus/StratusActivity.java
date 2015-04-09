@@ -31,7 +31,10 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -235,13 +238,47 @@ public class StratusActivity extends ActionBarActivity {
     }
 
     private static volatile List<Entity> cachedCategories;    //todo hack; should be handled better way
+    private static Boolean cachedCategoriesInitialized = false;
     protected List<Entity> getCategories(boolean enforce) {
-        List<Entity> categories = MppCategoryHandler.INSTANCE.list(enforce);
-        if (categories != cachedCategories) { // new instance of the list
-            categories.add(0, new MppCategory("{\"displayName\":\""+getString(R.string.allCategories)+"\"}"));  // 'name' property is null
-            cachedCategories = categories;
+        synchronized (cachedCategoriesInitialized) {
+            List<Entity> categories = MppCategoryHandler.INSTANCE.list(enforce);
+            if (categories != cachedCategories) { // new instance of the list
+                categories.add(0, new MppCategory("{\"displayName\":\""+getString(R.string.allCategories)+"\"}"));  // 'name' property is null
+                cachedCategories = categories;
+                cachedCategoriesInitialized = false;
+            }
+            return categories;
         }
-        return categories;
+    }
+
+    protected void initCategories(List<Entity> offerings) {
+        synchronized (cachedCategoriesInitialized) {
+            if (cachedCategoriesInitialized) return;
+            Map<String, Integer> quantities = new HashMap<>(cachedCategories.size() * 2);
+            for (Entity offering : offerings) {        // calculate quantities
+                String categoryName = offering.getProperty("category.name");
+                if (categoryName != null) { // filter out "All Categories" option
+                    Integer quantity = quantities.get(categoryName);
+                    if (quantity == null) {
+                        quantities.put(categoryName, 1);          // first time
+                    } else {
+                        quantities.put(categoryName, quantity + 1); // increase the stored quantity
+                    }
+                }
+            }
+            for (Iterator<Entity> iterator = cachedCategories.iterator(); iterator.hasNext(); ) { // update displayName properties and remove empty ones
+                Entity category = iterator.next();
+                String categoryName = category.getProperty("name");
+                Integer quantity = categoryName == null ? (Integer) offerings.size() : quantities.get(categoryName); // for "all categories" put number of offerings
+                if (quantity == null) {
+                    iterator.remove();
+                } else {
+                    String displayName = category.getProperty("displayName");
+                    category.setProperty("displayName", displayName + " (" + quantity + ")");
+                }
+            }
+            cachedCategoriesInitialized = true;
+        }
     }
 
     private static int displayWidth, displayHeight;
