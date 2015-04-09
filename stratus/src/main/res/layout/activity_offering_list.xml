@@ -39,12 +39,12 @@
 
                 <EditText
                     android:id="@+id/searchBox"
+                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/expandCategoryButton"
-                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
-                    android:maxLines="1"
                     android:editable="true"
+                    android:maxLines="1"
                     android:textStyle="italic" />
             </RelativeLayout>
 
