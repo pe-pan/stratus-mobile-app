@@ -67,19 +67,19 @@ public class StratusActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case  R.id.offerings : {
-                startActivity(new Intent(this, OfferingListActivity.class));
+                startActivity(new Intent(this, OfferingListActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 return true;
             }
             case R.id.subscriptions : {
-                startActivity(new Intent(this, SubscriptionListActivity.class));
+                startActivity(new Intent(this, SubscriptionListActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 return true;
             }
             case R.id.about : {
-                startActivity(new Intent(this, AboutActivity.class));
+                startActivity(new Intent(this, AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 return true;
             }
             case R.id.settings: {
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 return true;
             }
             default : return super.onOptionsItemSelected(item);
@@ -120,7 +120,7 @@ public class StratusActivity extends ActionBarActivity {
                 } catch (IllegalRestStateException e) { // most probably, incorrect authentication
                     Log.d(TAG, "Authentication did not go well; starting Login screen");
                     M_STRATUS.setAuthenticationHeader(null);
-                    Intent i = new Intent(StratusActivity.this, LoginActivity.class);
+                    Intent i = new Intent(StratusActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
                     synchronized (M_STRATUS) {
                         while (!M_STRATUS.isAuthenticated()) {

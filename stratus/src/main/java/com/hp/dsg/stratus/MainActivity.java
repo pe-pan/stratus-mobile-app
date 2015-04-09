@@ -32,18 +32,18 @@ public class MainActivity extends StratusActivity {
     }
 
     public void subscriptionsClicked(View view) {
-        startActivity(new Intent(MainActivity.this, SubscriptionListActivity.class));
+        startActivity(new Intent(MainActivity.this, SubscriptionListActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
     }
 
     public void offeringsClicked(View view) {
-        startActivity(new Intent(MainActivity.this, OfferingListActivity.class));
+        startActivity(new Intent(MainActivity.this, OfferingListActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
     }
 
     public void settingsClicked(View view) {
-        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        startActivity(new Intent(MainActivity.this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
     }
 
     public void aboutClicked(View view) {
-        startActivity(new Intent(MainActivity.this, AboutActivity.class));
+        startActivity(new Intent(MainActivity.this, AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
     }
 }
