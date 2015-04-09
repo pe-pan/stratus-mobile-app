@@ -92,4 +92,5 @@
     <string name="showHints">Show hints</string>
     <string name="demos">demos</string>
     <string name="demo">demo</string>
+    <string name="allCategories">All Categories</string>
 </resources>

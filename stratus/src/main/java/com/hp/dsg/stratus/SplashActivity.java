@@ -8,8 +8,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import static com.hp.dsg.stratus.Mpp.M_STRATUS;
-
 public class SplashActivity extends StratusActivity {
     private static final String TAG = StratusActivity.class.getSimpleName();
 
@@ -37,6 +35,7 @@ public class SplashActivity extends StratusActivity {
         protected Boolean doInBackground(Boolean... params) {
             try {
                 getSubscriptions(params[0]);  // just to cache the subscriptions while splash screen is being shown
+                getCategories(params[0]);  // just to cache
                 return true;
             } catch (Throwable e) {
                 Log.d(TAG, "Exception when getting subscriptions", e);

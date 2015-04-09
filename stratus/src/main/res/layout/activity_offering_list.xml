@@ -1,35 +1,79 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_margin="@dimen/activity_margin"
-    tools:context="com.hp.dsg.stratus.SubscriptionListActivity"
-    android:weightSum="1">
+    tools:context="com.hp.dsg.stratus.SubscriptionListActivity">
 
-
-    <!-- Login progress -->
     <ProgressBar
         android:id="@+id/getSubscriptionsProgress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_margin"
-        android:visibility="visible"
         android:layout_centerInParent="true"
-        />
+        android:layout_marginBottom="@dimen/activity_margin"
+        android:visibility="visible" />
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <EditText
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textStyle="italic"
-            android:id="@+id/searchBox"/>
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/expandCategoryLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/expandCategoryButton"
+                    android:layout_width="@dimen/triangle_size"
+                    android:layout_height="@dimen/triangle_size"
+                    android:layout_alignParentRight="true"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/main_button"
+                    android:src="@drawable/triangle_left" />
+
+                <EditText
+                    android:id="@+id/searchBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/expandCategoryButton"
+                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
+                    android:maxLines="1"
+                    android:editable="true"
+                    android:textStyle="italic" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/hideCategoryLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/hideCategoryButton"
+                    android:layout_width="@dimen/triangle_size"
+                    android:layout_height="@dimen/triangle_size"
+                    android:layout_gravity="top"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/main_button"
+                    android:src="@drawable/triangle_left" />
+
+                <Spinner
+                    android:id="@+id/categoryFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <ListView
+            android:id="@+id/offeringList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/offeringList" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

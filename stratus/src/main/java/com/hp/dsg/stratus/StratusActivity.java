@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.hp.dsg.rest.AuthenticatedClient;
 import com.hp.dsg.rest.IllegalRestStateException;
 import com.hp.dsg.stratus.entities.Entity;
+import com.hp.dsg.stratus.entities.MppCategory;
+import com.hp.dsg.stratus.entities.MppCategoryHandler;
 import com.hp.dsg.stratus.entities.MppSubscriptionHandler;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -230,6 +232,16 @@ public class StratusActivity extends ActionBarActivity {
         String filter = isEnabledPreference(SettingsActivity.KEY_PREF_FILTER_ACTIVE) ? MppSubscriptionHandler.ACTIVE_ONLY_FILTER : null;
         MppSubscriptionHandler.INSTANCE.setFilter(filter);
         return M_STRATUS.getSubscriptions(enforce);
+    }
+
+    private static volatile List<Entity> cachedCategories;    //todo hack; should be handled better way
+    protected List<Entity> getCategories(boolean enforce) {
+        List<Entity> categories = MppCategoryHandler.INSTANCE.list(enforce);
+        if (categories != cachedCategories) { // new instance of the list
+            categories.add(0, new MppCategory("{\"displayName\":\""+getString(R.string.allCategories)+"\"}"));  // 'name' property is null
+            cachedCategories = categories;
+        }
+        return categories;
     }
 
     private static int displayWidth, displayHeight;

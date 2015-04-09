@@ -1,10 +1,14 @@
 package com.hp.dsg.stratus;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +21,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hp.dsg.stratus.entities.Entity;
@@ -28,6 +33,16 @@ import java.util.List;
 import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 public class OfferingListActivity extends StratusActivity {
+    private static final String TAG = OfferingListActivity.class.getSimpleName();
+
+    Spinner categoryFilter;
+    private float expandCategoryLineShift;
+
+    private ArrayAdapter adapter;
+    private List<Entity> categories;
+
+    private Entity selectedCategory;
+    private CharSequence typedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +59,95 @@ public class OfferingListActivity extends StratusActivity {
                 Intent i = new Intent(OfferingListActivity.this, OfferingActivity.class);
                 i.putExtra(OfferingActivity.OFFERING_EXTRA_KEY, offering.toJson());
                 startActivity(i);
+            }
+        });
+
+        EditText searchBox = (EditText) findViewById(R.id.searchBox);
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (adapter != null)
+                    adapter.getFilter().filter(s);
+                typedText = s;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        final View expandCategoryButton = findViewById(R.id.expandCategoryButton);
+        final View hideCategoryButton = findViewById(R.id.hideCategoryButton);
+        final View hideCategoryLine = findViewById(R.id.hideCategoryLine);
+        categoryFilter = (Spinner) findViewById(R.id.categoryFilter);
+
+        expandCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Expand button clicked");
+                if (expandCategoryLineShift == 0) {  // shift not initialized yet
+                    expandCategoryLineShift = expandCategoryButton.getX()-hideCategoryButton.getX();
+                    hideCategoryLine.setTranslationX(expandCategoryLineShift);
+                }
+                hideCategoryLine.setVisibility(View.VISIBLE);
+                ObjectAnimator oa = ObjectAnimator.ofFloat(hideCategoryLine, "translationX", 0);
+                oa.setDuration(600);
+                oa.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ObjectAnimator oa = ObjectAnimator.ofFloat(hideCategoryButton, "rotation", 180);
+                        oa.setDuration(600);
+                        oa.start();
+                    }
+                });
+                oa.start();
+            }
+        });
+
+        hideCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Hide button clicked");
+                ObjectAnimator oa = ObjectAnimator.ofFloat(hideCategoryLine, "translationX", expandCategoryLineShift);
+                oa.setDuration(600);
+                oa.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ObjectAnimator oa = ObjectAnimator.ofFloat(hideCategoryButton, "rotation", 0);
+                        oa.setDuration(600);
+                        oa.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                hideCategoryLine.setVisibility(View.GONE);
+                            }
+                        });
+                        oa.start();
+                    }
+                });
+                oa.start();
+            }
+        });
+
+        categories = getCategories(false); //retrieve cached categories
+        final ArrayAdapter categoryAdapter = new ArrayAdapter<>(OfferingListActivity.this, android.R.layout.simple_spinner_item, categories);
+        categoryFilter.setAdapter(categoryAdapter);
+        categoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCategory = categories.get(position);
+                if (adapter != null)
+                    adapter.getFilter().filter(typedText);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedCategory = null;
+                if (adapter != null)
+                    adapter.getFilter().filter(typedText);
             }
         });
     }
@@ -67,6 +171,7 @@ public class OfferingListActivity extends StratusActivity {
         @Override
         protected List<Entity> doInBackground(Boolean... params) {
             try {
+                categories = getCategories(params[0]);
                 final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
                 return offerings;
             } catch (Throwable e) {
@@ -88,7 +193,7 @@ public class OfferingListActivity extends StratusActivity {
         protected void onPostExecute(final List<Entity> offerings) {
             updateTitle(offerings.size());
             final ListView listview = (ListView) findViewById(R.id.offeringList);
-            final ArrayAdapter adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
+            adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
                     android.R.layout.simple_list_item_1, offerings) {
                 private List<Entity> values = offerings;
 
@@ -118,17 +223,20 @@ public class OfferingListActivity extends StratusActivity {
                     @Override
                     protected FilterResults performFiltering(CharSequence constraint) {
                         FilterResults results = new FilterResults();
-                        if (constraint == null || constraint.length() == 0) {
+                        if (selectedCategory == null && (constraint == null || constraint.length() == 0)) {
                             results.values = offerings;        // return the original (not filtered) list
                             results.count = offerings.size();
                         } else {
                             List<Entity> filteredOfferings = new ArrayList<>();
-                            String token = constraint.toString().toLowerCase();
+                            String token = StringUtils.emptifyNullString(constraint).toLowerCase();
                             for (Entity offering : offerings) { // search the original (not filtered) list
-                                if (StringUtils.emptifyNullString(offering.getProperty("displayName")).toLowerCase().contains(token) ||
-                                        StringUtils.emptifyNullString(offering.getProperty("description")).toLowerCase().contains(token) ||
-                                        StringUtils.emptifyNullString(offering.getProperty("category.displayName")).toLowerCase().contains(token)) {
-                                    filteredOfferings.add(offering);
+                                if (selectedCategory == null || selectedCategory.getProperty("name") == null || // if 'name' property == null, it's the 'all categories' option
+                                        selectedCategory.getProperty("name").equals(offering.getProperty("category.name"))) {
+                                    if (StringUtils.emptifyNullString(offering.getProperty("displayName")).toLowerCase().contains(token) ||
+                                            StringUtils.emptifyNullString(offering.getProperty("description")).toLowerCase().contains(token) ||
+                                            StringUtils.emptifyNullString(offering.getProperty("category.displayName")).toLowerCase().contains(token)) {
+                                        filteredOfferings.add(offering);
+                                    }
                                 }
                             }
                             results.values = filteredOfferings;
@@ -161,24 +269,9 @@ public class OfferingListActivity extends StratusActivity {
                 }
             };
             listview.setAdapter(adapter);
+            adapter.getFilter().filter(typedText);  // filter the results; what if some typed something in the meantime
             final ProgressBar progressBar = (ProgressBar) findViewById(R.id.getSubscriptionsProgress);
             progressBar.setVisibility(View.GONE);
-
-            EditText searchBox = (EditText) findViewById(R.id.searchBox);
-            searchBox.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    adapter.getFilter().filter(s);
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
         }
     }
 }
