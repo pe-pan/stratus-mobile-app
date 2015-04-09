@@ -197,7 +197,7 @@ public class OfferingListActivity extends StratusActivity {
 
         @Override
         protected void onPostExecute(final List<Entity> offerings) {
-            updateTitle(offerings.size());
+            if (offerings != null) updateTitle(offerings.size());
             final ListView listview = (ListView) findViewById(R.id.offeringList);
             adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
                     android.R.layout.simple_list_item_1, offerings) {
@@ -254,7 +254,7 @@ public class OfferingListActivity extends StratusActivity {
                     @Override
                     protected void publishResults(CharSequence constraint, FilterResults results) {
                         values = (List<Entity>) results.values;
-                        updateTitle(values.size());
+                        if (values != null) updateTitle(values.size());
                         notifyDataSetChanged();
                     }
                 };
