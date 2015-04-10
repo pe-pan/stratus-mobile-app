@@ -3,8 +3,11 @@ package com.hp.dsg.stratus;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+
+import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 /**
  * Created by panuska on 19.3.2015.
@@ -14,6 +17,8 @@ public class MainActivity extends StratusActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new GetOfferings().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
 
     @Override
@@ -45,5 +50,18 @@ public class MainActivity extends StratusActivity {
 
     public void aboutClicked(View view) {
         startActivity(new Intent(MainActivity.this, AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+    }
+
+    private class GetOfferings extends AsyncTask<Boolean, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            try {
+                M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
+            } catch (Throwable e) {
+                showSendErrorDialog(e);
+                return false;
+            }
+            return true;
+        }
     }
 }

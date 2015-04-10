@@ -455,7 +455,6 @@ public class SubscriptionListActivity extends StratusActivity {
                         }
                     }
                 });
-                M_STRATUS.getOfferings(false); // cache the results so the sub-sequent call will not take so long
                 return true;
             } catch (Throwable e) {
                 showSendErrorDialog(e);
