@@ -1,3 +1,17 @@
+[10/Apr/2015]
+Version 0.0.5:
+-------------
+New features:
+  - Filter active subscriptions only
+  - Hint users to swipe rows
+  - Servers, properties, actions are sorted alphabetically
+  - Option to filter offerings by categories
+
+Bug fixes:
+  - Scale images in lists when too wide
+  - Show progress bar in grey for inactive (but also for pending) subscriptions
+  - Renaming (Demos/Provisioned Demos -> My Demos; Available Demos -> Catalog)
+
 [22/Mar/2015]
 Version 0.0.4:
 -------------
