@@ -1,3 +1,9 @@
+[13/Feb/2017]
+Version 0.0.6:
+-------------
+New features:
+  - Stratus hostname moved to https://hpswdemoportal.com/
+
 [10/Apr/2015]
 Version 0.0.5:
 -------------
