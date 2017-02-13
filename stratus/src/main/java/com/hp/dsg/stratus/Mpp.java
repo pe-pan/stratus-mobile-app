@@ -21,7 +21,7 @@ import java.util.Locale;
 public class Mpp extends AuthenticatedClient {
     private static final String TAG = Mpp.class.getSimpleName();
 
-    public static final String STRATUS_HOSTNAME = "https://csa4.hpswdemoportal.com/";
+    public static final String STRATUS_HOSTNAME = "https://hpswdemoportal.com/";
     public static final String REST_PATHNAME = "csa/api/mpp/";
 
     public static final String IDM_REST_URL = "idm-service/v2.0/tokens";
