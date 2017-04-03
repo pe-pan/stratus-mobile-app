@@ -25,6 +25,9 @@ public class MppSubscriptionHandler extends CsaEntityHandler {
     @Override
     public Entity loadDetails(Entity entity) {
         String json = M_STRATUS.doGet(Mpp.REST_PATHNAME + "mpp-subscription/" + entity.getId());
+        if (json == null) { // no internet connection
+            return null;
+        }
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }

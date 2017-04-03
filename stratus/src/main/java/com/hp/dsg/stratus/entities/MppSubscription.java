@@ -22,7 +22,9 @@ public class MppSubscription extends CsaEntity {
 
         EntityHandler instanceHandler = MppInstanceHandler.INSTANCE;
         MppInstance instance = new MppInstance("{ \"catalogId\" : \""+catalogId+"\", \"id\" : \""+instanceId+"\" }");
-        instanceHandler.loadDetails(instance);
+        if (instanceHandler.loadDetails(instance) == null) { // no internet connection
+            return null;
+        }
         return instance;
     }
 

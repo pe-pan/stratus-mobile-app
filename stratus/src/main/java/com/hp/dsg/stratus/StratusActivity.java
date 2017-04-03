@@ -242,6 +242,7 @@ public class StratusActivity extends ActionBarActivity {
     protected List<Entity> getCategories(boolean enforce) {
         synchronized (cachedCategoriesInitialized) {
             List<Entity> categories = MppCategoryHandler.INSTANCE.list(enforce);
+            if (categories == null || categories.size() == 0) return null;  // no internet connection
             if (categories != cachedCategories) { // new instance of the list
                 categories.add(0, new MppCategory("{\"displayName\":\""+getString(R.string.allCategories)+"\"}"));  // 'name' property is null
                 cachedCategories = categories;

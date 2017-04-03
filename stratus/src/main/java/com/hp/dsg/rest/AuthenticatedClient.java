@@ -1,7 +1,11 @@
 package com.hp.dsg.rest;
 
+import com.hp.dsg.stratus.Mpp;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by panuska on 14.10.14.
@@ -44,6 +48,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doGet(url, type);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doGet(url, type);
@@ -56,6 +61,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doGet(pathName, type, cacheListener);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doGet(pathName, type, cacheListener);
@@ -68,6 +74,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doPut(url, data);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doPut(url, data);
@@ -80,6 +87,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doDelete(url);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) if (!listener.onNoAuthentication()) ;
                 return client.doDelete(url);
@@ -92,6 +100,7 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doPost(url, data);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doPost(url, data);
@@ -104,11 +113,25 @@ public abstract class AuthenticatedClient  {
         try {
             return client.doPost(url, data, type);
         } catch (IllegalRestStateException e) {
+            if (!hasActiveInternetConnection()) return null;
             if (e.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED || e.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
                 if (listener != null) listener.onNoAuthentication();
                 return client.doPost(url, data);
             }
             throw e;
+        }
+    }
+
+    private static boolean hasActiveInternetConnection() {
+        try {
+            HttpURLConnection urlc = (HttpURLConnection) (new URL(Mpp.STRATUS_HOSTNAME).openConnection());
+            urlc.setRequestProperty("User-Agent", "Test");
+            urlc.setRequestProperty("Connection", "close");
+            urlc.setConnectTimeout(1500);
+            urlc.connect();
+            return (urlc.getResponseCode() == HttpURLConnection.HTTP_OK);
+        } catch (IOException e) {
+            return false;
         }
     }
 }

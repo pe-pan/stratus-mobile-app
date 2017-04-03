@@ -27,6 +27,10 @@ public class MppInstanceHandler extends CsaEntityHandler {
         String catalogId = entity.getProperty("catalogId");
 
         String json = M_STRATUS.doGet(Mpp.REST_PATHNAME + "mpp-instance/"+instanceId+"?catalogId="+catalogId);
+        if (json == null) { // no internet connection
+            return null;
+        }
+
         entity.init(json); //todo mark somewhere details have been loaded
         return entity;
     }

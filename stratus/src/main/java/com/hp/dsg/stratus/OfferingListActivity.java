@@ -141,6 +141,7 @@ public class OfferingListActivity extends StratusActivity {
             protected Boolean doInBackground(Void... params) {
                 try {
                     categories = getCategories(false); //retrieve cached categories
+                    if (categories == null || categories.size() == 0) return false; // no internet connection
                     return true;
                 } catch (Throwable e) {
                     Log.d(TAG, "Exception when getting categories", e);
@@ -170,7 +171,7 @@ public class OfferingListActivity extends StratusActivity {
                         }
                     });
                 } else {
-                    showSendErrorDialog(e);
+                    if (e != null) showSendErrorDialog(e);
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -198,7 +199,9 @@ public class OfferingListActivity extends StratusActivity {
             synchronized (syncLock) {
                 try {
                     categories = getCategories(params[0]);
+                    if (categories == null || categories.size() == 0) return null; // no internet connection
                     final List<Entity> offerings = M_STRATUS.getOfferings(params[0]);
+                    if (offerings == null || offerings .size() == 0) return null; // no internet connection
                     initCategories(offerings);
                     return offerings;
                 } catch (Throwable e) {
@@ -219,7 +222,8 @@ public class OfferingListActivity extends StratusActivity {
 
         @Override
         protected void onPostExecute(final List<Entity> offerings) {
-            if (offerings != null) updateTitle(offerings.size());
+            if (offerings == null || offerings.size() == 0) return;  // no internet connection
+            updateTitle(offerings.size());
             final ListView listview = (ListView) findViewById(R.id.offeringList);
             adapter = new ArrayAdapter<Entity>(OfferingListActivity.this,
                     android.R.layout.simple_list_item_1, offerings) {

@@ -38,6 +38,9 @@ public abstract class CsaEntityHandler extends EntityHandler {
         }
 
         String json = getListJson();
+        if (json == null) { // no internet connection
+            return null;
+        }
         JSONArray array = JsonPath.read(json, "$.members");
         List<Entity> returnValue = new ArrayList<>(array.size());
         for (int i = 0; i < array.size(); i++) {

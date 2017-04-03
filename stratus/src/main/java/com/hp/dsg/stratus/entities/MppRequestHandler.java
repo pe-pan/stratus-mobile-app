@@ -30,6 +30,9 @@ public class MppRequestHandler extends CsaEntityHandler {
         String serviceId = entity.removeProperty(SERVICE_ID_KEY);
         String catalogId = entity.removeProperty(CATALOG_ID_KEY);
         String response = M_STRATUS.doPost(Mpp.REST_PATHNAME + "mpp-request/"+serviceId+"?"+CATALOG_ID_KEY+"="+catalogId, entity.toJson(), ContentType.JSON_MULTI);
+        if (response == null) { // no internet connection
+            return null;
+        }
         String id = JsonPath.read(response, "$.id");
         return id;
     }

@@ -79,6 +79,9 @@ public class SubscriptionActivity extends StratusActivity {
         protected Server[] doInBackground(final MppSubscription... params) {
             try {
                 instance = params[0].getInstance();
+                if (instance == null) { // no internet connection
+                    return null;
+                }
                 return instance.getServers();
             } catch (Throwable e) {
                 showSendErrorDialog(e);

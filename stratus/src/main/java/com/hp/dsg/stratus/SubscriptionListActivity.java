@@ -237,6 +237,7 @@ public class SubscriptionListActivity extends StratusActivity {
             try {
                 startDelay = 0;  // when running subscription list refresh and there was already some delay set, this needs to be reset
                 final List<Entity> subscriptions = getSubscriptions(params[0]);
+                if (subscriptions == null || subscriptions.size() == 0) return false; // no internet connection
                 final View.OnTouchListener gestureListener = new View.OnTouchListener() {
                     public boolean onTouch(final View v, MotionEvent event) {
                         try {
@@ -517,9 +518,10 @@ public class SubscriptionListActivity extends StratusActivity {
         @Override
         protected String doInBackground(ViewHolder... params) {
             try {
+                shareButton = params[0].topView.findViewById(R.id.shareButton);
                 MppSubscription subscription = params[0].subscription;
                 MppInstance instance = subscription.getInstance();
-                shareButton = params[0].topView.findViewById(R.id.shareButton);
+                if (instance == null) return null; // no internet connection
 
                 String serviceId = instance.getShareServiceId();
                 if (serviceId == null) {
