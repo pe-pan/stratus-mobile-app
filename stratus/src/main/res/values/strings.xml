@@ -3,7 +3,6 @@
 
     <string name="app_name">Stratus</string>
     <string name="app_description">Stratus Mobile App</string>
-    <string name="app_version">version 0.0.6</string>
     <string name="support_link">For support click &lt;a href="mailto:petr.panuska@hpe.com?subject=Support&#160;needed&#160;for&#160;Stratus&#160;Mobile&#160;App&#160;(%1$s)&amp;body=Android&#160;API&#160;v.&#160;%2$s;&#160;on&#160;device&#160;%3$s&#160;(%4$dx%5$d&#160;pixels);&#160;on&#160;day&#160;%6$s">here&lt;/a></string>
     <string name="support_mail_subj">Support needed for Stratus Mobile App (%1$s)</string>
     <string name="support_mail_body">An exception thrown:\n%1$s\n\nAndroid API v. %2$s; on device %3$s (%4$dx%5$d pixels); on day %6$s.</string>

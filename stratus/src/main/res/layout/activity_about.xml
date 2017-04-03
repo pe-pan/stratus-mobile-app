@@ -64,7 +64,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/activity_margin"
             android:selectAllOnFocus="true"
-            android:text="@string/app_version"
+            android:text="@string/versionName"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textIsSelectable="true" />
 

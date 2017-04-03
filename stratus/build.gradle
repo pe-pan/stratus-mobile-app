@@ -8,10 +8,15 @@ android {
         applicationId "com.hp.dsg.stratus"
         minSdkVersion 11
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
+
+    applicationVariants.all { variant ->
+        variant.resValue "string", "versionName", variant.versionName
+    }
+
     buildTypes {
         release {
             minifyEnabled false

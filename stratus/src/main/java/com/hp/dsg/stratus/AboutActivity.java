@@ -32,7 +32,7 @@ public class AboutActivity extends Activity {
 
         TextView supportLink = (TextView) findViewById(R.id.supportLink);
         supportLink.setText(Html.fromHtml(String.format(getString(R.string.support_link),
-                StringUtils.htmlEncode(getString(R.string.app_version)), Build.VERSION.SDK_INT,
+                StringUtils.htmlEncode(BuildConfig.VERSION_NAME), Build.VERSION.SDK_INT,
                 Build.MODEL, StratusActivity.getDisplayWidth(), StratusActivity.getDisplayHeight(),
                 StringUtils.htmlEncode(new Date().toString()))));
         supportLink.setMovementMethod(LinkMovementMethod.getInstance());

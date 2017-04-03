@@ -180,7 +180,7 @@ public class StratusActivity extends ActionBarActivity {
                                     Intent i = new Intent(Intent.ACTION_SEND);
                                     i.setType("message/rfc822");
                                     i.putExtra(Intent.EXTRA_EMAIL  , new String[]{getString(R.string.support_mail_to)});
-                                    i.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.support_mail_subj), getString(R.string.app_version)));
+                                    i.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.support_mail_subj), BuildConfig.VERSION_NAME));
                                     i.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.support_mail_body), ExceptionUtils.getFullStackTrace(e),
                                             Build.VERSION.SDK_INT, Build.MODEL, getDisplayWidth(), getDisplayHeight(), new Date().toString()));
                                     try {
