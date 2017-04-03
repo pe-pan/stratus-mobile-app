@@ -619,6 +619,7 @@ public class SubscriptionListActivity extends StratusActivity {
             if (s == null) {
                 statusMessage = getString(R.string.cancelRequestFailure);
                 setCancelButtonText(getString(R.string.cancelButton), true); // enable the button to try cancel later
+                holder.subscription.setObjectProperty("cancelable", true); // get button back to be cancelable
             } else {
                 statusMessage = getString(R.string.cancelRequestSuccess);
                 holder.subscription.setObjectProperty("cancelable", false); // keep cancel button even upon UI refresh (till
