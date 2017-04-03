@@ -134,24 +134,46 @@ public class OfferingListActivity extends StratusActivity {
             }
         });
 
-        categories = getCategories(false); //retrieve cached categories
-        categoryAdapter = new ArrayAdapter<>(OfferingListActivity.this, android.R.layout.simple_spinner_item, categories);
-        categoryFilter.setAdapter(categoryAdapter);
-        categoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        new AsyncTask<Void, Void, Boolean> () {
+
+            private Throwable e;
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCategory = categories.get(position);
-                if (adapter != null)
-                    adapter.getFilter().filter(typedText);
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    categories = getCategories(false); //retrieve cached categories
+                    return true;
+                } catch (Throwable e) {
+                    Log.d(TAG, "Exception when getting categories", e);
+                    this.e = e;
+                    return false;
+                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedCategory = null;
-                if (adapter != null)
-                    adapter.getFilter().filter(typedText);
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    categoryAdapter = new ArrayAdapter<>(OfferingListActivity.this, android.R.layout.simple_spinner_item, categories);
+                    categoryFilter.setAdapter(categoryAdapter);
+                    categoryFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            selectedCategory = categories.get(position);
+                            if (adapter != null)
+                                adapter.getFilter().filter(typedText);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            selectedCategory = null;
+                            if (adapter != null)
+                                adapter.getFilter().filter(typedText);
+                        }
+                    });
+                } else {
+                    showSendErrorDialog(e);
+                }
             }
-        });
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
