@@ -1,7 +1,6 @@
 package com.hp.dsg.stratus;
 
 import android.app.Activity;
-import android.content.pm.ApplicationInfo;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import com.hp.dsg.utils.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Created by panuska on 6.1.2015.
@@ -49,19 +46,7 @@ public class AboutActivity extends Activity {
         });
         okButton.getBackground().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.MULTIPLY);
 
-        String s;
-        try{
-            //buildtime todo could be cached or even created during build time
-            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), 0);
-            ZipFile zf = new ZipFile(ai.sourceDir);
-            ZipEntry ze = zf.getEntry("classes.dex");
-            long time = ze.getTime();
-            s = sdf.format(new java.util.Date(time));
-            zf.close();
-        }catch(Exception e){
-            s = "";
-        }
         TextView buildTime = (TextView) findViewById(R.id.buildTime);
-        buildTime.setText(s);
+        buildTime.setText(sdf.format(new Date(BuildConfig.TIMESTAMP)));
     }
 }
