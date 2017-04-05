@@ -92,4 +92,6 @@
     <string name="demos">demos</string>
     <string name="demo">demo</string>
     <string name="allCategories">All Categories</string>
+    <string name="noInternet">There is no internet connection!</string>
+    <string name="backOnline">We are back online!</string>
 </resources>

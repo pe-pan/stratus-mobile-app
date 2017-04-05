@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -49,6 +50,7 @@ public class StratusActivity extends ActionBarActivity {
     public static final String USERNAME_PKEY = "username";
     public static final String PASSWORD_PKEY = "password";
 
+    private static final NetworkStateReceiver stateReceiver = new NetworkStateReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,16 @@ public class StratusActivity extends ActionBarActivity {
         super.onResume();
         restoreAuthenticationToken();
         registerAuthenticationListener();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(stateReceiver, filter);
         enableStatusBar();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(stateReceiver);
     }
 
     @Override
