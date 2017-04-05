@@ -33,6 +33,8 @@ public class ServerProperty implements Comparable<ServerProperty> {
         dictionary.put("vpninfo.txt", "VPN");
         dictionary.put("PublicIPAddress", "Public IP");
         dictionary.put("VNC Console URL", "VNC");
+        dictionary.put("RDPUSER", "User");
+        dictionary.put("RDP_PASSWORD", "Password");
 
     }
 
