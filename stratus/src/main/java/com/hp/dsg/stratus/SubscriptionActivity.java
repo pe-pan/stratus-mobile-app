@@ -3,6 +3,8 @@ package com.hp.dsg.stratus;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -197,16 +199,32 @@ public class SubscriptionActivity extends StratusActivity {
                                     @Override
                                     public void onClick(View v) {
                                         try {
-                                            ServiceAction action = (ServiceAction) v.getTag();
-                                            MppRequest req = new MppRequest(null);
-                                            req.setProperty("action", action.name);
-                                            if (action.emailProperty != null) {
-                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
-                                            }
-                                            req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
-                                            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
-                                            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
-                                            new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                            final ServiceAction action = (ServiceAction) v.getTag();
+                                            AlertDialog alertDialog = new AlertDialog.Builder(SubscriptionActivity.this).create();
+                                            alertDialog.setTitle(getString(R.string.operationExecutionTitle));
+                                            alertDialog.setMessage(String.format(getString(R.string.operationExecutionText), action.displayName, server.getProperty(ServerProperty.DEMO_NAME).value));
+                                            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okButton),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            MppRequest req = new MppRequest(null);
+                                                            req.setProperty("action", action.name);
+                                                            if (action.emailProperty != null) {
+                                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                                            }
+                                                            req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
+                                                            req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
+                                                            req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
+                                                            new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                            alertDialog.show();
                                         } catch (Throwable e) {
                                             showSendErrorDialog(e);
                                         }

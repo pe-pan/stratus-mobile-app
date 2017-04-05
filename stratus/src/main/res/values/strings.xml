@@ -94,4 +94,6 @@
     <string name="allCategories">All Categories</string>
     <string name="noInternet">There is no internet connection!</string>
     <string name="backOnline">We are back online!</string>
+    <string name="operationExecutionTitle">Operation Execution</string>
+    <string name="operationExecutionText">Execute operation %1$s on %2$s VM?"</string>
 </resources>
