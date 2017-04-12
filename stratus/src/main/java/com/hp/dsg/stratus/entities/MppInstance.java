@@ -32,8 +32,7 @@ public class MppInstance extends CsaEntity {
 
     public Server[] getServers() {
         if (cachedServers != null) return cachedServers;
-        Filter fooOrBar = Filter.filter(Criteria.where("name").regex(Pattern.compile("^HPCSSERVER.*")));
-        List<JSONObject> components = JsonPath.read(json, "$.components[?]", fooOrBar);
+        List<JSONObject> components = JsonPath.read(json, "$.components[*]");
         if (components.size() == 0) return null;
         Server[] servers = new Server[components.size()];
         for (int j = 0; j < components.size(); j++) {
@@ -41,7 +40,13 @@ public class MppInstance extends CsaEntity {
             Object id = component.get("id");
 
             JSONArray properties = JsonPath.read(json, "$.components[?(@.id == '" + id + "')].properties[*]");
-            ServerProperty[] sps = new ServerProperty[properties.size()];
+            ServerProperty[] sps;
+            if (component.get("name").equals("INFRASTRUCTURE_SERVICE__Thu Oct 10 11:51:57 UTC 2013")) {
+                sps = new ServerProperty[properties.size() + 1];  // give Infrastructure service the DEMO_NAME property
+                sps[properties.size()] = ServerProperty.INFRASTRUCTURE_SERVICE;
+            } else {
+                sps = new ServerProperty[properties.size()];
+            }
             for (int i = 0; i < properties.size(); i++) {
                 ServerProperty sp = new ServerProperty((JSONObject) properties.get(i));
                 sps[i] = sp;
@@ -50,8 +55,8 @@ public class MppInstance extends CsaEntity {
             String serviceSubscriptionId;
             ServiceAction[] sas ;
             try {
-                serviceSubscriptionId = JsonPath.read(json, "$.components[?(@.id == '" + id + "')].resourceSubscription[?(@.name == 'cc41303b-f6e8-40f2-b335-30404a2a3c63')].id[0]");
-                JSONArray actions = JsonPath.read(json, "$.components[?(@.id == '" + id + "')].resourceSubscription[?(@.name == 'cc41303b-f6e8-40f2-b335-30404a2a3c63')].serviceAction");
+                serviceSubscriptionId = JsonPath.read(json, "$.components[?(@.id == '" + id + "')].resourceSubscription[*].id[0]");
+                JSONArray actions = JsonPath.read(json, "$.components[?(@.id == '" + id + "')].resourceSubscription[*].serviceAction");
                 sas = new ServiceAction[actions.size()];
                 for (int i = 0; i < actions.size(); i++) {
                     ServiceAction sa = new ServiceAction((JSONObject) actions.get(i));

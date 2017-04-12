@@ -17,6 +17,13 @@ public class ServerProperty implements Comparable<ServerProperty> {
 
     public static final String DEMO_NAME = "DEMONAME";
     public static final String ACTIVATED = "ACTIVATED";
+    public static final ServerProperty INFRASTRUCTURE_SERVICE = new ServerProperty(DEMO_NAME, DEMO_NAME, "Infrastructure");
+
+    protected ServerProperty(String name, String displayName, Object value) {
+        this.name = name;
+        this.displayName = displayName;
+        this.value = value;
+    }
 
     protected ServerProperty(JSONObject property) {
         this.name = (String)property.get("name");
@@ -28,7 +35,7 @@ public class ServerProperty implements Comparable<ServerProperty> {
 
     // translates property names (the ones not listed here remain in original form)
     private static final Map<String, String> dictionary = new HashMap<>() ;
-    {
+    static {
         dictionary.put("PRIVATEIP", "Private IP");
         dictionary.put("vpninfo.txt", "VPN");
         dictionary.put("PublicIPAddress", "Public IP");

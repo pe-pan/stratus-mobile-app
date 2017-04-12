@@ -23,6 +23,10 @@ public class Server implements Comparable<Server>{
 
     @Override
     public int compareTo(Server another) {
-        return ((String)this.getProperty(ServerProperty.DEMO_NAME).value).compareTo((String)another.getProperty(ServerProperty.DEMO_NAME).value);
+        String thisDemoName = (String)this.getProperty(ServerProperty.DEMO_NAME).value;
+        String thatDemoName = (String)another.getProperty(ServerProperty.DEMO_NAME).value;
+        if (thisDemoName == ServerProperty.INFRASTRUCTURE_SERVICE.value) return -1;  // make sure that Infrastructure service is always on top in the list
+        if (thatDemoName == ServerProperty.INFRASTRUCTURE_SERVICE.value) return 1;
+        return (thisDemoName).compareTo(thatDemoName);
     }
 }
