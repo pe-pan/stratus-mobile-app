@@ -101,15 +101,15 @@ public class Mpp extends AuthenticatedClient {
         EntityHandler offHandler = MppOfferingHandler.INSTANCE;
         offHandler.loadDetails(offering);
         if (!"EXECUTIVE_DEMOS".equals(offering.getProperty("category.name"))) {
-            String checkBoxId = offering.getProperty("field_FDABAA51_D5B2_0A11_2B13_19D86153F685");
-            String oppDetailsId = offering.getProperty("field_OPPDETAILS");
-            req.setObjectProperty("field_"+checkBoxId, true);
-            req.setProperty("field_"+oppDetailsId, oppId);
+            String checkBoxId = offering.getProperty(MppRequest.FIELD_P+"FDABAA51_D5B2_0A11_2B13_19D86153F685");
+            String oppDetailsId = offering.getProperty(MppRequest.FIELD_P+"OPPDETAILS");
+            req.setObjectProperty(MppRequest.FIELD_P+checkBoxId, true);
+            req.setProperty(MppRequest.FIELD_P+oppDetailsId, oppId);
         } else {
-            String checkBoxId = offering.getProperty("field_E3332EC1_DFF5_3D5D_34A6_6F767683E54A");
-            String emailAddressId = offering.getProperty("field_EmailAddress");
-            req.setObjectProperty("field_"+checkBoxId, true);
-            req.setProperty("field_"+emailAddressId, emailAddress);
+            String checkBoxId = offering.getProperty(MppRequest.FIELD_P+"E3332EC1_DFF5_3D5D_34A6_6F767683E54A");
+            String emailAddressId = offering.getProperty(MppRequest.FIELD_P+"EmailAddress");
+            req.setObjectProperty(MppRequest.FIELD_P+checkBoxId, true);
+            req.setProperty(MppRequest.FIELD_P+emailAddressId, emailAddress);
         }
         return reqHandler.create(req);
     }

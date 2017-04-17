@@ -42,6 +42,9 @@ import com.hp.dsg.utils.TimeUtils;
 import java.util.Date;
 import java.util.List;
 
+import static com.hp.dsg.stratus.entities.MppRequest.FIELD_P;
+import static com.hp.dsg.stratus.entities.ServerProperty.SHARE_EMAIL;
+
 public class SubscriptionListActivity extends StratusActivity {
     private static final String TAG = SubscriptionListActivity.class.getSimpleName();
 
@@ -524,7 +527,7 @@ public class SubscriptionListActivity extends StratusActivity {
                 req.setProperty(MppRequestHandler.SERVICE_ID_KEY, serviceId);
 
                 EditText shareEmail = (EditText) params[0].topView.findViewById(R.id.shareEmail);
-                req.setProperty("field_shareEmail", shareEmail.getText().toString().trim());
+                req.setProperty(FIELD_P+SHARE_EMAIL, shareEmail.getText().toString().trim());
 
                 EntityHandler handler = MppRequestHandler.INSTANCE;
                 try {

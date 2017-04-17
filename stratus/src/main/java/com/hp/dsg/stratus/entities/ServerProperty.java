@@ -18,6 +18,8 @@ public class ServerProperty implements Comparable<ServerProperty> {
     public static final String DEMO_NAME = "DEMONAME";
     public static final String ACTIVATED = "ACTIVATED";
     public static final ServerProperty INFRASTRUCTURE_SERVICE = new ServerProperty(DEMO_NAME, DEMO_NAME, "Infrastructure");
+    public static final String EMAIL_CONF = "EMAIL_CONF";    //todo this is not a service property but action parameter
+    public static final String SHARE_EMAIL = "shareEmail";   //todo this is not a service property but action parameter
 
     protected ServerProperty(String name, String displayName, Object value) {
         this.name = name;

@@ -5,6 +5,8 @@ import android.util.Log;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 
+import static com.hp.dsg.stratus.entities.MppRequest.FIELD_P;
+
 /**
  * Created by panuska on 6.1.15.
  */
@@ -23,8 +25,8 @@ public class MppOffering extends CsaEntity {
     public Object getObjectProperty(String key) {
         Object value = properties.get(key);
         if (value == null) {
-                if (key.startsWith("field_")) {
-                    String key2 = key.substring(6); //remove the field_ prefix
+                if (key.startsWith(FIELD_P)) {
+                    String key2 = key.substring(FIELD_P.length()); //remove the field_ prefix
                     try {
                         value = JsonPath.read(json, "$.fields[?(@.name=='"+key2+"')].id[0]");
                     } catch (InvalidPathException e) {
