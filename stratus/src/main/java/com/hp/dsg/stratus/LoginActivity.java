@@ -103,9 +103,7 @@ public class LoginActivity extends StratusActivity {
 
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); //hide keyboard if there is one shown
-        imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
+        hideKeyboard(mPasswordView);
 
         showProgress(true);
         M_STRATUS.setUsername(email);

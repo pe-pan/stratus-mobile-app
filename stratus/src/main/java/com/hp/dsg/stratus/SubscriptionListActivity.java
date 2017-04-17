@@ -6,9 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,8 +41,6 @@ import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.hp.dsg.stratus.Mpp.M_STRATUS;
 
 public class SubscriptionListActivity extends StratusActivity {
     private static final String TAG = SubscriptionListActivity.class.getSimpleName();
@@ -170,10 +165,8 @@ public class SubscriptionListActivity extends StratusActivity {
     }
 
     private ObjectAnimator onSwipeCancel(final View v) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(  //hide keyboard if there is one shown
-                Context.INPUT_METHOD_SERVICE);
         EditText editText = (EditText) ((View)v.getParent()).findViewById(R.id.shareEmail);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        hideKeyboard(editText);
 
         animatedView = null;
         return animateViewTo(v, 0, bounceInterpolator);
@@ -370,8 +363,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                                 shareButtons.setVisibility(View.VISIBLE);
 
                                                 final EditText editText = (EditText) shareButtons.findViewById(R.id.shareEmail);
-                                                String oldValue = getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
-                                                editText.setText(oldValue);
+                                                editText.setText(receivePreviousShareEmail());
                                                 editText.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS);
                                                 animateViewTo(shareButtons, 0, decelerateInterpolator);
                                             }
@@ -424,10 +416,7 @@ public class SubscriptionListActivity extends StratusActivity {
                                                     }
                                                 });
                                                 new ShareSubscription().executeOnExecutor(THREAD_POOL_EXECUTOR, holder);
-
-                                                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                                                editor.putString("shareEmail", ((EditText) row.findViewById(R.id.shareEmail)).getText().toString());
-                                                editor.apply();
+                                                storeShareEmail(((EditText) row.findViewById(R.id.shareEmail)).getText().toString());
                                             }
                                         });
                                         return row;

@@ -2,6 +2,7 @@ package com.hp.dsg.stratus;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,7 +15,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -313,5 +316,20 @@ public class StratusActivity extends ActionBarActivity {
 
     public static int getDisplayHeight() {
         return displayHeight;
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); //hide keyboard if there is one shown
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public String receivePreviousShareEmail() {
+        return getPreferences(MODE_PRIVATE).getString("shareEmail", getString(R.string.defaultShareEmail));
+    }
+
+    public void storeShareEmail(String shareEmail) {
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putString("shareEmail", shareEmail);
+        editor.apply();
     }
 }
