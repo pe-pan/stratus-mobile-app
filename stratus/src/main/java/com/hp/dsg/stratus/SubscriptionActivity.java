@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.view.animation.Transformation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -33,6 +35,10 @@ import com.hp.dsg.stratus.entities.ServiceAction;
 import com.hp.dsg.utils.TimeUtils;
 
 import java.util.Date;
+
+import static com.hp.dsg.stratus.entities.MppRequest.FIELD_P;
+import static com.hp.dsg.stratus.entities.ServerProperty.EMAIL_CONF;
+import static com.hp.dsg.stratus.entities.ServerProperty.SHARE_EMAIL;
 
 /**
  * Created by panuska on 7.1.2015.
@@ -202,25 +208,48 @@ public class SubscriptionActivity extends StratusActivity {
                                             final ServiceAction action = (ServiceAction) v.getTag();
                                             AlertDialog alertDialog = new AlertDialog.Builder(SubscriptionActivity.this).create();
                                             alertDialog.setTitle(getString(R.string.operationExecutionTitle));
+                                            final EditText input;
+                                            if (action.propertyName != null && !action.propertyName.equals(EMAIL_CONF)) {
+                                                input = new EditText(SubscriptionActivity.this);
+                                                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                                                if (action.propertyName.equals(SHARE_EMAIL)) {
+                                                    input.setText(receivePreviousShareEmail());     //todo don't show "default"
+                                                } else {
+                                                    input.setText(action.propertyValue);
+                                                }
+                                                input.setOnFocusChangeListener(ViewUtils.SELECT_LOCAL_PART_OF_EMAIL_ADDRESS); //will select whole the text
+                                                alertDialog.setView(input);
+                                            } else {
+                                                input = null;
+                                            }
                                             alertDialog.setMessage(String.format(getString(R.string.operationExecutionText), action.displayName, server.getProperty(ServerProperty.DEMO_NAME).value));
                                             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okButton),
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             MppRequest req = new MppRequest(null);
                                                             req.setProperty("action", action.name);
-                                                            if (action.emailProperty != null) {
-                                                                req.setProperty("field_EMAIL_CONF", action.emailProperty);
+                                                            if (action.propertyName != null) {
+                                                                if (action.propertyName.equals(EMAIL_CONF)) {      // todo power on / off actions; do not ask for email confirmation
+                                                                    req.setProperty(FIELD_P+EMAIL_CONF, Mpp.M_STRATUS.getLoggedUserName());
+                                                                } else {
+                                                                    if (action.propertyName.equals(SHARE_EMAIL)) {
+                                                                        storeShareEmail(input.getText().toString());
+                                                                    }
+                                                                    req.setProperty(FIELD_P + action.propertyName, input.getText().toString());
+                                                                }
                                                             }
                                                             req.setProperty("subscriptionId", instance.getProperty("subscriptionId"));
                                                             req.setProperty(MppRequestHandler.CATALOG_ID_KEY, instance.getProperty(MppRequestHandler.CATALOG_ID_KEY));
                                                             req.setProperty(MppRequestHandler.SERVICE_ID_KEY, server.serviceSubscriptionId);
                                                             new SendServiceAction().executeOnExecutor(THREAD_POOL_EXECUTOR, req);
+                                                            hideKeyboard(input);
                                                             dialog.dismiss();
                                                         }
                                                     });
                                             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
+                                                    hideKeyboard(input);
                                                     dialog.dismiss();
                                                 }
                                             });

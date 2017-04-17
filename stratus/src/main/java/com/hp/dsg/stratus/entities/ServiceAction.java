@@ -11,25 +11,21 @@ import net.minidev.json.JSONObject;
 public class ServiceAction implements Comparable<ServiceAction> {
     public final String name;
     public final String displayName;
-    public final String emailProperty;
+    public final String propertyName;
+    public final String propertyValue;
 
     protected ServiceAction(JSONObject action) {
         this.name = (String)action.get("name");
         this.displayName = ((String)action.get("displayName")).trim();
-        this.emailProperty = evaluateEmailProperty(action);
-    }
-
-    private String evaluateEmailProperty(JSONObject action) { //todo hack -> it should find all possible properties and serialize all necessary (currently; there is only one known property)
         JSONArray properties = (JSONArray) action.get("properties");
-        if (properties != null && properties.size() > 0 ) {
-            for (int i = 0; i < properties.size(); i++) {
-                JSONObject property = (JSONObject)properties.get(i);
-                if ("EMAIL_CONF".equals(property.get("name"))) {
-                    return Mpp.M_STRATUS.getLoggedUserName();
-                }
-            }
+        if (properties != null && properties.size() > 0) {
+            JSONObject property = (JSONObject) properties.get(0);                // todo we expect to have one property only
+            propertyName = (String) property.get("name");
+            propertyValue = (String) ((JSONArray)property.get("value")).get(0);  // todo we expect to have one default value only
+        } else {
+            propertyName = null;
+            propertyValue = null;
         }
-        return null;
     }
 
     @Override
