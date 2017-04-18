@@ -1,11 +1,15 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.hp.dsg.stratus"
+        applicationId "net.panuska.hpe.dsg.stratus"
         minSdkVersion 11
         targetSdkVersion 21
         versionCode rootProject.ext.versionCode
@@ -17,10 +21,21 @@ android {
         variant.resValue "string", "versionName", variant.versionName
     }
 
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            signingConfig signingConfigs.config
         }
     }
 }
