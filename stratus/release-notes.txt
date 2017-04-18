@@ -1,3 +1,16 @@
+[18/Apr/2017]
+Version 1.0.0:
+-------------
+New features:
+  - Support for operations on infrastructure service
+  - Operation execution confirmation dialog
+
+Bug fixes:
+  - Do not crash when no internet available
+  - Other
+
+Enhancements
+
 [13/Feb/2017]
 Version 0.0.6:
 -------------
