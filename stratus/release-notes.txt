@@ -1,3 +1,9 @@
+[27/Apr/2017]
+Version 1.0.1:
+-------------
+Bug fix:
+   - NPE when getting Infrastructure service details
+
 [18/Apr/2017]
 Version 1.0.0:
 -------------
