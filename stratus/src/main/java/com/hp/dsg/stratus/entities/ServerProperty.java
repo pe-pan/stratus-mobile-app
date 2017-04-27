@@ -32,7 +32,8 @@ public class ServerProperty implements Comparable<ServerProperty> {
         String newDisplayName = dictionary.get(name);
         String displayName = ((String)property.get("displayName")).trim();
         this.displayName = newDisplayName != null ? newDisplayName : displayName;
-        this.value = ((JSONArray)property.get("value")).get(0);
+        JSONArray array = (JSONArray)property.get("value");
+        this.value = (array == null ? "NONE" : array.get(0));
     }
 
     // translates property names (the ones not listed here remain in original form)
