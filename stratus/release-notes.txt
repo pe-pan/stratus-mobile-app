@@ -1,3 +1,9 @@
+[27/May/2017]
+Version 1.0.2:
+-------------
+Bug fix:
+   - Class cast exception when seeing server properties of a server which got activated later (was not active since the subscription beginning)
+
 [27/Apr/2017]
 Version 1.0.1:
 -------------
