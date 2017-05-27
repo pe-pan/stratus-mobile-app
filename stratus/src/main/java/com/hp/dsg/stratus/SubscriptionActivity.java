@@ -177,7 +177,13 @@ public class SubscriptionActivity extends StratusActivity {
                                     ((TextView) row.findViewById(R.id.demoNameValue)).setText((String) property.value);
                                     break;
                                 case ServerProperty.ACTIVATED:
-                                    ((TextView) row.findViewById(R.id.activatedValue)).setText((Boolean) property.value ? "ACTIVE" : "HALT");
+                                    boolean valueB;                         // if an instance gets actived later (not from subscription beginning)
+                                    if (property.value instanceof String) { // this value might be "True"; which is String (not boolean)
+                                        valueB = "true".equalsIgnoreCase((String)property.value);
+                                    } else {
+                                        valueB = (Boolean)property.value;
+                                    }
+                                    ((TextView) row.findViewById(R.id.activatedValue)).setText(valueB ? "ACTIVE" : "HALT");
                                     break;
                                 default:
                                     LinearLayout propertyList = (LinearLayout) row.findViewById(R.id.subscriptionPropertyList);
