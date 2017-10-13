@@ -1,3 +1,9 @@
+[13/Oct/2017]
+Version 1.0.3:
+-------------
+Bug fix:
+   - NPE when executing an operation where there is no keyboard involved
+
 [27/May/2017]
 Version 1.0.2:
 -------------
