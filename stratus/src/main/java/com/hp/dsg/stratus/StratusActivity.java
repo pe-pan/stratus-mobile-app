@@ -319,6 +319,7 @@ public class StratusActivity extends ActionBarActivity {
     }
 
     public void hideKeyboard(View view) {
+        if (view == null) return;
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); //hide keyboard if there is one shown
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
