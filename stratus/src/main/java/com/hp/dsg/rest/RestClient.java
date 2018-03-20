@@ -12,9 +12,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by panuska on 10/26/12.
@@ -25,6 +35,7 @@ public class RestClient {
 
     public RestClient(String hostName) {
         this.hostName = hostName;
+        trustAllCertificates(); //todo breaking security!
     }
 
     private static final String TAG = RestClient.class.getName();
@@ -73,7 +84,7 @@ public class RestClient {
      * @return response of the request
      */
     public InputStream doRequest(String pathName, String formData, Method method, ContentType contentType, CacheListener cacheListener) {
-        HttpURLConnection conn = null;
+        HttpsURLConnection conn = null;
         try {
             if (cacheListener != null) {
                 InputStream stream = cacheListener.onRequest(pathName, method);
@@ -87,7 +98,8 @@ public class RestClient {
                 }
                 Log.d(TAG, "At: "+pathName);
                 URL url = new URL(hostName+pathName);
-                conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpsURLConnection) url.openConnection();
+                conn.setHostnameVerifier(NO_HOSTNAME_VERIFIER);
                 conn.setDoOutput(formData != null);
                 conn.setDoInput(true);
                 conn.setAllowUserInteraction(false);
@@ -329,7 +341,8 @@ public class RestClient {
 
     protected static boolean hasActiveInternetConnection() {
         try {
-            HttpURLConnection urlc = (HttpURLConnection) (new URL(Mpp.STRATUS_HOSTNAME).openConnection());
+            HttpsURLConnection urlc = (HttpsURLConnection) (new URL(Mpp.STRATUS_HOSTNAME).openConnection());
+            urlc.setHostnameVerifier(NO_HOSTNAME_VERIFIER);
             urlc.setRequestProperty("User-Agent", "Test");
             urlc.setRequestProperty("Connection", "close");
             urlc.setConnectTimeout(1500);
@@ -339,4 +352,37 @@ public class RestClient {
             return false;
         }
     }
+
+    //todo breaks security!
+    public static void trustAllCertificates() {
+        TrustManager trm = new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        };
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, new TrustManager[]{trm}, null);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "When registering TrustManager to trust all certificates");
+        } catch (KeyManagementException e) {
+            Log.e(TAG, "When registering TrustManager to trust all certificates");
+        }
+    }
+
+    //todo breaks security!
+    private static HostnameVerifier NO_HOSTNAME_VERIFIER = new HostnameVerifier () {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
 }
