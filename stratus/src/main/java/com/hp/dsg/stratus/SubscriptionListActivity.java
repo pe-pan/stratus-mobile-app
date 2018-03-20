@@ -233,7 +233,7 @@ public class SubscriptionListActivity extends StratusActivity {
             try {
                 startDelay = 0;  // when running subscription list refresh and there was already some delay set, this needs to be reset
                 final List<Entity> subscriptions = getSubscriptions(params[0]);
-                if (subscriptions == null || subscriptions.size() == 0) return false; // no internet connection
+                if (subscriptions == null || subscriptions.size() == 0) return false; // no internet connection //todo what if there are no demos at all? bug
                 final View.OnTouchListener gestureListener = new View.OnTouchListener() {
                     public boolean onTouch(final View v, MotionEvent event) {
                         try {
