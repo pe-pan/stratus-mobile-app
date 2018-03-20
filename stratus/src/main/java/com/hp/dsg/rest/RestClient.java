@@ -3,6 +3,7 @@ package com.hp.dsg.rest;
 import android.util.Log;
 
 import com.hp.dsg.stratus.BuildConfig;
+import com.hp.dsg.stratus.Mpp;
 import com.hp.dsg.utils.IOUtils;
 
 import java.io.IOException;
@@ -326,4 +327,16 @@ public class RestClient {
         return doRequest(url, (String) null, Method.DELETE, ContentType.JSON_JSON);
     }
 
+    protected static boolean hasActiveInternetConnection() {
+        try {
+            HttpURLConnection urlc = (HttpURLConnection) (new URL(Mpp.STRATUS_HOSTNAME).openConnection());
+            urlc.setRequestProperty("User-Agent", "Test");
+            urlc.setRequestProperty("Connection", "close");
+            urlc.setConnectTimeout(1500);
+            urlc.connect();
+            return (urlc.getResponseCode() == HttpURLConnection.HTTP_OK);
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }
